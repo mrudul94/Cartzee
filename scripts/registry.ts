@@ -28,7 +28,7 @@ const REG = join(ROOT, "src/design-system/registry.json");
 const MD = join(ROOT, "src/design-system/COMPONENTS.md");
 const DEMOS = join(ROOT, "src/app/design-system/demos.tsx");
 const SCOPED = ["src/components", "src/hooks", "src/lib/utils", "src/lib/seo"];
-const DEMO_CATEGORIES = /^(ui\/|commerce|section|layout)/;
+const DEMO_CATEGORIES = /^(ui\/|commerce|section|layout|admin)/;
 const check = process.argv.includes("--check");
 
 const walk = (dir: string): string[] =>
@@ -163,7 +163,7 @@ for (const e of entries) {
 }
 
 /* ------------------------------------------------------------ COMPONENTS.md */
-const order = ["ui/", "commerce", "section", "layout", "hook", "util", "seo"];
+const order = ["ui/", "commerce", "section", "layout", "admin", "hook", "util", "seo"];
 const rank = (c: string) => order.findIndex((o) => c.startsWith(o));
 const sorted = [...entries].sort((a, b) => rank(a.category) - rank(b.category) || a.category.localeCompare(b.category) || a.name.localeCompare(b.name));
 const esc = (s: string) => s.replace(/\|/g, "\\|");

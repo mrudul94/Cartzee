@@ -4,8 +4,8 @@ An Indian home-needs store with prepaid-only checkout (Razorpay). Orders are ful
 Built with Next.js 15 (App Router), TypeScript, Tailwind CSS 3 driven by design tokens, Radix UI, Supabase,
 Razorpay and Resend.
 
-> **Status:** Milestone A (design system + storefront) and Milestone B (database, payments, emails) are done.
-> Next: Milestone C (admin panel), then Milestone D (SEO feeds, llms.txt, Cloudflare deploy).
+> **Status:** Milestones A (design system + storefront), B (database, payments, emails) and C (admin panel) are done.
+> Next: Milestone D (SEO feeds, llms.txt, Cloudflare deploy).
 
 ## Run locally
 
@@ -65,6 +65,38 @@ Then use the tunnel URL as the webhook URL in Razorpay.
 - **Resend:** verify your sending domain, then set `RESEND_API_KEY` and `EMAIL_FROM`.
 - **Telegram:** create a bot with @BotFather. Send the bot a message, then open
   `https://api.telegram.org/bot<TOKEN>/getUpdates` to find your chat id. Set `TELEGRAM_BOT_TOKEN` and `TELEGRAM_CHAT_ID`.
+
+## Admin panel (`/admin`)
+
+**Pages**
+
+- **Dashboard:** paid orders waiting to be placed, in-transit count, today's orders, 30-day revenue and margin. It also lists products whose Meesho price hasn't been checked in 7 days (each with an Open Meesho button and a Mark checked button), and products with low stock.
+- **Orders:** status filters with counts. The default view is paid orders, newest first. Each order screen has:
+  - Copy buttons for the customer's name, phone, address and PIN, ready to paste into Meesho ("Reselling the order? → Yes").
+  - A Meesho link for each item, with the expected margin.
+  - Fields for the Meesho order ID, the amount paid on Meesho and the courier tracking link.
+  - Buttons for the next allowed statuses only.
+  - A prefilled WhatsApp message to the customer.
+  - The order's full history.
+- **Products:** search plus filters for price check due, sold out and hidden. The add/edit form shows the margin and the discount % as you type, takes the Meesho link and price, and has an "I checked the Meesho price today" option. You can upload photos (to Supabase Storage), edit alt text and reorder photos. Content, visibility and SEO overrides are also in the form. Saving refreshes the store.
+
+**Order statuses**
+
+`paid → placed_on_meesho → shipped → delivered`, plus cancel/refund and the return flow.
+
+- Each change is logged with the admin's email and emails the customer, except "placed on Meesho".
+- Placing an order requires the Meesho order ID and cost. Shipping it requires the tracking link.
+- Cancelling or completing a return can refund the customer in full through Razorpay.
+- An order can only become "paid" through a confirmed payment. There is no manual button for it.
+
+**Add a partner (admin)**
+
+1. In Supabase, go to Authentication → Users → Add user. Enter their email and a password, and tick "Auto confirm".
+2. In the SQL editor, run `insert into public.admins (user_id) select id from auth.users where email = 'partner@example.com';`
+3. The partner signs in at `/admin/login`. Accounts that aren't in `admins` are refused.
+
+Without Supabase, `pnpm dev` opens the admin panel without sign-in, edits are kept in memory, and a banner says so.
+A production build without Supabase locks the panel completely. The style guide is available to admins at `/admin/design-system`.
 
 ## Commands
 

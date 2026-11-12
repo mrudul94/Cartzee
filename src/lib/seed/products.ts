@@ -656,7 +656,8 @@ export const seedProducts: Product[] = seeds.map((s, i) => ({
   mrp: s.mrp,
   meeshoUrl: `https://www.meesho.com/search?q=${encodeURIComponent(s.title)}`,
   meeshoPrice: s.meeshoPrice,
-  priceCheckedAt: daysAgo(s.checkedDaysAgo ?? 0),
+  // Relative to now so the admin "price check due" flag shows a realistic mix in demos.
+  priceCheckedAt: new Date(Date.now() - (s.checkedDaysAgo ?? 0) * 86_400_000).toISOString(),
   rating: s.rating,
   reviewCount: s.reviewCount,
   stock: s.stock ?? 50,

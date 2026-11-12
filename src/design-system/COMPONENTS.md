@@ -6,34 +6,37 @@
 component with a new variant if it is close, and only create a new component (then register it) if nothing similar exists.
 Live previews: `/design-system`.
 
-Total entries: **97**
+Total entries: **112**
 
 | Name | Category | Path | Description | Variants | Used in |
 |---|---|---|---|---|---|
-| [Button](#button) | ui/action | `components/ui/Button.tsx` | Primary action button used for Add to Cart, Buy Now, forms and links styled as buttons. | primary, secondary, soft, outline, ghost, link, danger, inverse | 14 |
+| [Button](#button) | ui/action | `components/ui/Button.tsx` | Primary action button used for Add to Cart, Buy Now, forms and links styled as buttons. | primary, secondary, soft, outline, ghost, link, danger, inverse | 21 |
+| [CopyButton](#copybutton) | ui/action | `components/ui/CopyButton.tsx` | Copies a value to the clipboard with a brief Copied state. | – | 1 |
 | [Accordion](#accordion) | ui/disclosure | `components/ui/Disclosure.tsx` | Radix accordion for FAQs and mobile nav. | plain, boxed, single, multiple | 2 |
 | [Tabs](#tabs) | ui/disclosure | `components/ui/Disclosure.tsx` | Radix tabs for grouped content. | – | 0 |
-| [Badge](#badge) | ui/display | `components/ui/Badge.tsx` | Small status label: discount %, Sold out, Bestseller. | sale, success, warning, error, neutral, outline, dark | 2 |
+| [Badge](#badge) | ui/display | `components/ui/Badge.tsx` | Small status label: discount %, Sold out, Bestseller. | sale, success, warning, error, neutral, outline, dark | 4 |
+| [DataTable](#datatable) | ui/display | `components/ui/DataTable.tsx` | Generic accessible data table (admin orders/products) with per-column alignment and mobile-hidden columns. | – | 3 |
 | [Table](#table) | ui/display | `components/ui/Misc.tsx` | Key–value HTML table (product specs, order details). | – | 1 |
 | [Skeleton](#skeleton) | ui/feedback | `components/ui/Misc.tsx` | Pulse placeholder block sized with token classes. | – | 0 |
 | [toast](#toast) | ui/feedback | `components/ui/Toast.tsx` | Imperative function to show a toast from client code. | success, error, info | 3 |
 | [Toaster](#toaster) | ui/feedback | `components/ui/Toast.tsx` | Toast viewport; mount once in root layout. | – | 1 |
-| [Checkbox](#checkbox) | ui/form | `components/ui/Checkbox.tsx` | Radix checkbox with label row; used in filter facets. | – | 1 |
-| [FormField](#formfield) | ui/form | `components/ui/FormField.tsx` | Label + control + hint/error wrapper for all form controls. | – | 2 |
-| [Input](#input) | ui/form | `components/ui/Input.tsx` | Text input sharing fieldVariants with Textarea and Select; optional leading icon. | default, invalid | 4 |
+| [Checkbox](#checkbox) | ui/form | `components/ui/Checkbox.tsx` | Radix checkbox with label row; used in filter facets. | – | 3 |
+| [FormField](#formfield) | ui/form | `components/ui/FormField.tsx` | Label + control + hint/error wrapper for all form controls. | – | 5 |
+| [Input](#input) | ui/form | `components/ui/Input.tsx` | Text input sharing fieldVariants with Textarea and Select; optional leading icon. | default, invalid | 9 |
 | [QuantityStepper](#quantitystepper) | ui/form | `components/ui/Misc.tsx` | −/+ quantity control. | – | 2 |
 | [RadioGroup](#radiogroup) | ui/form | `components/ui/Checkbox.tsx` | Radix radio group rendering a list of labelled options; used for budget and rating filters. | – | 1 |
-| [Select](#select) | ui/form | `components/ui/Input.tsx` | Native select styled with field tokens (best mobile UX); used for sort, state picker. | default, invalid | 2 |
-| [Textarea](#textarea) | ui/form | `components/ui/Input.tsx` | Multi-line text field with the same look as Input. | default, invalid | 0 |
+| [Select](#select) | ui/form | `components/ui/Input.tsx` | Native select styled with field tokens (best mobile UX); used for sort, state picker. | default, invalid | 3 |
+| [Textarea](#textarea) | ui/form | `components/ui/Input.tsx` | Multi-line text field with the same look as Input. | default, invalid | 2 |
 | [Icon](#icon) | ui/icon | `components/ui/Icon.tsx` | Token-sized wrapper for lucide icons. | – | 0 |
 | [SocialIcon](#socialicon) | ui/icon | `components/ui/Icon.tsx` | Inline brand marks (Instagram, Facebook, YouTube, WhatsApp). | instagram, facebook, youtube, whatsapp | 3 |
-| [Card](#card) | ui/layout | `components/ui/Card.tsx` | Surface container with padding/elevation variants; polymorphic `as`. | flat, raised, outline, interactive | 4 |
+| [Card](#card) | ui/layout | `components/ui/Card.tsx` | Surface container with padding/elevation variants; polymorphic `as`. | flat, raised, outline, interactive | 8 |
 | [Separator](#separator) | ui/layout | `components/ui/Misc.tsx` | Horizontal or vertical rule. | horizontal, vertical | 0 |
+| [ChipNav](#chipnav) | ui/navigation | `components/ui/ChipNav.tsx` | Scrolling link chips with optional counts: listing refine chips, budget tiers, admin status filters. | default, active, with count | 3 |
 | [Pagination](#pagination) | ui/navigation | `components/ui/Misc.tsx` | Crawlable page links with prev/next and ellipsis. | – | 1 |
 | [Drawer](#drawer) | ui/overlay | `components/ui/Modal.tsx` | Slide-in panel built on the same dialog frame (cart, filters, mobile menu). | left, right, bottom | 3 |
 | [Modal](#modal) | ui/overlay | `components/ui/Modal.tsx` | Centred Radix dialog (product image zoom, confirmations). | – | 1 |
 | [Heading](#heading) | ui/typography | `components/ui/Heading.tsx` | Heading with semantic level independent from visual size (keeps one H1 and logical H2/H3). | sm, md, lg, xl, display | 1 |
-| [SectionHeader](#sectionheader) | ui/typography | `components/ui/SectionHeader.tsx` | Section title row with eyebrow, subtitle and View all link. | left, center | 6 |
+| [SectionHeader](#sectionheader) | ui/typography | `components/ui/SectionHeader.tsx` | Section title row with eyebrow, subtitle and View all link. | left, center | 7 |
 | [AddToCartButton](#addtocartbutton) | commerce | `components/commerce/AddToCartButton.tsx` | Adds a product to the cart (opens drawer) or Buy Now (goes to checkout); renders Sold out when unavailable. | add, buy, sold-out | 2 |
 | [CartButton](#cartbutton) | commerce | `components/commerce/CartButton.tsx` | Header cart icon with live count; opens CartDrawer. | – | 1 |
 | [CartDrawer](#cartdrawer) | commerce | `components/commerce/CartDrawer.tsx` | Slide-in mini cart mounted once in StoreShell. | – | 1 |
@@ -68,33 +71,45 @@ Total entries: **97**
 | [ProductGrid](#productgrid) | section | `components/sections/ProductGrid.tsx` | Titled product section; grid or mobile carousel (Bestsellers, Flash sale, Related). | grid, carousel | 2 |
 | [SaleBanner](#salebanner) | section | `components/sections/SaleBanner.tsx` | Promo banner with live text over decorative art. | soft, sand, ink | 1 |
 | [ValueProps](#valueprops) | section | `components/sections/InfoSections.tsx` | Five value propositions (range, pricing, shipping, returns, secure prepaid). | – | 2 |
-| [Breadcrumbs](#breadcrumbs) | layout | `components/layout/Breadcrumbs.tsx` | Breadcrumb trail with BreadcrumbList JSON-LD; Home auto-prepended. | – | 11 |
+| [Breadcrumbs](#breadcrumbs) | layout | `components/layout/Breadcrumbs.tsx` | Breadcrumb trail with BreadcrumbList JSON-LD; Home auto-prepended. | – | 14 |
 | [BudgetMenu](#budgetmenu) | layout | `components/layout/MegaMenu.tsx` | 'Shop by Budget' dropdown of five price tiers. | – | 1 |
 | [Container](#container) | layout | `components/layout/Container.tsx` | Centred page-width wrapper with standard gutters. | default, narrow, prose, full | 18 |
 | [Footer](#footer) | layout | `components/layout/Footer.tsx` | Footer: care hours/phone/email, shop, help, policies, socials, business name. | – | 1 |
 | [Header](#header) | layout | `components/layout/Header.tsx` | Sticky header: logo, search, account, cart, desktop nav row. | – | 1 |
-| [Logo](#logo) | layout | `components/layout/Logo.tsx` | City Seller wordmark link to home. | default, inverse | 2 |
+| [Logo](#logo) | layout | `components/layout/Logo.tsx` | City Seller wordmark link to home. | default, inverse | 4 |
 | [MegaMenu](#megamenu) | layout | `components/layout/MegaMenu.tsx` | Data-driven 'Shop by Category' mega-menu (category → subcategory links with thumbnails). | – | 1 |
 | [MobileNav](#mobilenav) | layout | `components/layout/MobileNav.tsx` | Hamburger + left drawer with category accordion, budget tiers, links and socials. | – | 1 |
 | [NavDropdown](#navdropdown) | layout | `components/layout/NavDropdown.tsx` | Disclosure dropdown used by MegaMenu and BudgetMenu (hover + click + Escape). | mega, menu | 1 |
 | [Section](#section) | layout | `components/layout/Container.tsx` | Full-bleed band with background token and vertical rhythm. | background, surface, secondary, soft, ink | 7 |
 | [StoreShell](#storeshell) | layout | `components/layout/StoreShell.tsx` | Storefront chrome (skip link, TopBar, Header, Footer, CartDrawer, Organization + WebSite JSON-LD). | – | 2 |
 | [TopBar](#topbar) | layout | `components/layout/TopBar.tsx` | Promo strip with socials, Track order and Login. | – | 1 |
+| [AdminShell](#adminshell) | admin | `components/admin/AdminShell.tsx` | Admin layout: sidebar (desktop) / scrolling nav (mobile), pending-orders badge, sign-out, dev-mode banner. | – | 1 |
+| [CopyField](#copyfield) | admin | `components/admin/AdminBits.tsx` | Label + value + copy button for pasting customer details into Meesho. | – | 1 |
+| [ImageManager](#imagemanager) | admin | `components/admin/ImageManager.tsx` | Product photo list: upload to Supabase Storage or add by path, alt text, reorder, remove. | – | 1 |
+| [LoginForm](#loginform) | admin | `components/admin/LoginForm.tsx` | Email + password sign-in for partners in public.admins. | – | 1 |
+| [MarginText](#margintext) | admin | `components/admin/AdminBits.tsx` | Margin in ₹ and % (green ≥ 25%, amber below, red if negative). | – | 4 |
+| [OrderActions](#orderactions) | admin | `components/admin/OrderActions.tsx` | Order fulfilment form: Meesho order ID/cost, tracking link, note, refund toggle, one button per allowed status, WhatsApp link. | – | 1 |
+| [OrderStatusBadge](#orderstatusbadge) | admin | `components/admin/AdminBits.tsx` | Admin status pill using internal labels; needs-action states in warning tone. | pending_payment, paid, placed_on_meesho, shipped, delivered, cancelled_refunded, return_requested, returned_refunded | 3 |
+| [OrderTimeline](#ordertimeline) | admin | `components/admin/AdminBits.tsx` | Newest-first order event history with time and note. | – | 1 |
+| [ProductForm](#productform) | admin | `components/admin/ProductForm.tsx` | Create/edit product: basics, pricing with live margin and discount, Meesho link/price + checked flag, photos, content, visibility, SEO. | – | 2 |
+| [StatCard](#statcard) | admin | `components/admin/AdminBits.tsx` | Dashboard KPI card. | default, warning, success | 1 |
 | [cartTotals](#carttotals) | hook | `hooks/useCart.ts` | Derives count, subtotal, MRP total, savings, shipping and total from cart lines. | – | 4 |
 | [useCart](#usecart) | hook | `hooks/useCart.ts` | Zustand cart store persisted to localStorage (items, drawer state, add/setQuantity/remove/clear). | – | 6 |
 | [useHydrated](#usehydrated) | hook | `hooks/useHydrated.ts` | True after client hydration (guards localStorage-backed UI). | – | 4 |
 | [useRazorpay](#userazorpay) | hook | `hooks/useRazorpay.ts` | Loads Razorpay Checkout.js on demand and opens it; resolves with the signed success payload or rejects (PaymentDismissedError on close). | – | 1 |
-| [buildCategoryTree](#buildcategorytree) | util | `components/layout/MegaMenu.tsx` | Turns flat categories into a top-level tree with children. | – | 2 |
-| [calcDiscount](#calcdiscount) | util | `lib/utils/format.ts` | Whole-number discount % from MRP and price. | – | 2 |
-| [cn](#cn) | util | `lib/utils/cn.ts` | clsx + tailwind-merge configured for token class names. | – | 33 |
+| [buildCategoryTree](#buildcategorytree) | util | `components/layout/MegaMenu.tsx` | Turns flat categories into a top-level tree with children. | – | 3 |
+| [calcDiscount](#calcdiscount) | util | `lib/utils/format.ts` | Whole-number discount % from MRP and price. | – | 3 |
+| [calcMargin](#calcmargin) | util | `lib/utils/format.ts` | Margin amount and % of price between selling price and supplier cost. | – | 2 |
+| [cn](#cn) | util | `lib/utils/cn.ts` | clsx + tailwind-merge configured for token class names. | – | 38 |
+| [daysSince](#dayssince) | util | `lib/utils/format.ts` | Whole days since an ISO date (stale Meesho price checks). | – | 3 |
 | [estimateDelivery](#estimatedelivery) | util | `lib/utils/delivery.ts` | PIN-zone delivery window (dates + region); SHIPPING constant in the same file. | – | 2 |
-| [formatDate](#formatdate) | util | `lib/utils/format.ts` | ISO date → '12 Nov 2026' (en-IN). | – | 5 |
-| [formatINR](#formatinr) | util | `lib/utils/format.ts` | Formats rupees with Indian grouping: 1299 → ₹1,299. | – | 11 |
+| [formatDate](#formatdate) | util | `lib/utils/format.ts` | ISO date → '12 Nov 2026' (en-IN). | – | 9 |
+| [formatINR](#formatinr) | util | `lib/utils/format.ts` | Formats rupees with Indian grouping: 1299 → ₹1,299. | – | 18 |
 | [getBudgetTier](#getbudgettier) | util | `lib/utils/budget.ts` | Looks up a BUDGET_TIERS entry by slug (BUDGET_TIERS constant lives in the same file). | – | 1 |
 | [inBudget](#inbudget) | util | `lib/utils/budget.ts` | Whether a price falls inside a budget tier. | – | 0 |
-| [paths](#paths) | util | `lib/utils/paths.ts` | Canonical URL builders (the only place URL shapes are defined). | – | 34 |
+| [paths](#paths) | util | `lib/utils/paths.ts` | Canonical URL builders (the only place URL shapes are defined). | – | 35 |
 | [shippingFor](#shippingfor) | util | `lib/utils/delivery.ts` | Delivery fee for a subtotal (free above threshold). | – | 2 |
-| [slugify](#slugify) | util | `lib/utils/format.ts` | Text → URL slug. | – | 3 |
+| [slugify](#slugify) | util | `lib/utils/format.ts` | Text → URL slug. | – | 5 |
 | [toCardProduct](#tocardproduct) | util | `lib/utils/product.ts` | Product → serializable CardProduct for client components. | – | 9 |
 | [tokenStyle](#tokenstyle) | util | `lib/utils/token-style.ts` | Maps token names to inline CSS-variable styles for width/height/colour props. | – | 2 |
 | [validators](#validators) | util | `lib/utils/validators.ts` | Zod schemas: pincodeSchema, phoneSchema, addressSchema, checkoutSchema, trackOrderSchema, INDIAN_STATES. | – | 0 |
@@ -139,10 +154,31 @@ Primary action button used for Add to Cart, Buy Now, forms and links styled as b
 
 **Accessibility:** Focus ring (shadow-focus); aria-busy while loading; md/lg/icon sizes meet 44px touch target; primary colour reserved for buy actions.
 
-**Used in:** AddToCartButton, CartDrawer, CartView, CategoryListing, CheckoutForm, HeroBanner, MobileNav, NotFoundContent, PincodeChecker, SaleBanner, TrackOrderForm, app:/account, app:/order/[id], sections/InfoSections
+**Used in:** AddToCartButton, CartDrawer, CartView, CategoryListing, CheckoutForm, HeroBanner, ImageManager, LoginForm, MobileNav, NotFoundContent, OrderActions, PincodeChecker, ProductForm, SaleBanner, TrackOrderForm, app:/account, app:/admin, app:/admin/orders/[id], app:/admin/products, app:/order/[id], sections/InfoSections
 
 ```tsx
 <Button variant="primary" size="lg" icon={<ShoppingBag/>}>Add to Cart</Button>
+```
+
+## CopyButton
+
+`src/components/ui/CopyButton.tsx` · ui/action · updated 2026-11-12
+
+Copies a value to the clipboard with a brief Copied state.
+
+**Props**
+
+- `value`: string
+- `label`: string (what is copied)
+
+**Tokens:** `color.background` `color.borderStrong` `color.success` `color.surface` `color.text` `font.size.sm` `radius.md` `shadow.focus` `space.1` `space.2` `space.4` `space.9`
+
+**Accessibility:** aria-label names the value; state change announced via aria-live.
+
+**Used in:** admin/AdminBits
+
+```tsx
+<CopyButton value={phone} label="Phone" />
 ```
 
 ## Accordion
@@ -209,10 +245,34 @@ Small status label: discount %, Sold out, Bestseller.
 
 **Accessibility:** Text content conveys meaning; all variants pass AA contrast.
 
-**Used in:** ProductCard, app:/[category]/[sub]/[product]
+**Used in:** ProductCard, admin/AdminBits, app:/[category]/[sub]/[product], app:/admin/products
 
 ```tsx
 <Badge variant="sale">50% off</Badge>
+```
+
+## DataTable
+
+`src/components/ui/DataTable.tsx` · ui/display · updated 2026-11-12
+
+Generic accessible data table (admin orders/products) with per-column alignment and mobile-hidden columns.
+
+**Props**
+
+- `columns`: {header, cell(row), align?, hideOnMobile?}[]
+- `rows`: T[]
+- `rowKey`: (row)=>string
+- `caption`: string (sr-only)
+- `empty`: ReactNode
+
+**Tokens:** `color.background` `color.border` `color.surface` `color.textMuted` `font.size.base` `font.size.sm` `font.weight.semibold` `radius.lg` `space.10` `space.3` `space.4`
+
+**Accessibility:** Real table with caption and th scope=col; scrolls horizontally on small screens.
+
+**Used in:** app:/admin, app:/admin/orders, app:/admin/products
+
+```tsx
+<DataTable caption="Orders" rows={orders} rowKey={(o)=>o.id} columns={[…]} />
 ```
 
 ## Table
@@ -312,7 +372,7 @@ Radix checkbox with label row; used in filter facets.
 
 **Accessibility:** Whole row is the label (44px min height); visible focus ring; Space toggles.
 
-**Used in:** CategoryListing
+**Used in:** CategoryListing, OrderActions, ProductForm
 
 ```tsx
 <Checkbox id="m-steel" label="Steel" checked={on} onCheckedChange={setOn} />
@@ -338,7 +398,7 @@ Label + control + hint/error wrapper for all form controls.
 
 **Accessibility:** Visible label bound with htmlFor; error rendered with role=alert at `${id}-desc` for aria-describedby.
 
-**Used in:** CheckoutForm, TrackOrderForm
+**Used in:** CheckoutForm, LoginForm, OrderActions, ProductForm, TrackOrderForm
 
 ```tsx
 <FormField id="phone" label="Mobile" error={err}><Input id="phone" /></FormField>
@@ -366,7 +426,7 @@ Text input sharing fieldVariants with Textarea and Select; optional leading icon
 
 **Accessibility:** aria-invalid when invalid; pair with FormField for label and described-by error.
 
-**Used in:** CheckoutForm, PincodeChecker, SearchBox, TrackOrderForm
+**Used in:** CheckoutForm, ImageManager, LoginForm, OrderActions, PincodeChecker, ProductForm, SearchBox, TrackOrderForm, app:/admin/products
 
 ```tsx
 <Input id="pin" inputMode="numeric" invalid={!!error} />
@@ -445,7 +505,7 @@ Native select styled with field tokens (best mobile UX); used for sort, state pi
 
 **Accessibility:** Native semantics and keyboard; label via FormField or sr-only label.
 
-**Used in:** CategoryListing, CheckoutForm
+**Used in:** CategoryListing, CheckoutForm, ProductForm
 
 ```tsx
 <Select id="sort" options={SORT_OPTIONS} value={sort} onChange={…} />
@@ -468,6 +528,8 @@ Multi-line text field with the same look as Input.
 **Tokens:** `color.background` `color.borderStrong` `color.error` `color.primary` `color.surface` `color.text` `color.textMuted` `duration.fast` `font.family.body` `font.size.base` `font.size.lg` `font.size.sm` `radius.md` `shadow.focus` `space.1` `space.10` `space.11` `space.12` `space.3` `space.4` `space.9`
 
 **Accessibility:** aria-invalid; use inside FormField.
+
+**Used in:** OrderActions, ProductForm
 
 ```tsx
 <Textarea id="msg" rows={4} />
@@ -540,7 +602,7 @@ Surface container with padding/elevation variants; polymorphic `as`.
 
 **Accessibility:** Use as="fieldset"/"section" when grouping semantics are needed.
 
-**Used in:** CartView, CheckoutForm, TrackOrderForm, app:/order/[id]
+**Used in:** CartView, CheckoutForm, ProductForm, TrackOrderForm, admin/AdminBits, app:/admin/login, app:/admin/orders/[id], app:/order/[id]
 
 ```tsx
 <Card padding="md" elevation="raised">…</Card>
@@ -564,6 +626,29 @@ Horizontal or vertical rule.
 
 ```tsx
 <Separator />
+```
+
+## ChipNav
+
+`src/components/ui/ChipNav.tsx` · ui/navigation · updated 2026-11-12
+
+Scrolling link chips with optional counts: listing refine chips, budget tiers, admin status filters.
+
+**Props**
+
+- `chips`: {label, href, active?, count?}[]
+- `label`: string (nav aria-label)
+
+**Variants:** default, active, with count
+
+**Tokens:** `color.borderStrong` `color.ink` `color.secondary` `color.surface` `color.text` `color.textInverse` `font.size.sm` `font.size.xs` `font.weight.medium` `radius.full` `shadow.focus` `space.11` `space.2` `space.4`
+
+**Accessibility:** nav landmark; aria-current on the active chip; 44px targets.
+
+**Used in:** ListingTemplate, app:/admin/orders, app:/admin/products
+
+```tsx
+<ChipNav label="Refine" chips={[{label:"All",href:"/kitchen",active:true}]} />
 ```
 
 ## Pagination
@@ -690,7 +775,7 @@ Section title row with eyebrow, subtitle and View all link.
 
 **Accessibility:** View all link includes sr-only section name for unique link text.
 
-**Used in:** CategoryTiles, GuideCards, ProductGrid, app:/, app:/[category]/[sub]/[product], sections/InfoSections
+**Used in:** CategoryTiles, GuideCards, ProductGrid, app:/, app:/[category]/[sub]/[product], app:/admin, sections/InfoSections
 
 ```tsx
 <SectionHeader title="Bestsellers" viewAllHref="/bestsellers" />
@@ -1351,7 +1436,7 @@ Shared listing body: breadcrumbs, AnswerIntro, chips, CategoryListing (static fa
 - `hideBudget`: boolean
 - `emptyMessage`: string
 
-**Tokens:** `color.borderStrong` `color.ink` `color.secondary` `color.surface` `color.text` `color.textInverse` `font.size.sm` `font.weight.medium` `radius.full` `space.11` `space.2` `space.3` `space.4` `space.6`
+**Tokens:** `space.3` `space.6`
 
 **Accessibility:** Single H1; chips nav labelled Refine.
 
@@ -1474,7 +1559,7 @@ Breadcrumb trail with BreadcrumbList JSON-LD; Home auto-prepended.
 
 **Accessibility:** nav aria-label=Breadcrumb, aria-current=page.
 
-**Used in:** ContentPage, ListingTemplate, app:/[category]/[sub]/[product], app:/account, app:/cart, app:/checkout, app:/contact, app:/faq, app:/guides, app:/guides/[slug], app:/track-order
+**Used in:** ContentPage, ListingTemplate, app:/[category]/[sub]/[product], app:/account, app:/admin/orders/[id], app:/admin/products/[id], app:/admin/products/new, app:/cart, app:/checkout, app:/contact, app:/faq, app:/guides, app:/guides/[slug], app:/track-order
 
 ```tsx
 <Breadcrumbs items={[{label:"Kitchen",href:"/kitchen"},{label:"Jars"}]} />
@@ -1575,7 +1660,7 @@ City Seller wordmark link to home.
 
 **Accessibility:** Link aria-label 'City Seller home'.
 
-**Used in:** Footer, Header
+**Used in:** AdminShell, Footer, Header, app:/admin/login
 
 ```tsx
 <Logo />
@@ -1707,6 +1792,231 @@ Promo strip with socials, Track order and Login.
 <TopBar />
 ```
 
+## AdminShell
+
+`src/components/admin/AdminShell.tsx` · admin · updated 2026-11-12
+
+Admin layout: sidebar (desktop) / scrolling nav (mobile), pending-orders badge, sign-out, dev-mode banner.
+
+**Props**
+
+- `email`: string
+- `devMode`: boolean
+- `pendingCount`: number
+- `signOut`: server action
+- `children`: ReactNode
+
+**Tokens:** `color.background` `color.border` `color.ink` `color.primary` `color.secondary` `color.surface` `color.text` `color.textInverse` `color.textMuted` `color.warning` `color.warningSoft` `font.size.base` `font.size.sm` `font.size.xs` `font.tracking.wide` `font.weight.bold` `font.weight.medium` `font.weight.semibold` `maxWidth.container` `radius.full` `radius.md` `radius.sm` `shadow.focus` `space.0` `space.0.5` `space.1` `space.11` `space.2` `space.3` `space.4` `space.5` `space.6` `space.8`
+
+**Accessibility:** nav aria-label=Admin, aria-current on active link, main landmark.
+
+**Used in:** app:/admin (layout)
+
+```tsx
+<AdminShell email={admin.email} pendingCount={counts.paid}>…</AdminShell>
+```
+
+## CopyField
+
+`src/components/admin/AdminBits.tsx` · admin · updated 2026-11-12
+
+Label + value + copy button for pasting customer details into Meesho.
+
+**Props**
+
+- `label`: string
+- `value`: string
+- `multiline`: boolean
+
+**Tokens:** `color.border` `color.error` `color.ink` `color.success` `color.text` `color.textMuted` `color.warning` `font.family.heading` `font.size.3xl` `font.size.sm` `font.tracking.normal` `font.weight.medium` `font.weight.regular` `font.weight.semibold` `radius.full` `space.0` `space.1` `space.2` `space.3`
+
+**Used in:** app:/admin/orders/[id]
+
+```tsx
+<CopyField label="Phone" value={a.phone} />
+```
+
+## ImageManager
+
+`src/components/admin/ImageManager.tsx` · admin · updated 2026-11-12
+
+Product photo list: upload to Supabase Storage or add by path, alt text, reorder, remove.
+
+**Props**
+
+- `images`: {src,alt}[]
+- `onChange`: (images)=>void
+- `upload`: server action (FormData) => {src?, error?}
+- `slug`: string
+- `defaultAlt`: string
+- `error`: string
+
+**Tokens:** `color.background` `color.border` `color.borderStrong` `color.error` `color.surface` `color.text` `color.textMuted` `font.size.sm` `radius.md` `shadow.focus` `space.0` `space.1` `space.16` `space.2` `space.3` `space.4` `space.9`
+
+**Accessibility:** Alt text required per image; labelled reorder/remove buttons.
+
+**Used in:** ProductForm
+
+```tsx
+<ImageManager images={imgs} onChange={setImgs} upload={uploadImageAction} slug={slug} defaultAlt={title} />
+```
+
+## LoginForm
+
+`src/components/admin/LoginForm.tsx` · admin · updated 2026-11-12
+
+Email + password sign-in for partners in public.admins.
+
+**Props**
+
+- `action`: server action (prev, FormData) => ActionState
+
+**Tokens:** `color.error` `color.errorSoft` `font.size.sm` `radius.md` `space.3` `space.4`
+
+**Accessibility:** Labelled fields, autocomplete tokens, alert on error.
+
+**Used in:** app:/admin/login
+
+```tsx
+<LoginForm action={signInAction} />
+```
+
+## MarginText
+
+`src/components/admin/AdminBits.tsx` · admin · updated 2026-11-12
+
+Margin in ₹ and % (green ≥ 25%, amber below, red if negative).
+
+**Props**
+
+- `price`: number
+- `cost`: number
+- `quantity`: number
+
+**Tokens:** `color.border` `color.error` `color.ink` `color.success` `color.text` `color.textMuted` `color.warning` `font.family.heading` `font.size.3xl` `font.size.sm` `font.tracking.normal` `font.weight.medium` `font.weight.regular` `font.weight.semibold` `radius.full` `space.0` `space.1` `space.2` `space.3`
+
+**Accessibility:** Value is text; colour is supplementary.
+
+**Used in:** app:/admin, app:/admin/orders, app:/admin/orders/[id], app:/admin/products
+
+```tsx
+<MarginText price={449} cost={260} />
+```
+
+## OrderActions
+
+`src/components/admin/OrderActions.tsx` · admin · updated 2026-11-12
+
+Order fulfilment form: Meesho order ID/cost, tracking link, note, refund toggle, one button per allowed status, WhatsApp link.
+
+**Props**
+
+- `orderId`: string
+- `next`: OrderStatus[]
+- `defaults`: {meeshoOrderId?, meeshoCost?, trackingUrl?}
+- `canRefund`: boolean
+- `whatsappHref`: string
+- `action`: server action
+
+**Tokens:** `color.error` `color.errorSoft` `color.success` `color.successSoft` `color.textMuted` `font.size.sm` `radius.md` `space.2` `space.3` `space.4`
+
+**Accessibility:** Inline field errors; destructive actions confirm first; result announced.
+
+**Used in:** app:/admin/orders/[id]
+
+```tsx
+<OrderActions orderId={o.id} next={adminTransitions(o.status)} … />
+```
+
+## OrderStatusBadge
+
+`src/components/admin/AdminBits.tsx` · admin · updated 2026-11-12
+
+Admin status pill using internal labels; needs-action states in warning tone.
+
+**Props**
+
+- `status`: OrderStatus
+
+**Variants:** pending_payment, paid, placed_on_meesho, shipped, delivered, cancelled_refunded, return_requested, returned_refunded
+
+**Tokens:** `color.border` `color.error` `color.ink` `color.success` `color.text` `color.textMuted` `color.warning` `font.family.heading` `font.size.3xl` `font.size.sm` `font.tracking.normal` `font.weight.medium` `font.weight.regular` `font.weight.semibold` `radius.full` `space.0` `space.1` `space.2` `space.3`
+
+**Accessibility:** Text label (colour is not the only signal).
+
+**Used in:** app:/admin, app:/admin/orders, app:/admin/orders/[id]
+
+```tsx
+<OrderStatusBadge status="paid" />
+```
+
+## OrderTimeline
+
+`src/components/admin/AdminBits.tsx` · admin · updated 2026-11-12
+
+Newest-first order event history with time and note.
+
+**Props**
+
+- `events`: OrderEvent[]
+
+**Tokens:** `color.border` `color.error` `color.ink` `color.success` `color.text` `color.textMuted` `color.warning` `font.family.heading` `font.size.3xl` `font.size.sm` `font.tracking.normal` `font.weight.medium` `font.weight.regular` `font.weight.semibold` `radius.full` `space.0` `space.1` `space.2` `space.3`
+
+**Accessibility:** Ordered list with time elements.
+
+**Used in:** app:/admin/orders/[id]
+
+```tsx
+<OrderTimeline events={order.events} />
+```
+
+## ProductForm
+
+`src/components/admin/ProductForm.tsx` · admin · updated 2026-11-12
+
+Create/edit product: basics, pricing with live margin and discount, Meesho link/price + checked flag, photos, content, visibility, SEO.
+
+**Props**
+
+- `values`: ProductFormValues
+- `categories`: CategoryOption[]
+- `action`: server action
+- `upload`: server action
+- `notice`: string
+
+**Tokens:** `color.background` `color.border` `color.error` `color.errorSoft` `color.success` `color.successSoft` `color.surface` `color.textMuted` `color.warning` `font.family.heading` `font.size.sm` `font.size.xl` `font.weight.semibold` `radius.lg` `radius.md` `space.0` `space.3` `space.4` `space.6` `zIndex.sticky`
+
+**Accessibility:** Fieldsets with legends, inline errors, live margin region, sticky save bar.
+
+**Used in:** app:/admin/products/[id], app:/admin/products/new
+
+```tsx
+<ProductForm values={toFormValues(p)} categories={cats} action={saveProductAction} upload={uploadImageAction} />
+```
+
+## StatCard
+
+`src/components/admin/AdminBits.tsx` · admin · updated 2026-11-12
+
+Dashboard KPI card.
+
+**Props**
+
+- `label`: string
+- `value`: ReactNode
+- `hint`: ReactNode
+- `tone`: default|warning|success
+
+**Variants:** default, warning, success
+
+**Tokens:** `color.border` `color.error` `color.ink` `color.success` `color.text` `color.textMuted` `color.warning` `font.family.heading` `font.size.3xl` `font.size.sm` `font.tracking.normal` `font.weight.medium` `font.weight.regular` `font.weight.semibold` `radius.full` `space.0` `space.1` `space.2` `space.3`
+
+**Used in:** app:/admin
+
+```tsx
+<StatCard label="To place" value={3} tone="warning" />
+```
+
 ## cartTotals
 
 `src/hooks/useCart.ts` · hook · updated 2026-11-12
@@ -1785,7 +2095,7 @@ Turns flat categories into a top-level tree with children.
 
 **Tokens:** `color.background` `color.primary` `color.text` `color.textMuted` `font.family.heading` `font.size.base` `font.size.lg` `font.size.sm` `font.weight.semibold` `radius.md` `space.1` `space.11` `space.2` `space.3` `space.8` `space.9`
 
-**Used in:** StoreShell, app:/
+**Used in:** StoreShell, app:/, lib/admin/product-values
 
 ```tsx
 buildCategoryTree(await repo.listCategories())
@@ -1802,10 +2112,27 @@ Whole-number discount % from MRP and price.
 - `mrp`: number
 - `price`: number
 
-**Used in:** PriceBlock, ProductCard
+**Used in:** PriceBlock, ProductCard, ProductForm
 
 ```tsx
 calcDiscount(899, 449) // 50
+```
+
+## calcMargin
+
+`src/lib/utils/format.ts` · util · updated 2026-11-12
+
+Margin amount and % of price between selling price and supplier cost.
+
+**Props**
+
+- `price`: number
+- `cost`: number
+
+**Used in:** ProductForm, admin/AdminBits
+
+```tsx
+calcMargin(449, 260) // { amount: 189, percent: 42 }
 ```
 
 ## cn
@@ -1818,10 +2145,27 @@ clsx + tailwind-merge configured for token class names.
 
 - `inputs`: ClassValue[]
 
-**Used in:** Badge, Breadcrumbs, Button, Card, CartLineItem, CategoryListing, CategoryTiles, FormField, Heading, HeroBanner, Logo, NavDropdown, PrepaidNotice, PriceBlock, ProductCard, ProductGallery, ProductGrid, RatingStars, SaleBanner, SearchBox, SectionHeader, TrackOrderForm, commerce/OrderSummary, commerce/ProductBuyBox, layout/Container, sections/InfoSections, ui/Checkbox, ui/Disclosure, ui/Icon, ui/Input, ui/Misc, ui/Modal, ui/Toast
+**Used in:** AdminShell, Badge, Breadcrumbs, Button, Card, CartLineItem, CategoryListing, CategoryTiles, ChipNav, CopyButton, DataTable, FormField, Heading, HeroBanner, Logo, NavDropdown, PrepaidNotice, PriceBlock, ProductCard, ProductGallery, ProductGrid, RatingStars, SaleBanner, SearchBox, SectionHeader, TrackOrderForm, admin/AdminBits, commerce/OrderSummary, commerce/ProductBuyBox, layout/Container, sections/InfoSections, ui/Checkbox, ui/Disclosure, ui/Icon, ui/Input, ui/Misc, ui/Modal, ui/Toast
 
 ```tsx
 cn("p-4", active && "bg-ink")
+```
+
+## daysSince
+
+`src/lib/utils/format.ts` · util · updated 2026-11-12
+
+Whole days since an ISO date (stale Meesho price checks).
+
+**Props**
+
+- `iso`: string
+- `now`: Date
+
+**Used in:** ProductForm, app:/admin, app:/admin/products
+
+```tsx
+daysSince(p.priceCheckedAt) > 7
 ```
 
 ## estimateDelivery
@@ -1851,7 +2195,7 @@ ISO date → '12 Nov 2026' (en-IN).
 
 - `iso`: string|Date
 
-**Used in:** ContentPage, GuideCards, ReviewList, TrackOrderForm, app:/guides/[slug]
+**Used in:** ContentPage, GuideCards, ReviewList, TrackOrderForm, admin/AdminBits, app:/admin, app:/admin/orders, app:/admin/orders/[id], app:/guides/[slug]
 
 ```tsx
 formatDate(order.createdAt)
@@ -1867,7 +2211,7 @@ Formats rupees with Indian grouping: 1299 → ₹1,299.
 
 - `amount`: number
 
-**Used in:** CartLineItem, CheckoutForm, PincodeChecker, PriceBlock, TrackOrderForm, app:/[category]/[sub]/[product], app:/order/[id], commerce/OrderSummary, commerce/ProductBuyBox, lib/orders/service, sections/InfoSections
+**Used in:** CartLineItem, CheckoutForm, PincodeChecker, PriceBlock, ProductForm, TrackOrderForm, admin/AdminBits, app:/[category]/[sub]/[product], app:/admin, app:/admin/orders, app:/admin/orders/[id], app:/admin/products, app:/order/[id], commerce/OrderSummary, commerce/ProductBuyBox, lib/admin/whatsapp, lib/orders/service, sections/InfoSections
 
 ```tsx
 formatINR(1299)
@@ -1917,7 +2261,7 @@ Canonical URL builders (the only place URL shapes are defined).
 - `budget(slug)`: string
 - `…`: see file
 
-**Used in:** AddToCartButton, CartDrawer, CartView, CheckoutForm, Footer, GuideCards, Header, MobileNav, NotFoundContent, TopBar, app:/, app:/[category], app:/[category]/[sub], app:/[category]/[sub]/[product], app:/about, app:/account, app:/bestsellers, app:/budget/[tier], app:/cart, app:/checkout, app:/contact, app:/faq, app:/flash-sale, app:/guides, app:/guides/[slug], app:/order/[id], app:/policies/[slug], app:/search, app:/track-order, layout/MegaMenu, lib/data/seed-repo, lib/seo/jsonld, sections/InfoSections, toCardProduct
+**Used in:** AddToCartButton, CartDrawer, CartView, CheckoutForm, Footer, GuideCards, Header, MobileNav, NotFoundContent, TopBar, app:/, app:/[category], app:/[category]/[sub], app:/[category]/[sub]/[product], app:/about, app:/account, app:/bestsellers, app:/budget/[tier], app:/cart, app:/checkout, app:/contact, app:/faq, app:/flash-sale, app:/guides, app:/guides/[slug], app:/order/[id], app:/policies/[slug], app:/search, app:/track-order, layout/MegaMenu, lib/admin/product-values, lib/data/seed-repo, lib/seo/jsonld, sections/InfoSections, toCardProduct
 
 ```tsx
 paths.product(p)
@@ -1949,7 +2293,7 @@ Text → URL slug.
 
 - `input`: string
 
-**Used in:** CategoryTiles, ProductGrid, sections/InfoSections
+**Used in:** CategoryTiles, ProductForm, ProductGrid, lib/admin/forms, sections/InfoSections
 
 ```tsx
 slugify("Airtight Jar Set (6 pc)")

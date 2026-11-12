@@ -11,6 +11,17 @@ export function calcDiscount(mrp: number, price: number): number {
   return Math.round(((mrp - price) / mrp) * 100);
 }
 
+/** Margin per unit between selling price and supplier cost: amount in ₹ and % of price. */
+export function calcMargin(price: number, cost: number): { amount: number; percent: number } {
+  const amount = price - cost;
+  return { amount, percent: price > 0 ? Math.round((amount / price) * 100) : 0 };
+}
+
+/** Whole days since an ISO date (for "price checked 9 days ago"). */
+export function daysSince(iso: string, now = new Date()): number {
+  return Math.floor((now.getTime() - new Date(iso).getTime()) / 86_400_000);
+}
+
 /** ISO date → "12 Nov 2026". */
 export function formatDate(iso: string | Date): string {
   return new Date(iso).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" });

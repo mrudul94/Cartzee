@@ -31,5 +31,30 @@ export const STATUS_LABEL: Record<OrderStatus, string> = {
   returned_refunded: "Returned and refunded",
 };
 
+/** Internal labels for the admin queue (what the team needs to do next). */
+export const ADMIN_STATUS_LABEL: Record<OrderStatus, string> = {
+  pending_payment: "Awaiting payment",
+  paid: "Paid: place on Meesho",
+  placed_on_meesho: "Placed on Meesho",
+  shipped: "Shipped",
+  delivered: "Delivered",
+  cancelled_refunded: "Cancelled & refunded",
+  return_requested: "Return requested",
+  returned_refunded: "Returned & refunded",
+};
+
+/** Admin button text for moving an order INTO each status. `paid` is only set by payment confirmation. */
+export const ACTION_LABEL: Partial<Record<OrderStatus, string>> = {
+  placed_on_meesho: "Mark placed on Meesho",
+  shipped: "Mark shipped",
+  delivered: "Mark delivered",
+  cancelled_refunded: "Cancel order",
+  return_requested: "Log return request",
+  returned_refunded: "Return received: refund",
+};
+
+/** Transitions an admin may trigger from the panel (everything except payment confirmation). */
+export const adminTransitions = (from: OrderStatus): OrderStatus[] => TRANSITIONS[from].filter((s) => s !== "paid");
+
 /** Happy-path steps shown as a progress timeline on the tracking page. */
 export const TRACKING_STEPS: OrderStatus[] = ["paid", "placed_on_meesho", "shipped", "delivered"];

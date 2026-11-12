@@ -9,6 +9,8 @@ const nextConfig: NextConfig = {
     remotePatterns: [{ protocol: "https", hostname: "*.supabase.co" }],
   },
   poweredByHeader: false,
+  // Admin image uploads (max 5 MB, validated in admin-repo) go through a server action.
+  experimental: { serverActions: { bodySizeLimit: "6mb" } },
 };
 
 export default nextConfig;

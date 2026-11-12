@@ -56,6 +56,18 @@ import { seedProducts } from "@/lib/seed/products";
 import { seedReviews } from "@/lib/seed/reviews";
 import { toCardProduct } from "@/lib/utils/product";
 import { QuantityStepperDemo, ToastDemo } from "./ClientDemos";
+import { demoFormAction, demoUploadAction } from "./demo-actions";
+import { AdminShell } from "@/components/admin/AdminShell";
+import { CopyField, MarginText, OrderStatusBadge, OrderTimeline, StatCard } from "@/components/admin/AdminBits";
+import { ImageManagerDemo } from "./ClientDemos";
+import { LoginForm } from "@/components/admin/LoginForm";
+import { OrderActions } from "@/components/admin/OrderActions";
+import { ProductForm } from "@/components/admin/ProductForm";
+import { ChipNav } from "@/components/ui/ChipNav";
+import { CopyButton } from "@/components/ui/CopyButton";
+import { DataTable } from "@/components/ui/DataTable";
+import { ORDER_STATUSES } from "@/lib/types";
+import { formatINR } from "@/lib/utils/format";
 
 const tree = buildCategoryTree(seedCategories);
 const products = seedProducts.map(toCardProduct);
@@ -314,6 +326,72 @@ export const demos: Record<string, ReactNode> = {
   MobileNav: <MobileNav tree={tree} />,
   Header: <div className="relative"><Header tree={tree} /></div>,
   Footer: <Footer tree={tree} />,
+  DataTable: (
+    <DataTable
+      caption="Demo table"
+      rows={seedProducts.slice(0, 3)}
+      rowKey={(p) => p.id}
+      columns={[
+        { header: "Product", cell: (p) => p.title },
+        { header: "Price", cell: (p) => formatINR(p.price), align: "right" },
+        { header: "Stock", cell: (p) => p.stock, align: "right", hideOnMobile: true },
+      ]}
+    />
+  ),
+  CopyButton: <CopyButton value="9876543210" label="Phone" />,
+  ChipNav: <ChipNav label="Demo chips" chips={[{ label: "All", href: "#all", active: true, count: 20 }, { label: "Paid", href: "#paid", count: 3 }, { label: "Shipped", href: "#shipped" }]} />,
+
+  /* ---------------- admin */
+  AdminShell: (
+    <div className="overflow-hidden rounded-lg border border-border">
+      <AdminShell email="partner@example.com" pendingCount={3} devMode>
+        <p>Admin page content</p>
+      </AdminShell>
+    </div>
+  ),
+  LoginForm: <div className="max-w-narrow"><LoginForm action={demoFormAction} /></div>,
+  OrderActions: (
+    <OrderActions orderId="demo" next={["placed_on_meesho", "cancelled_refunded"]} defaults={{}} canRefund whatsappHref="https://wa.me/919876543210" action={demoFormAction} />
+  ),
+  ImageManager: <ImageManagerDemo images={seedProducts[0]!.images.slice(0, 2)} />,
+  ProductForm: (
+    <ProductForm
+      values={{ ...seedProducts[0]!, meeshoUrl: seedProducts[0]!.meeshoUrl ?? "", meeshoPrice: seedProducts[0]!.meeshoPrice ?? 0, isActive: true, id: undefined }}
+      categories={tree.map((c) => ({ slug: c.slug, name: c.name, children: c.children.map((x) => ({ slug: x.slug, name: x.name })) }))}
+      action={demoFormAction}
+      upload={demoUploadAction}
+    />
+  ),
+  OrderStatusBadge: <div className={row}>{ORDER_STATUSES.map((st) => <OrderStatusBadge key={st} status={st} />)}</div>,
+  StatCard: (
+    <div className="grid gap-4 md:grid-cols-3">
+      <StatCard label="To place on Meesho" value={3} tone="warning" hint="Paid orders waiting" />
+      <StatCard label="In transit" value={7} />
+      <StatCard label="Revenue (30 days)" value={formatINR(48210)} tone="success" />
+    </div>
+  ),
+  MarginText: (
+    <div className={row}>
+      <MarginText price={449} cost={260} />
+      <MarginText price={449} cost={380} />
+      <MarginText price={449} cost={480} />
+    </div>
+  ),
+  CopyField: (
+    <div className="max-w-modal">
+      <CopyField label="Name" value="Test Buyer" />
+      <CopyField label="Address" value={["12 MG Road, Flat 4B", "Pune, Maharashtra - 411001"].join("\n")} multiline />
+    </div>
+  ),
+  OrderTimeline: (
+    <OrderTimeline
+      events={[
+        { status: "pending_payment", at: "2026-11-10T05:00:00Z", note: "Order created" },
+        { status: "paid", at: "2026-11-10T05:02:00Z", note: "Payment captured" },
+        { status: "placed_on_meesho", at: "2026-11-10T09:30:00Z", note: "by partner@example.com" },
+      ]}
+    />
+  ),
   StoreShell: <p className="text-text-muted">Wraps every storefront page (TopBar, Header, Footer, CartDrawer, site JSON-LD). See <Link className="underline" href="/">the homepage</Link>.</p>,
 };
 

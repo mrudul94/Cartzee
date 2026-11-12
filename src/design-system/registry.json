@@ -75,12 +75,19 @@
         "CategoryListing",
         "CheckoutForm",
         "HeroBanner",
+        "ImageManager",
+        "LoginForm",
         "MobileNav",
         "NotFoundContent",
+        "OrderActions",
         "PincodeChecker",
+        "ProductForm",
         "SaleBanner",
         "TrackOrderForm",
         "app:/account",
+        "app:/admin",
+        "app:/admin/orders/[id]",
+        "app:/admin/products",
         "app:/order/[id]",
         "sections/InfoSections"
       ],
@@ -134,9 +141,14 @@
       ],
       "usedIn": [
         "CheckoutForm",
+        "ImageManager",
+        "LoginForm",
+        "OrderActions",
         "PincodeChecker",
+        "ProductForm",
         "SearchBox",
-        "TrackOrderForm"
+        "TrackOrderForm",
+        "app:/admin/products"
       ],
       "accessibility": "aria-invalid when invalid; pair with FormField for label and described-by error.",
       "example": "<Input id=\"pin\" inputMode=\"numeric\" invalid={!!error} />",
@@ -179,7 +191,10 @@
         "space.4",
         "space.9"
       ],
-      "usedIn": [],
+      "usedIn": [
+        "OrderActions",
+        "ProductForm"
+      ],
       "accessibility": "aria-invalid; use inside FormField.",
       "example": "<Textarea id=\"msg\" rows={4} />",
       "lastUpdated": "2026-11-12"
@@ -230,7 +245,8 @@
       ],
       "usedIn": [
         "CategoryListing",
-        "CheckoutForm"
+        "CheckoutForm",
+        "ProductForm"
       ],
       "accessibility": "Native semantics and keyboard; label via FormField or sr-only label.",
       "example": "<Select id=\"sort\" options={SORT_OPTIONS} value={sort} onChange={…} />",
@@ -261,6 +277,9 @@
       ],
       "usedIn": [
         "CheckoutForm",
+        "LoginForm",
+        "OrderActions",
+        "ProductForm",
         "TrackOrderForm"
       ],
       "accessibility": "Visible label bound with htmlFor; error rendered with role=alert at `${id}-desc` for aria-describedby.",
@@ -298,7 +317,9 @@
         "space.5"
       ],
       "usedIn": [
-        "CategoryListing"
+        "CategoryListing",
+        "OrderActions",
+        "ProductForm"
       ],
       "accessibility": "Whole row is the label (44px min height); visible focus ring; Space toggles.",
       "example": "<Checkbox id=\"m-steel\" label=\"Steel\" checked={on} onCheckedChange={setOn} />",
@@ -389,7 +410,9 @@
       ],
       "usedIn": [
         "ProductCard",
-        "app:/[category]/[sub]/[product]"
+        "admin/AdminBits",
+        "app:/[category]/[sub]/[product]",
+        "app:/admin/products"
       ],
       "accessibility": "Text content conveys meaning; all variants pass AA contrast.",
       "example": "<Badge variant=\"sale\">50% off</Badge>",
@@ -437,7 +460,11 @@
       "usedIn": [
         "CartView",
         "CheckoutForm",
+        "ProductForm",
         "TrackOrderForm",
+        "admin/AdminBits",
+        "app:/admin/login",
+        "app:/admin/orders/[id]",
         "app:/order/[id]"
       ],
       "accessibility": "Use as=\"fieldset\"/\"section\" when grouping semantics are needed.",
@@ -520,6 +547,7 @@
         "ProductGrid",
         "app:/",
         "app:/[category]/[sub]/[product]",
+        "app:/admin",
         "sections/InfoSections"
       ],
       "accessibility": "View all link includes sr-only section name for unique link text.",
@@ -2282,19 +2310,7 @@
         "emptyMessage": "string"
       },
       "tokensUsed": [
-        "color.borderStrong",
-        "color.ink",
-        "color.secondary",
-        "color.surface",
-        "color.text",
-        "color.textInverse",
-        "font.size.sm",
-        "font.weight.medium",
-        "radius.full",
-        "space.11",
-        "space.2",
         "space.3",
-        "space.4",
         "space.6"
       ],
       "usedIn": [
@@ -2489,6 +2505,9 @@
         "ListingTemplate",
         "app:/[category]/[sub]/[product]",
         "app:/account",
+        "app:/admin/orders/[id]",
+        "app:/admin/products/[id]",
+        "app:/admin/products/new",
         "app:/cart",
         "app:/checkout",
         "app:/contact",
@@ -2527,8 +2546,10 @@
         "space.8"
       ],
       "usedIn": [
+        "AdminShell",
         "Footer",
-        "Header"
+        "Header",
+        "app:/admin/login"
       ],
       "accessibility": "Link aria-label 'City Seller home'.",
       "example": "<Logo />",
@@ -2695,7 +2716,8 @@
       ],
       "usedIn": [
         "StoreShell",
-        "app:/"
+        "app:/",
+        "lib/admin/product-values"
       ],
       "accessibility": "",
       "example": "buildCategoryTree(await repo.listCategories())",
@@ -2902,6 +2924,7 @@
       },
       "tokensUsed": [],
       "usedIn": [
+        "AdminShell",
         "Badge",
         "Breadcrumbs",
         "Button",
@@ -2909,6 +2932,9 @@
         "CartLineItem",
         "CategoryListing",
         "CategoryTiles",
+        "ChipNav",
+        "CopyButton",
+        "DataTable",
         "FormField",
         "Heading",
         "HeroBanner",
@@ -2924,6 +2950,7 @@
         "SearchBox",
         "SectionHeader",
         "TrackOrderForm",
+        "admin/AdminBits",
         "commerce/OrderSummary",
         "commerce/ProductBuyBox",
         "layout/Container",
@@ -2955,11 +2982,18 @@
         "CheckoutForm",
         "PincodeChecker",
         "PriceBlock",
+        "ProductForm",
         "TrackOrderForm",
+        "admin/AdminBits",
         "app:/[category]/[sub]/[product]",
+        "app:/admin",
+        "app:/admin/orders",
+        "app:/admin/orders/[id]",
+        "app:/admin/products",
         "app:/order/[id]",
         "commerce/OrderSummary",
         "commerce/ProductBuyBox",
+        "lib/admin/whatsapp",
         "lib/orders/service",
         "sections/InfoSections"
       ],
@@ -2980,7 +3014,8 @@
       "tokensUsed": [],
       "usedIn": [
         "PriceBlock",
-        "ProductCard"
+        "ProductCard",
+        "ProductForm"
       ],
       "accessibility": "",
       "example": "calcDiscount(899, 449) // 50",
@@ -3001,6 +3036,10 @@
         "GuideCards",
         "ReviewList",
         "TrackOrderForm",
+        "admin/AdminBits",
+        "app:/admin",
+        "app:/admin/orders",
+        "app:/admin/orders/[id]",
         "app:/guides/[slug]"
       ],
       "accessibility": "",
@@ -3019,7 +3058,9 @@
       "tokensUsed": [],
       "usedIn": [
         "CategoryTiles",
+        "ProductForm",
         "ProductGrid",
+        "lib/admin/forms",
         "sections/InfoSections"
       ],
       "accessibility": "",
@@ -3140,6 +3181,7 @@
         "app:/search",
         "app:/track-order",
         "layout/MegaMenu",
+        "lib/admin/product-values",
         "lib/data/seed-repo",
         "lib/seo/jsonld",
         "sections/InfoSections",
@@ -3430,6 +3472,555 @@
       },
       "accessibility": "",
       "example": "const open = useRazorpay(); const result = await open(data.checkout, { color: color.primary });"
+    },
+    {
+      "variants": [],
+      "tokensUsed": [
+        "color.background",
+        "color.border",
+        "color.surface",
+        "color.textMuted",
+        "font.size.base",
+        "font.size.sm",
+        "font.weight.semibold",
+        "radius.lg",
+        "space.10",
+        "space.3",
+        "space.4"
+      ],
+      "usedIn": [
+        "app:/admin",
+        "app:/admin/orders",
+        "app:/admin/products"
+      ],
+      "lastUpdated": "2026-11-12",
+      "accessibility": "Real table with caption and th scope=col; scrolls horizontally on small screens.",
+      "name": "DataTable",
+      "path": "src/components/ui/DataTable.tsx",
+      "category": "ui/display",
+      "description": "Generic accessible data table (admin orders/products) with per-column alignment and mobile-hidden columns.",
+      "props": {
+        "columns": "{header, cell(row), align?, hideOnMobile?}[]",
+        "rows": "T[]",
+        "rowKey": "(row)=>string",
+        "caption": "string (sr-only)",
+        "empty": "ReactNode"
+      },
+      "example": "<DataTable caption=\"Orders\" rows={orders} rowKey={(o)=>o.id} columns={[…]} />"
+    },
+    {
+      "variants": [],
+      "tokensUsed": [
+        "color.background",
+        "color.borderStrong",
+        "color.success",
+        "color.surface",
+        "color.text",
+        "font.size.sm",
+        "radius.md",
+        "shadow.focus",
+        "space.1",
+        "space.2",
+        "space.4",
+        "space.9"
+      ],
+      "usedIn": [
+        "admin/AdminBits"
+      ],
+      "lastUpdated": "2026-11-12",
+      "accessibility": "aria-label names the value; state change announced via aria-live.",
+      "name": "CopyButton",
+      "path": "src/components/ui/CopyButton.tsx",
+      "category": "ui/action",
+      "description": "Copies a value to the clipboard with a brief Copied state.",
+      "props": {
+        "value": "string",
+        "label": "string (what is copied)"
+      },
+      "example": "<CopyButton value={phone} label=\"Phone\" />"
+    },
+    {
+      "variants": [
+        "default",
+        "active",
+        "with count"
+      ],
+      "tokensUsed": [
+        "color.borderStrong",
+        "color.ink",
+        "color.secondary",
+        "color.surface",
+        "color.text",
+        "color.textInverse",
+        "font.size.sm",
+        "font.size.xs",
+        "font.weight.medium",
+        "radius.full",
+        "shadow.focus",
+        "space.11",
+        "space.2",
+        "space.4"
+      ],
+      "usedIn": [
+        "ListingTemplate",
+        "app:/admin/orders",
+        "app:/admin/products"
+      ],
+      "lastUpdated": "2026-11-12",
+      "accessibility": "nav landmark; aria-current on the active chip; 44px targets.",
+      "name": "ChipNav",
+      "path": "src/components/ui/ChipNav.tsx",
+      "category": "ui/navigation",
+      "description": "Scrolling link chips with optional counts: listing refine chips, budget tiers, admin status filters.",
+      "props": {
+        "chips": "{label, href, active?, count?}[]",
+        "label": "string (nav aria-label)"
+      },
+      "example": "<ChipNav label=\"Refine\" chips={[{label:\"All\",href:\"/kitchen\",active:true}]} />"
+    },
+    {
+      "variants": [],
+      "tokensUsed": [
+        "color.background",
+        "color.border",
+        "color.ink",
+        "color.primary",
+        "color.secondary",
+        "color.surface",
+        "color.text",
+        "color.textInverse",
+        "color.textMuted",
+        "color.warning",
+        "color.warningSoft",
+        "font.size.base",
+        "font.size.sm",
+        "font.size.xs",
+        "font.tracking.wide",
+        "font.weight.bold",
+        "font.weight.medium",
+        "font.weight.semibold",
+        "maxWidth.container",
+        "radius.full",
+        "radius.md",
+        "radius.sm",
+        "shadow.focus",
+        "space.0",
+        "space.0.5",
+        "space.1",
+        "space.11",
+        "space.2",
+        "space.3",
+        "space.4",
+        "space.5",
+        "space.6",
+        "space.8"
+      ],
+      "usedIn": [
+        "app:/admin (layout)"
+      ],
+      "lastUpdated": "2026-11-12",
+      "accessibility": "nav aria-label=Admin, aria-current on active link, main landmark.",
+      "name": "AdminShell",
+      "path": "src/components/admin/AdminShell.tsx",
+      "category": "admin",
+      "description": "Admin layout: sidebar (desktop) / scrolling nav (mobile), pending-orders badge, sign-out, dev-mode banner.",
+      "props": {
+        "email": "string",
+        "devMode": "boolean",
+        "pendingCount": "number",
+        "signOut": "server action",
+        "children": "ReactNode"
+      },
+      "example": "<AdminShell email={admin.email} pendingCount={counts.paid}>…</AdminShell>"
+    },
+    {
+      "variants": [],
+      "tokensUsed": [
+        "color.error",
+        "color.errorSoft",
+        "font.size.sm",
+        "radius.md",
+        "space.3",
+        "space.4"
+      ],
+      "usedIn": [
+        "app:/admin/login"
+      ],
+      "lastUpdated": "2026-11-12",
+      "accessibility": "Labelled fields, autocomplete tokens, alert on error.",
+      "name": "LoginForm",
+      "path": "src/components/admin/LoginForm.tsx",
+      "category": "admin",
+      "description": "Email + password sign-in for partners in public.admins.",
+      "props": {
+        "action": "server action (prev, FormData) => ActionState"
+      },
+      "example": "<LoginForm action={signInAction} />"
+    },
+    {
+      "variants": [],
+      "tokensUsed": [
+        "color.error",
+        "color.errorSoft",
+        "color.success",
+        "color.successSoft",
+        "color.textMuted",
+        "font.size.sm",
+        "radius.md",
+        "space.2",
+        "space.3",
+        "space.4"
+      ],
+      "usedIn": [
+        "app:/admin/orders/[id]"
+      ],
+      "lastUpdated": "2026-11-12",
+      "accessibility": "Inline field errors; destructive actions confirm first; result announced.",
+      "name": "OrderActions",
+      "path": "src/components/admin/OrderActions.tsx",
+      "category": "admin",
+      "description": "Order fulfilment form: Meesho order ID/cost, tracking link, note, refund toggle, one button per allowed status, WhatsApp link.",
+      "props": {
+        "orderId": "string",
+        "next": "OrderStatus[]",
+        "defaults": "{meeshoOrderId?, meeshoCost?, trackingUrl?}",
+        "canRefund": "boolean",
+        "whatsappHref": "string",
+        "action": "server action"
+      },
+      "example": "<OrderActions orderId={o.id} next={adminTransitions(o.status)} … />"
+    },
+    {
+      "variants": [],
+      "tokensUsed": [
+        "color.background",
+        "color.border",
+        "color.borderStrong",
+        "color.error",
+        "color.surface",
+        "color.text",
+        "color.textMuted",
+        "font.size.sm",
+        "radius.md",
+        "shadow.focus",
+        "space.0",
+        "space.1",
+        "space.16",
+        "space.2",
+        "space.3",
+        "space.4",
+        "space.9"
+      ],
+      "usedIn": [
+        "ProductForm"
+      ],
+      "lastUpdated": "2026-11-12",
+      "accessibility": "Alt text required per image; labelled reorder/remove buttons.",
+      "name": "ImageManager",
+      "path": "src/components/admin/ImageManager.tsx",
+      "category": "admin",
+      "description": "Product photo list: upload to Supabase Storage or add by path, alt text, reorder, remove.",
+      "props": {
+        "images": "{src,alt}[]",
+        "onChange": "(images)=>void",
+        "upload": "server action (FormData) => {src?, error?}",
+        "slug": "string",
+        "defaultAlt": "string",
+        "error": "string"
+      },
+      "example": "<ImageManager images={imgs} onChange={setImgs} upload={uploadImageAction} slug={slug} defaultAlt={title} />"
+    },
+    {
+      "variants": [],
+      "tokensUsed": [
+        "color.background",
+        "color.border",
+        "color.error",
+        "color.errorSoft",
+        "color.success",
+        "color.successSoft",
+        "color.surface",
+        "color.textMuted",
+        "color.warning",
+        "font.family.heading",
+        "font.size.sm",
+        "font.size.xl",
+        "font.weight.semibold",
+        "radius.lg",
+        "radius.md",
+        "space.0",
+        "space.3",
+        "space.4",
+        "space.6",
+        "zIndex.sticky"
+      ],
+      "usedIn": [
+        "app:/admin/products/[id]",
+        "app:/admin/products/new"
+      ],
+      "lastUpdated": "2026-11-12",
+      "accessibility": "Fieldsets with legends, inline errors, live margin region, sticky save bar.",
+      "name": "ProductForm",
+      "path": "src/components/admin/ProductForm.tsx",
+      "category": "admin",
+      "description": "Create/edit product: basics, pricing with live margin and discount, Meesho link/price + checked flag, photos, content, visibility, SEO.",
+      "props": {
+        "values": "ProductFormValues",
+        "categories": "CategoryOption[]",
+        "action": "server action",
+        "upload": "server action",
+        "notice": "string"
+      },
+      "example": "<ProductForm values={toFormValues(p)} categories={cats} action={saveProductAction} upload={uploadImageAction} />"
+    },
+    {
+      "variants": [
+        "pending_payment",
+        "paid",
+        "placed_on_meesho",
+        "shipped",
+        "delivered",
+        "cancelled_refunded",
+        "return_requested",
+        "returned_refunded"
+      ],
+      "tokensUsed": [
+        "color.border",
+        "color.error",
+        "color.ink",
+        "color.success",
+        "color.text",
+        "color.textMuted",
+        "color.warning",
+        "font.family.heading",
+        "font.size.3xl",
+        "font.size.sm",
+        "font.tracking.normal",
+        "font.weight.medium",
+        "font.weight.regular",
+        "font.weight.semibold",
+        "radius.full",
+        "space.0",
+        "space.1",
+        "space.2",
+        "space.3"
+      ],
+      "usedIn": [
+        "app:/admin",
+        "app:/admin/orders",
+        "app:/admin/orders/[id]"
+      ],
+      "lastUpdated": "2026-11-12",
+      "accessibility": "Text label (colour is not the only signal).",
+      "name": "OrderStatusBadge",
+      "path": "src/components/admin/AdminBits.tsx",
+      "category": "admin",
+      "description": "Admin status pill using internal labels; needs-action states in warning tone.",
+      "props": {
+        "status": "OrderStatus"
+      },
+      "example": "<OrderStatusBadge status=\"paid\" />"
+    },
+    {
+      "variants": [
+        "default",
+        "warning",
+        "success"
+      ],
+      "tokensUsed": [
+        "color.border",
+        "color.error",
+        "color.ink",
+        "color.success",
+        "color.text",
+        "color.textMuted",
+        "color.warning",
+        "font.family.heading",
+        "font.size.3xl",
+        "font.size.sm",
+        "font.tracking.normal",
+        "font.weight.medium",
+        "font.weight.regular",
+        "font.weight.semibold",
+        "radius.full",
+        "space.0",
+        "space.1",
+        "space.2",
+        "space.3"
+      ],
+      "usedIn": [
+        "app:/admin"
+      ],
+      "lastUpdated": "2026-11-12",
+      "accessibility": "",
+      "name": "StatCard",
+      "path": "src/components/admin/AdminBits.tsx",
+      "category": "admin",
+      "description": "Dashboard KPI card.",
+      "props": {
+        "label": "string",
+        "value": "ReactNode",
+        "hint": "ReactNode",
+        "tone": "default|warning|success"
+      },
+      "example": "<StatCard label=\"To place\" value={3} tone=\"warning\" />"
+    },
+    {
+      "variants": [],
+      "tokensUsed": [
+        "color.border",
+        "color.error",
+        "color.ink",
+        "color.success",
+        "color.text",
+        "color.textMuted",
+        "color.warning",
+        "font.family.heading",
+        "font.size.3xl",
+        "font.size.sm",
+        "font.tracking.normal",
+        "font.weight.medium",
+        "font.weight.regular",
+        "font.weight.semibold",
+        "radius.full",
+        "space.0",
+        "space.1",
+        "space.2",
+        "space.3"
+      ],
+      "usedIn": [
+        "app:/admin",
+        "app:/admin/orders",
+        "app:/admin/orders/[id]",
+        "app:/admin/products"
+      ],
+      "lastUpdated": "2026-11-12",
+      "accessibility": "Value is text; colour is supplementary.",
+      "name": "MarginText",
+      "path": "src/components/admin/AdminBits.tsx",
+      "category": "admin",
+      "description": "Margin in ₹ and % (green ≥ 25%, amber below, red if negative).",
+      "props": {
+        "price": "number",
+        "cost": "number",
+        "quantity": "number"
+      },
+      "example": "<MarginText price={449} cost={260} />"
+    },
+    {
+      "variants": [],
+      "tokensUsed": [
+        "color.border",
+        "color.error",
+        "color.ink",
+        "color.success",
+        "color.text",
+        "color.textMuted",
+        "color.warning",
+        "font.family.heading",
+        "font.size.3xl",
+        "font.size.sm",
+        "font.tracking.normal",
+        "font.weight.medium",
+        "font.weight.regular",
+        "font.weight.semibold",
+        "radius.full",
+        "space.0",
+        "space.1",
+        "space.2",
+        "space.3"
+      ],
+      "usedIn": [
+        "app:/admin/orders/[id]"
+      ],
+      "lastUpdated": "2026-11-12",
+      "accessibility": "",
+      "name": "CopyField",
+      "path": "src/components/admin/AdminBits.tsx",
+      "category": "admin",
+      "description": "Label + value + copy button for pasting customer details into Meesho.",
+      "props": {
+        "label": "string",
+        "value": "string",
+        "multiline": "boolean"
+      },
+      "example": "<CopyField label=\"Phone\" value={a.phone} />"
+    },
+    {
+      "variants": [],
+      "tokensUsed": [
+        "color.border",
+        "color.error",
+        "color.ink",
+        "color.success",
+        "color.text",
+        "color.textMuted",
+        "color.warning",
+        "font.family.heading",
+        "font.size.3xl",
+        "font.size.sm",
+        "font.tracking.normal",
+        "font.weight.medium",
+        "font.weight.regular",
+        "font.weight.semibold",
+        "radius.full",
+        "space.0",
+        "space.1",
+        "space.2",
+        "space.3"
+      ],
+      "usedIn": [
+        "app:/admin/orders/[id]"
+      ],
+      "lastUpdated": "2026-11-12",
+      "accessibility": "Ordered list with time elements.",
+      "name": "OrderTimeline",
+      "path": "src/components/admin/AdminBits.tsx",
+      "category": "admin",
+      "description": "Newest-first order event history with time and note.",
+      "props": {
+        "events": "OrderEvent[]"
+      },
+      "example": "<OrderTimeline events={order.events} />"
+    },
+    {
+      "variants": [],
+      "tokensUsed": [],
+      "usedIn": [
+        "ProductForm",
+        "admin/AdminBits"
+      ],
+      "lastUpdated": "2026-11-12",
+      "accessibility": "",
+      "name": "calcMargin",
+      "path": "src/lib/utils/format.ts",
+      "category": "util",
+      "description": "Margin amount and % of price between selling price and supplier cost.",
+      "props": {
+        "price": "number",
+        "cost": "number"
+      },
+      "example": "calcMargin(449, 260) // { amount: 189, percent: 42 }"
+    },
+    {
+      "variants": [],
+      "tokensUsed": [],
+      "usedIn": [
+        "ProductForm",
+        "app:/admin",
+        "app:/admin/products"
+      ],
+      "lastUpdated": "2026-11-12",
+      "accessibility": "",
+      "name": "daysSince",
+      "path": "src/lib/utils/format.ts",
+      "category": "util",
+      "description": "Whole days since an ISO date (stale Meesho price checks).",
+      "props": {
+        "iso": "string",
+        "now": "Date"
+      },
+      "example": "daysSince(p.priceCheckedAt) > 7"
     }
   ]
 }

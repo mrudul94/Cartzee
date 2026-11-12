@@ -1,21 +1,19 @@
 import "server-only";
 import { seedCategories } from "@/lib/seed/categories";
 import { seedPosts } from "@/lib/seed/posts";
-import { seedProducts } from "@/lib/seed/products";
 import { seedReviews } from "@/lib/seed/reviews";
-import type { Order, OrderItem } from "@/lib/types";
+import type { Order, OrderItem, Product } from "@/lib/types";
 import { shippingFor } from "@/lib/utils/delivery";
 import { paths } from "@/lib/utils/paths";
 import { OrderError, type ProductQuery, type Repo } from "./repo";
+import { store, type StoredProduct } from "./seed-store";
 
 /**
- * Development repository backed by seed files and an in-memory order store.
- * Orders live on globalThis so they survive dev hot reloads (lost on server restart).
+ * Development repository backed by the in-memory seed store (see seed-store.ts).
+ * Storefront reads see active products only and never receive supplier fields' changes
+ * beyond what Product carries; admin writes go through admin-repo.ts.
  */
-const g = globalThis as unknown as { __citySellerOrders?: Map<string, Order>; __citySellerStock?: Map<string, number> };
-const orders = (g.__citySellerOrders ??= new Map<string, Order>());
-const stock = (g.__citySellerStock ??= new Map(seedProducts.map((p) => [p.id, p.stock])));
-
+const orders = store.orders;
 const tokens = (s: string) => s.toLowerCase().split(/[^a-z0-9]+/).filter((t) => t.length > 1);
 
 function matches(q: string, haystack: string) {
@@ -23,12 +21,12 @@ function matches(q: string, haystack: string) {
   return tokens(q).every((t) => words.some((w) => w.startsWith(t) || (t.length > 3 && w.startsWith(t.replace(/s$/, "")))));
 }
 
-function withStock<T extends { id: string; stock: number }>(p: T): T {
-  return { ...p, stock: stock.get(p.id) ?? p.stock };
-}
+/** Storefront view of a stored product (drops admin-only flag). */
+const publicView = ({ isActive: _active, ...p }: StoredProduct): Product => p;
+const active = () => store.products.filter((p) => p.isActive);
 
 function applyQuery(query: ProductQuery = {}) {
-  let list = seedProducts.map(withStock).filter((p) => {
+  let list = active().filter((p) => {
     if (query.category && p.categorySlug !== query.category) return false;
     if (query.subcategory && p.subcategorySlug !== query.subcategory) return false;
     if (query.minPrice !== undefined && p.price < query.minPrice) return false;
@@ -45,10 +43,10 @@ function applyQuery(query: ProductQuery = {}) {
     return true;
   });
   if (query.slugs) list = query.slugs.map((s) => list.find((p) => p.slug === s)).filter((p) => p !== undefined);
-  return query.limit ? list.slice(0, query.limit) : list;
+  return (query.limit ? list.slice(0, query.limit) : list).map(publicView);
 }
 
-let counter = 1000 + orders.size;
+const nextNumber = () => `CS${1001 + orders.size}`;
 const newId = () => `ord_${Date.now().toString(36)}${Math.random().toString(36).slice(2, 8)}`;
 
 export const seedRepo: Repo = {
@@ -63,8 +61,8 @@ export const seedRepo: Repo = {
     return applyQuery(query);
   },
   async getProductBySlug(slug) {
-    const p = seedProducts.find((x) => x.slug === slug);
-    return p ? withStock(p) : null;
+    const p = active().find((x) => x.slug === slug);
+    return p ? publicView(p) : null;
   },
   async listReviews(productId) {
     return seedReviews.filter((r) => r.productId === productId);
@@ -79,10 +77,10 @@ export const seedRepo: Repo = {
     const merged = new Map<string, number>();
     for (const i of items) merged.set(i.productId, (merged.get(i.productId) ?? 0) + i.quantity);
     const lines: OrderItem[] = [...merged].map(([productId, quantity]) => {
-      const p = seedProducts.find((x) => x.id === productId);
+      const p = active().find((x) => x.id === productId);
       if (!p) throw new OrderError("A product in your cart is no longer available");
       if (quantity > 10) throw new OrderError(`Quantity for ${p.title} must be between 1 and 10`);
-      if ((stock.get(p.id) ?? 0) < quantity) throw new OrderError(`${p.title} is out of stock`);
+      if (p.stock < quantity) throw new OrderError(`${p.title} is out of stock`);
       return {
         productId: p.id,
         slug: p.slug,
@@ -101,7 +99,7 @@ export const seedRepo: Repo = {
     const now = new Date().toISOString();
     const order: Order = {
       id: newId(),
-      number: `CS${++counter}`,
+      number: nextNumber(),
       status: "pending_payment",
       address,
       items: lines,
@@ -149,13 +147,18 @@ export const seedRepo: Repo = {
       events: [...o.events, { status: "paid", at, note: "Payment captured" }],
     };
     orders.set(orderId, updated);
-    for (const i of o.items) stock.set(i.productId, Math.max(0, (stock.get(i.productId) ?? 0) - i.quantity));
+    for (const i of o.items) {
+      const p = store.products.find((x) => x.id === i.productId);
+      if (p) p.stock = Math.max(0, p.stock - i.quantity);
+    }
     return { order: updated, changed: true };
   },
   async updateOrderStatus(id, status, patch = {}, note) {
     const o = orders.get(id);
     if (!o) return null;
-    const updated: Order = { ...o, ...patch, status, events: [...o.events, { status, at: new Date().toISOString(), note }] };
+    // Like set_order_status (coalesce): fields left empty keep their previous value.
+    const defined = Object.fromEntries(Object.entries(patch).filter(([, v]) => v !== undefined)) as Partial<Order>;
+    const updated: Order = { ...o, ...defined, status, events: [...o.events, { status, at: new Date().toISOString(), note }] };
     orders.set(id, updated);
     return updated;
   },

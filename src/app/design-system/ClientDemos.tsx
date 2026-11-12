@@ -4,6 +4,8 @@ import { useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { QuantityStepper } from "@/components/ui/Misc";
 import { toast } from "@/components/ui/Toast";
+import { ImageManager } from "@/components/admin/ImageManager";
+import { demoUploadAction } from "./demo-actions";
 
 /** Stateful demos that need client-side handlers (style guide only). */
 export function QuantityStepperDemo() {
@@ -30,4 +32,10 @@ export function ToastDemo() {
       </Button>
     </div>
   );
+}
+
+/** ImageManager needs local state for its controlled image list. */
+export function ImageManagerDemo({ images }: { images: { src: string; alt: string }[] }) {
+  const [list, setList] = useState(images);
+  return <ImageManager images={list} onChange={setList} upload={demoUploadAction} slug="demo" defaultAlt="Demo product" />;
 }

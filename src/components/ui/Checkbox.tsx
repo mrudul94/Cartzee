@@ -10,6 +10,10 @@ export type CheckboxProps = {
   id: string;
   label: ReactNode;
   checked?: boolean;
+  /** Uncontrolled initial state (forms). */
+  defaultChecked?: boolean;
+  /** Form field name: submits "on" when checked, nothing when unchecked (like a native checkbox). */
+  name?: string;
   onCheckedChange?: (checked: boolean) => void;
   disabled?: boolean;
   className?: string;
@@ -17,11 +21,14 @@ export type CheckboxProps = {
 
 const row = "flex min-h-11 cursor-pointer items-center gap-3 text-base text-text";
 
-export function Checkbox({ id, label, checked, onCheckedChange, disabled, className }: CheckboxProps) {
+export function Checkbox({ id, label, checked, defaultChecked, name, onCheckedChange, disabled, className }: CheckboxProps) {
   return (
     <label htmlFor={id} className={cn(row, disabled && "cursor-not-allowed opacity-60", className)}>
       <CheckboxPrimitive.Root
         id={id}
+        name={name}
+        value="on"
+        defaultChecked={defaultChecked}
         checked={checked}
         disabled={disabled}
         onCheckedChange={(v) => onCheckedChange?.(v === true)}

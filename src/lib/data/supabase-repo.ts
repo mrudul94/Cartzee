@@ -1,21 +1,9 @@
 import "server-only";
 import { cache } from "react";
-import { createClient, type SupabaseClient } from "@supabase/supabase-js";
-import { config } from "@/lib/config";
 import type { Category, Faq, Order, OrderStatus, Post, PostBlock, Product, Review, Spec } from "@/lib/types";
 import { SHIPPING } from "@/lib/utils/delivery";
 import { OrderError, type ProductQuery, type Repo } from "./repo";
-
-/* ------------------------------------------------------------------ clients */
-
-const opts = { auth: { persistSession: false, autoRefreshToken: false } } as const;
-let publicClient: SupabaseClient | undefined;
-let serviceClient: SupabaseClient | undefined;
-
-/** Anon key: catalogue reads, governed by RLS + column grants (no supplier data). */
-const pub = () => (publicClient ??= createClient(config.supabase.url!, config.supabase.anonKey!, opts));
-/** Service role: orders and customers. Server-only; bypasses RLS. */
-const svc = () => (serviceClient ??= createClient(config.supabase.url!, config.supabase.serviceRoleKey!, opts));
+import { pub, svc } from "./supabase-clients";
 
 /* ------------------------------------------------------------------ row types */
 
@@ -23,14 +11,14 @@ type CategoryRow = {
   id: string; slug: string; name: string; parent_id: string | null; intro: string; blurb: string; image: string;
   sort_order: number; seo_title: string | null; seo_description: string | null; faqs: Faq[];
 };
-type ProductRow = {
+export type ProductRow = {
   id: string; slug: string; category_id: string; subcategory_id: string; title: string; summary: string; description: string;
   how_to_use: string[]; specs: Spec[]; material: string; colour: string; price: number; mrp: number; rating: number;
   review_count: number; stock: number; is_bestseller: boolean; is_flash_sale: boolean; faqs: Faq[];
   seo_title: string | null; seo_description: string | null; created_at: string;
   product_images: { src: string; alt: string; sort_order: number }[];
 };
-type OrderRow = {
+export type OrderRow = {
   id: string; number: string; status: OrderStatus; address: Order["address"]; subtotal: number; shipping: number; discount: number;
   total: number; razorpay_order_id: string | null; razorpay_payment_id: string | null; meesho_order_id: string | null;
   meesho_cost: number | null; tracking_url: string | null; created_at: string;
@@ -38,18 +26,18 @@ type OrderRow = {
   order_events: { status: OrderStatus; note: string | null; created_at: string }[];
 };
 
-const PRODUCT_COLUMNS =
+export const PRODUCT_COLUMNS =
   "id, slug, category_id, subcategory_id, title, summary, description, how_to_use, specs, material, colour, price, mrp, rating, review_count, stock, is_bestseller, is_flash_sale, faqs, seo_title, seo_description, created_at, product_images(src, alt, sort_order)";
-const ORDER_COLUMNS = "*, order_items(*), order_events(status, note, created_at)";
-const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+export const ORDER_COLUMNS = "*, order_items(*), order_events(status, note, created_at)";
+export const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 /* ------------------------------------------------------------------ mapping */
 
-function fail(context: string, error: { message: string; code?: string } | null): never {
+export function fail(context: string, error: { message: string; code?: string } | null): never {
   throw new Error(`Supabase ${context} failed: ${error?.message ?? "unknown error"}`);
 }
 
-const loadCategories = cache(async (): Promise<Category[]> => {
+export const loadCategories = cache(async (): Promise<Category[]> => {
   const { data, error } = await pub().from("categories").select("*").order("sort_order");
   if (error) fail("categories", error);
   const rows = data as CategoryRow[];
@@ -69,7 +57,7 @@ const loadCategories = cache(async (): Promise<Category[]> => {
   }));
 });
 
-async function toProducts(rows: ProductRow[]): Promise<Product[]> {
+export async function toProducts(rows: ProductRow[]): Promise<Product[]> {
   const cats = await loadCategories();
   const slug = new Map(cats.map((c) => [c.id, c.slug]));
   return rows.map((r) => ({
@@ -99,7 +87,7 @@ async function toProducts(rows: ProductRow[]): Promise<Product[]> {
   }));
 }
 
-function toOrder(r: OrderRow): Order {
+export function toOrder(r: OrderRow): Order {
   return {
     id: r.id,
     number: r.number,
@@ -134,7 +122,7 @@ function toOrder(r: OrderRow): Order {
 }
 
 /** Customer-fixable errors raised by SQL functions use SQLSTATE P0001/P0002. */
-function rpcError(error: { message: string; code?: string }): never {
+export function rpcError(error: { message: string; code?: string }): never {
   if (error.code === "P0001" || error.code === "P0002") throw new OrderError(error.message);
   if (error.code === "22P02") throw new OrderError("A product in your cart is no longer available");
   fail("rpc", error);

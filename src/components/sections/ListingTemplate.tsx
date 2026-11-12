@@ -1,9 +1,9 @@
-import Link from "next/link";
 import { Suspense } from "react";
 import { CategoryListing } from "@/components/commerce/CategoryListing";
 import { ProductCard } from "@/components/commerce/ProductCard";
 import { Breadcrumbs } from "@/components/layout/Breadcrumbs";
 import { Container } from "@/components/layout/Container";
+import { ChipNav, type Chip } from "@/components/ui/ChipNav";
 import { buildItemListJsonLd, type Crumb } from "@/lib/seo/jsonld";
 import { JsonLd } from "@/lib/seo/JsonLdScript";
 import type { Faq } from "@/lib/types";
@@ -17,7 +17,7 @@ export type ListingTemplateProps = {
   answer: string;
   products: CardProduct[];
   /** Sub-navigation chips (subcategories or sibling tiers). */
-  chips?: { label: string; href: string; active?: boolean }[];
+  chips?: Chip[];
   faqs?: Faq[];
   hideBudget?: boolean;
   emptyMessage?: string;
@@ -33,27 +33,7 @@ export function ListingTemplate({ crumbs, title, answer, products, chips, faqs =
       <Container>
         <Breadcrumbs items={crumbs} />
         <AnswerIntro title={title} answer={answer} meta={`${products.length} products · Prices in ₹, inclusive of taxes`} />
-        {chips && chips.length > 0 && (
-          <nav aria-label="Refine" className="-mx-4 mb-6 overflow-x-auto px-4">
-            <ul className="flex gap-2">
-              {chips.map((c) => (
-                <li key={c.href} className="shrink-0">
-                  <Link
-                    href={c.href}
-                    aria-current={c.active ? "page" : undefined}
-                    className={
-                      c.active
-                        ? "inline-flex min-h-11 items-center rounded-full bg-ink px-4 text-sm font-medium text-text-inverse"
-                        : "inline-flex min-h-11 items-center rounded-full border border-border-strong bg-surface px-4 text-sm font-medium text-text hover:bg-secondary/60"
-                    }
-                  >
-                    {c.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </nav>
-        )}
+        {chips && <ChipNav chips={chips} label="Refine" className="mb-6" />}
         <Suspense
           fallback={
             <ul className="grid grid-cols-2 gap-3 md:grid-cols-3 md:gap-6 lg:ml-auto lg:w-3/4">

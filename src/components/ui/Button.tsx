@@ -52,6 +52,8 @@ export type ButtonProps = Common &
     /** When set, renders a Next.js link styled as a button. */
     href?: string;
     prefetch?: boolean;
+    /** Link target (only with href); "_blank" adds rel="noopener noreferrer". */
+    target?: "_blank" | "_self";
   };
 
 export function Button({
@@ -69,6 +71,7 @@ export function Button({
   children,
   href,
   prefetch,
+  target,
   type = "button",
   disabled,
   style,
@@ -89,6 +92,8 @@ export function Button({
       <Link
         href={href}
         prefetch={prefetch}
+        target={target}
+        rel={target === "_blank" ? "noopener noreferrer" : undefined}
         className={classes}
         style={styles}
         aria-disabled={disabled || undefined}

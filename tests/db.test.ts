@@ -106,6 +106,28 @@ describe("mark_order_paid", () => {
   });
 });
 
+describe("set_order_status", () => {
+  it("applies fulfilment fields and logs an event with the actor", async () => {
+    const id = await createOrder([{ product_id: await pid("prd_010"), quantity: 1 }]);
+    await asRole(db, "service_role", () =>
+      db.query("select set_order_status($1, 'placed_on_meesho', $2, 'placed', 'partner@example.com')", [id, { meeshoOrderId: "MS-1", meeshoCost: "120.50" }]),
+    );
+    const o = await one<{ status: string; meesho_order_id: string; meesho_cost: string; tracking_url: string | null }>("select * from orders where id = $1", [id]);
+    expect(o.status).toBe("placed_on_meesho");
+    expect(o.meesho_order_id).toBe("MS-1");
+    expect(Number(o.meesho_cost)).toBe(120.5);
+    expect(o.tracking_url).toBeNull();
+    const ev = await one<{ actor: string; note: string }>("select actor, note from order_events where order_id = $1 order by id desc limit 1", [id]);
+    expect(ev).toEqual({ actor: "partner@example.com", note: "placed" });
+  });
+
+  it("is not callable by signed-in non-service roles", async () => {
+    await asRole(db, "authenticated", async () => {
+      await expect(db.query("select set_order_status(gen_random_uuid(), 'shipped')")).rejects.toThrow(/permission denied/);
+    });
+  });
+});
+
 describe("row-level security", () => {
   it("lets anon read the public catalogue but not supplier columns", async () => {
     await asRole(db, "anon", async () => {

@@ -26,6 +26,19 @@ export async function createRazorpayOrder(input: { amountPaise: number; receipt:
   return (await res.json()) as RazorpayOrder;
 }
 
+/** Full refund of a captured payment (normal speed: 5–7 working days to the customer). */
+export async function refundPayment(paymentId: string, amountPaise: number, notes: Record<string, string>): Promise<{ id: string; status: string }> {
+  const { keyId, keySecret } = config.razorpay;
+  if (!keyId || !keySecret) throw new Error("Razorpay is not configured");
+  const res = await fetch(`${API}/payments/${encodeURIComponent(paymentId)}/refund`, {
+    method: "POST",
+    headers: { Authorization: `Basic ${btoa(`${keyId}:${keySecret}`)}`, "Content-Type": "application/json" },
+    body: JSON.stringify({ amount: amountPaise, speed: "normal", notes }),
+  });
+  if (!res.ok) throw new Error(`Razorpay refund failed (${res.status}): ${await res.text()}`);
+  return (await res.json()) as { id: string; status: string };
+}
+
 async function hmacHex(secret: string, message: string): Promise<string> {
   const key = await crypto.subtle.importKey("raw", enc.encode(secret), { name: "HMAC", hash: "SHA-256" }, false, ["sign"]);
   const sig = await crypto.subtle.sign("HMAC", key, enc.encode(message));
