@@ -1,13 +1,18 @@
 import "server-only";
+import { isSupabaseConfigured } from "@/lib/config";
 import type { Repo } from "./repo";
 import { seedRepo } from "./seed-repo";
+import { supabaseRepo } from "./supabase-repo";
 
 /**
- * Picks the data source. Milestone A ships the seed repository only; Milestone B adds
- * `supabase-repo.ts`, selected when NEXT_PUBLIC_SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY are set.
+ * Data source: Supabase when NEXT_PUBLIC_SUPABASE_URL, NEXT_PUBLIC_SUPABASE_ANON_KEY and
+ * SUPABASE_SERVICE_ROLE_KEY are all set; otherwise the in-memory seed repository.
  */
-export const repo: Repo = seedRepo;
+export const repo: Repo = isSupabaseConfigured ? supabaseRepo : seedRepo;
 
-export const isMockMode = !process.env.RAZORPAY_KEY_ID || !process.env.RAZORPAY_KEY_SECRET;
+if (!isSupabaseConfigured && process.env.NODE_ENV === "production" && process.env.NEXT_PHASE !== "phase-production-build") {
+  console.warn("[city-seller] Supabase is not configured: serving seed data and keeping orders in memory.");
+}
 
-export type { ProductQuery, NewOrderInput, Repo } from "./repo";
+export { OrderError } from "./repo";
+export type { NewOrderInput, PaymentConfirmation, ProductQuery, Repo } from "./repo";

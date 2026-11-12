@@ -7,7 +7,7 @@ import { paths } from "@/lib/utils/paths";
 import { toCardProduct } from "@/lib/utils/product";
 
 export const revalidate = 3600;
-export const dynamicParams = false;
+// New catalogue rows render on first request (ISR); unknown slugs 404 via notFound().
 
 type Props = { params: Promise<{ category: string }> };
 

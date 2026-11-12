@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { CheckCircle2 } from "lucide-react";
+import { OrderStatusPoller } from "@/components/commerce/OrderStatusPoller";
 import { OrderSummary } from "@/components/commerce/OrderSummary";
 import { Container } from "@/components/layout/Container";
 import { Button } from "@/components/ui/Button";
@@ -33,6 +34,7 @@ export default async function OrderPage({ params }: Props) {
         <p className="text-text-muted">
           Order <strong className="text-text">{order.number}</strong> · {STATUS_LABEL[order.status]}
         </p>
+        {!paid && <OrderStatusPoller />}
         {paid && (
           <p className="text-text">
             A confirmation has been sent to <strong>{order.address.email}</strong>.

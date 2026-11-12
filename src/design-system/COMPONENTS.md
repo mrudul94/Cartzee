@@ -6,7 +6,7 @@
 component with a new variant if it is close, and only create a new component (then register it) if nothing similar exists.
 Live previews: `/design-system`.
 
-Total entries: **95**
+Total entries: **97**
 
 | Name | Category | Path | Description | Variants | Used in |
 |---|---|---|---|---|---|
@@ -42,6 +42,7 @@ Total entries: **95**
 | [CategoryListing](#categorylisting) | commerce | `components/commerce/CategoryListing.tsx` | Client filters (budget, material, colour, rating), sort and pagination with URL state. | – | 1 |
 | [CheckoutForm](#checkoutform) | commerce | `components/commerce/CheckoutForm.tsx` | Contact + address form (RHF + Zod Indian PIN/phone) and prepaid pay button. | – | 1 |
 | [FreeShippingProgress](#freeshippingprogress) | commerce | `components/commerce/OrderSummary.tsx` | 'Add ₹X more for free delivery' with progress bar. | – | 3 |
+| [OrderStatusPoller](#orderstatuspoller) | commerce | `components/commerce/OrderStatusPoller.tsx` | Refreshes the order success page every few seconds while payment confirmation (webhook) is pending. | – | 1 |
 | [OrderSummary](#ordersummary) | commerce | `components/commerce/OrderSummary.tsx` | Subtotal / delivery / savings / total breakdown. | – | 4 |
 | [PincodeChecker](#pincodechecker) | commerce | `components/commerce/PincodeChecker.tsx` | PIN-code delivery estimate (zone table) with remembered PIN. | – | 1 |
 | [PrepaidNotice](#prepaidnotice) | commerce | `components/commerce/PrepaidNotice.tsx` | States prepaid-only policy and accepted methods. | inline, box | 4 |
@@ -82,6 +83,7 @@ Total entries: **95**
 | [cartTotals](#carttotals) | hook | `hooks/useCart.ts` | Derives count, subtotal, MRP total, savings, shipping and total from cart lines. | – | 4 |
 | [useCart](#usecart) | hook | `hooks/useCart.ts` | Zustand cart store persisted to localStorage (items, drawer state, add/setQuantity/remove/clear). | – | 6 |
 | [useHydrated](#usehydrated) | hook | `hooks/useHydrated.ts` | True after client hydration (guards localStorage-backed UI). | – | 4 |
+| [useRazorpay](#userazorpay) | hook | `hooks/useRazorpay.ts` | Loads Razorpay Checkout.js on demand and opens it; resolves with the signed success payload or rejects (PaymentDismissedError on close). | – | 1 |
 | [buildCategoryTree](#buildcategorytree) | util | `components/layout/MegaMenu.tsx` | Turns flat categories into a top-level tree with children. | – | 2 |
 | [calcDiscount](#calcdiscount) | util | `lib/utils/format.ts` | Whole-number discount % from MRP and price. | – | 2 |
 | [cn](#cn) | util | `lib/utils/cn.ts` | clsx + tailwind-merge configured for token class names. | – | 33 |
@@ -850,6 +852,27 @@ Contact + address form (RHF + Zod Indian PIN/phone) and prepaid pay button.
 
 ```tsx
 <FreeShippingProgress subtotal={320} />
+```
+
+## OrderStatusPoller
+
+`src/components/commerce/OrderStatusPoller.tsx` · commerce · updated 2026-11-12
+
+Refreshes the order success page every few seconds while payment confirmation (webhook) is pending.
+
+**Props**
+
+- `intervalMs`: number (default 3000)
+- `maxAttempts`: number (default 20)
+
+**Tokens:** `color.textMuted` `font.size.sm` `space.2` `space.4`
+
+**Accessibility:** role=status live message; spinner is aria-hidden; gives a clear fallback message after the last attempt.
+
+**Used in:** app:/order/[id]
+
+```tsx
+{!paid && <OrderStatusPoller />}
 ```
 
 ## OrderSummary
@@ -1730,6 +1753,24 @@ True after client hydration (guards localStorage-backed UI).
 
 ```tsx
 const hydrated = useHydrated()
+```
+
+## useRazorpay
+
+`src/hooks/useRazorpay.ts` · hook · updated 2026-11-12
+
+Loads Razorpay Checkout.js on demand and opens it; resolves with the signed success payload or rejects (PaymentDismissedError on close).
+
+**Props**
+
+- `options`: RazorpayCheckoutOptions (from /api/checkout)
+- `theme`: { color?: string }
+- `returns`: (options, theme) => Promise<RazorpaySuccess>
+
+**Used in:** CheckoutForm
+
+```tsx
+const open = useRazorpay(); const result = await open(data.checkout, { color: color.primary });
 ```
 
 ## buildCategoryTree

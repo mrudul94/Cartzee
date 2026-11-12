@@ -3388,6 +3388,48 @@
       "accessibility": "",
       "example": "<JsonLd data={buildFaqJsonLd(faqs)} />",
       "lastUpdated": "2026-11-12"
+    },
+    {
+      "variants": [],
+      "tokensUsed": [
+        "color.textMuted",
+        "font.size.sm",
+        "space.2",
+        "space.4"
+      ],
+      "usedIn": [
+        "app:/order/[id]"
+      ],
+      "lastUpdated": "2026-11-12",
+      "name": "OrderStatusPoller",
+      "path": "src/components/commerce/OrderStatusPoller.tsx",
+      "category": "commerce",
+      "description": "Refreshes the order success page every few seconds while payment confirmation (webhook) is pending.",
+      "props": {
+        "intervalMs": "number (default 3000)",
+        "maxAttempts": "number (default 20)"
+      },
+      "accessibility": "role=status live message; spinner is aria-hidden; gives a clear fallback message after the last attempt.",
+      "example": "{!paid && <OrderStatusPoller />}"
+    },
+    {
+      "variants": [],
+      "tokensUsed": [],
+      "usedIn": [
+        "CheckoutForm"
+      ],
+      "lastUpdated": "2026-11-12",
+      "name": "useRazorpay",
+      "path": "src/hooks/useRazorpay.ts",
+      "category": "hook",
+      "description": "Loads Razorpay Checkout.js on demand and opens it; resolves with the signed success payload or rejects (PaymentDismissedError on close).",
+      "props": {
+        "options": "RazorpayCheckoutOptions (from /api/checkout)",
+        "theme": "{ color?: string }",
+        "returns": "(options, theme) => Promise<RazorpaySuccess>"
+      },
+      "accessibility": "",
+      "example": "const open = useRazorpay(); const result = await open(data.checkout, { color: color.primary });"
     }
   ]
 }

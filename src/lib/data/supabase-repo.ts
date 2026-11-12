@@ -1,0 +1,298 @@
+import "server-only";
+import { cache } from "react";
+import { createClient, type SupabaseClient } from "@supabase/supabase-js";
+import { config } from "@/lib/config";
+import type { Category, Faq, Order, OrderStatus, Post, PostBlock, Product, Review, Spec } from "@/lib/types";
+import { SHIPPING } from "@/lib/utils/delivery";
+import { OrderError, type ProductQuery, type Repo } from "./repo";
+
+/* ------------------------------------------------------------------ clients */
+
+const opts = { auth: { persistSession: false, autoRefreshToken: false } } as const;
+let publicClient: SupabaseClient | undefined;
+let serviceClient: SupabaseClient | undefined;
+
+/** Anon key: catalogue reads, governed by RLS + column grants (no supplier data). */
+const pub = () => (publicClient ??= createClient(config.supabase.url!, config.supabase.anonKey!, opts));
+/** Service role: orders and customers. Server-only; bypasses RLS. */
+const svc = () => (serviceClient ??= createClient(config.supabase.url!, config.supabase.serviceRoleKey!, opts));
+
+/* ------------------------------------------------------------------ row types */
+
+type CategoryRow = {
+  id: string; slug: string; name: string; parent_id: string | null; intro: string; blurb: string; image: string;
+  sort_order: number; seo_title: string | null; seo_description: string | null; faqs: Faq[];
+};
+type ProductRow = {
+  id: string; slug: string; category_id: string; subcategory_id: string; title: string; summary: string; description: string;
+  how_to_use: string[]; specs: Spec[]; material: string; colour: string; price: number; mrp: number; rating: number;
+  review_count: number; stock: number; is_bestseller: boolean; is_flash_sale: boolean; faqs: Faq[];
+  seo_title: string | null; seo_description: string | null; created_at: string;
+  product_images: { src: string; alt: string; sort_order: number }[];
+};
+type OrderRow = {
+  id: string; number: string; status: OrderStatus; address: Order["address"]; subtotal: number; shipping: number; discount: number;
+  total: number; razorpay_order_id: string | null; razorpay_payment_id: string | null; meesho_order_id: string | null;
+  meesho_cost: number | null; tracking_url: string | null; created_at: string;
+  order_items: { product_id: string; slug: string; path: string; title: string; image: string; quantity: number; unit_price: number; unit_mrp: number; meesho_price: number; meesho_url: string }[];
+  order_events: { status: OrderStatus; note: string | null; created_at: string }[];
+};
+
+const PRODUCT_COLUMNS =
+  "id, slug, category_id, subcategory_id, title, summary, description, how_to_use, specs, material, colour, price, mrp, rating, review_count, stock, is_bestseller, is_flash_sale, faqs, seo_title, seo_description, created_at, product_images(src, alt, sort_order)";
+const ORDER_COLUMNS = "*, order_items(*), order_events(status, note, created_at)";
+const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+/* ------------------------------------------------------------------ mapping */
+
+function fail(context: string, error: { message: string; code?: string } | null): never {
+  throw new Error(`Supabase ${context} failed: ${error?.message ?? "unknown error"}`);
+}
+
+const loadCategories = cache(async (): Promise<Category[]> => {
+  const { data, error } = await pub().from("categories").select("*").order("sort_order");
+  if (error) fail("categories", error);
+  const rows = data as CategoryRow[];
+  const slugById = new Map(rows.map((r) => [r.id, r.slug]));
+  return rows.map((r) => ({
+    id: r.id,
+    slug: r.slug,
+    name: r.name,
+    parentSlug: r.parent_id ? (slugById.get(r.parent_id) ?? null) : null,
+    intro: r.intro,
+    blurb: r.blurb,
+    image: r.image,
+    sortOrder: r.sort_order,
+    seoTitle: r.seo_title ?? undefined,
+    seoDescription: r.seo_description ?? undefined,
+    faqs: r.faqs ?? [],
+  }));
+});
+
+async function toProducts(rows: ProductRow[]): Promise<Product[]> {
+  const cats = await loadCategories();
+  const slug = new Map(cats.map((c) => [c.id, c.slug]));
+  return rows.map((r) => ({
+    id: r.id,
+    slug: r.slug,
+    categorySlug: slug.get(r.category_id) ?? "",
+    subcategorySlug: slug.get(r.subcategory_id) ?? "",
+    title: r.title,
+    summary: r.summary,
+    description: r.description,
+    howToUse: r.how_to_use ?? [],
+    specs: r.specs ?? [],
+    material: r.material,
+    colour: r.colour,
+    price: Number(r.price),
+    mrp: Number(r.mrp),
+    rating: Number(r.rating),
+    reviewCount: r.review_count,
+    stock: r.stock,
+    isBestseller: r.is_bestseller,
+    isFlashSale: r.is_flash_sale,
+    images: [...(r.product_images ?? [])].sort((a, b) => a.sort_order - b.sort_order).map(({ src, alt }) => ({ src, alt })),
+    faqs: r.faqs ?? [],
+    createdAt: r.created_at,
+    seoTitle: r.seo_title ?? undefined,
+    seoDescription: r.seo_description ?? undefined,
+  }));
+}
+
+function toOrder(r: OrderRow): Order {
+  return {
+    id: r.id,
+    number: r.number,
+    status: r.status,
+    address: r.address,
+    items: (r.order_items ?? []).map((i) => ({
+      productId: i.product_id,
+      slug: i.slug,
+      path: i.path,
+      title: i.title,
+      image: i.image,
+      quantity: i.quantity,
+      unitPrice: Number(i.unit_price),
+      unitMrp: Number(i.unit_mrp),
+      meeshoPrice: Number(i.meesho_price),
+      meeshoUrl: i.meesho_url,
+    })),
+    subtotal: Number(r.subtotal),
+    shipping: Number(r.shipping),
+    discount: Number(r.discount),
+    total: Number(r.total),
+    razorpayOrderId: r.razorpay_order_id ?? undefined,
+    razorpayPaymentId: r.razorpay_payment_id ?? undefined,
+    meeshoOrderId: r.meesho_order_id ?? undefined,
+    meeshoCost: r.meesho_cost === null ? undefined : Number(r.meesho_cost),
+    trackingUrl: r.tracking_url ?? undefined,
+    events: [...(r.order_events ?? [])]
+      .sort((a, b) => a.created_at.localeCompare(b.created_at))
+      .map((e) => ({ status: e.status, at: e.created_at, note: e.note ?? undefined })),
+    createdAt: r.created_at,
+  };
+}
+
+/** Customer-fixable errors raised by SQL functions use SQLSTATE P0001/P0002. */
+function rpcError(error: { message: string; code?: string }): never {
+  if (error.code === "P0001" || error.code === "P0002") throw new OrderError(error.message);
+  if (error.code === "22P02") throw new OrderError("A product in your cart is no longer available");
+  fail("rpc", error);
+}
+
+/* ------------------------------------------------------------------ repo */
+
+export const supabaseRepo: Repo = {
+  kind: "supabase",
+
+  listCategories: loadCategories,
+
+  async getCategory(slug) {
+    return (await loadCategories()).find((c) => c.slug === slug) ?? null;
+  },
+
+  async listProducts(query: ProductQuery = {}) {
+    const cats = await loadCategories();
+    const idOf = (slug: string) => cats.find((c) => c.slug === slug)?.id ?? "00000000-0000-0000-0000-000000000000";
+
+    let rankedIds: string[] | undefined;
+    if (query.q) {
+      const { data, error } = await pub().rpc("search_products", { q: query.q });
+      if (error) fail("search", error);
+      rankedIds = (data as { id: string }[]).map((r) => r.id);
+      if (rankedIds.length === 0) return [];
+    }
+
+    let req = pub().from("products").select(PRODUCT_COLUMNS).order("created_at", { ascending: true });
+    if (query.category) req = req.eq("category_id", idOf(query.category));
+    if (query.subcategory) req = req.eq("subcategory_id", idOf(query.subcategory));
+    if (query.minPrice !== undefined) req = req.gte("price", query.minPrice);
+    if (query.maxPrice !== undefined) req = req.lte("price", query.maxPrice);
+    if (query.bestseller) req = req.eq("is_bestseller", true);
+    if (query.flashSale) req = req.eq("is_flash_sale", true);
+    if (query.slugs) req = req.in("slug", query.slugs);
+    const ids = rankedIds ?? query.ids;
+    if (ids) req = req.in("id", ids.filter((i) => UUID.test(i)));
+    if (query.limit && !rankedIds && !query.slugs) req = req.limit(query.limit);
+
+    const { data, error } = await req;
+    if (error) fail("products", error);
+    let list = await toProducts(data as unknown as ProductRow[]);
+    if (rankedIds) list = rankedIds.map((id) => list.find((p) => p.id === id)).filter((p) => p !== undefined);
+    if (query.slugs) list = query.slugs.map((s) => list.find((p) => p.slug === s)).filter((p) => p !== undefined);
+    return query.limit ? list.slice(0, query.limit) : list;
+  },
+
+  async getProductBySlug(slug) {
+    const { data, error } = await pub().from("products").select(PRODUCT_COLUMNS).eq("slug", slug).maybeSingle();
+    if (error) fail("product", error);
+    return data ? ((await toProducts([data as unknown as ProductRow]))[0] ?? null) : null;
+  },
+
+  async listReviews(productId) {
+    if (!UUID.test(productId)) return [];
+    const { data, error } = await pub()
+      .from("reviews")
+      .select("id, product_id, author, city, rating, title, body, photos, verified, created_at")
+      .eq("product_id", productId)
+      .order("created_at", { ascending: false });
+    if (error) fail("reviews", error);
+    return (data as { id: string; product_id: string; author: string; city: string; rating: number; title: string; body: string; photos: string[]; verified: boolean; created_at: string }[]).map(
+      (r): Review => ({ id: r.id, productId: r.product_id, author: r.author, city: r.city, rating: r.rating, title: r.title, body: r.body, photos: r.photos ?? [], verified: r.verified, createdAt: r.created_at }),
+    );
+  },
+
+  async listPosts() {
+    const { data, error } = await pub().from("blog_posts").select("*").order("published_at", { ascending: false });
+    if (error) fail("posts", error);
+    return (data as Record<string, unknown>[]).map(toPost);
+  },
+
+  async getPost(slug) {
+    const { data, error } = await pub().from("blog_posts").select("*").eq("slug", slug).maybeSingle();
+    if (error) fail("post", error);
+    return data ? toPost(data as Record<string, unknown>) : null;
+  },
+
+  async createOrder({ address, items }) {
+    const { data, error } = await svc().rpc("create_order", {
+      p_customer: { name: address.name, phone: address.phone, email: address.email },
+      p_address: address,
+      p_items: items.map((i) => ({ product_id: i.productId, quantity: i.quantity })),
+      p_free_above: SHIPPING.freeAbove,
+      p_shipping_fee: SHIPPING.fee,
+    });
+    if (error) rpcError(error);
+    const order = await supabaseRepo.getOrder(data as string);
+    if (!order) throw new Error("Order was created but could not be read back");
+    return order;
+  },
+
+  async getOrder(id) {
+    if (!UUID.test(id)) return null;
+    const { data, error } = await svc().from("orders").select(ORDER_COLUMNS).eq("id", id).maybeSingle();
+    if (error) fail("order", error);
+    return data ? toOrder(data as OrderRow) : null;
+  },
+
+  async findOrderByRazorpayOrderId(razorpayOrderId) {
+    const { data, error } = await svc().from("orders").select(ORDER_COLUMNS).eq("razorpay_order_id", razorpayOrderId).maybeSingle();
+    if (error) fail("order by razorpay id", error);
+    return data ? toOrder(data as OrderRow) : null;
+  },
+
+  async findOrderForTracking(number, phone) {
+    const { data, error } = await svc()
+      .from("orders")
+      .select(`${ORDER_COLUMNS}, customers!inner(phone)`)
+      .eq("number", number.toUpperCase())
+      .eq("customers.phone", phone)
+      .maybeSingle();
+    if (error) fail("tracking", error);
+    return data ? toOrder(data as OrderRow) : null;
+  },
+
+  async attachRazorpayOrder(orderId, razorpayOrderId) {
+    const { error } = await svc().from("orders").update({ razorpay_order_id: razorpayOrderId }).eq("id", orderId);
+    if (error) fail("attach razorpay order", error);
+  },
+
+  async markOrderPaid(orderId, payment) {
+    const { data, error } = await svc().rpc("mark_order_paid", {
+      p_order_id: orderId,
+      p_razorpay_order_id: payment.razorpayOrderId ?? null,
+      p_payment_id: payment.razorpayPaymentId ?? null,
+      p_amount_paise: payment.amountPaise ?? null,
+    });
+    if (error) rpcError(error);
+    const row = (data as { order_id: string; changed: boolean }[])[0];
+    const order = await supabaseRepo.getOrder(orderId);
+    if (!row || !order) throw new OrderError("Order not found");
+    return { order, changed: row.changed };
+  },
+
+  async updateOrderStatus(id, status, patch = {}, note) {
+    const { error } = await svc().rpc("set_order_status", {
+      p_order_id: id,
+      p_status: status,
+      p_patch: { meeshoOrderId: patch.meeshoOrderId, meeshoCost: patch.meeshoCost, trackingUrl: patch.trackingUrl },
+      p_note: note ?? null,
+    });
+    if (error) rpcError(error);
+    return supabaseRepo.getOrder(id);
+  },
+};
+
+function toPost(r: Record<string, unknown>): Post {
+  return {
+    slug: r.slug as string,
+    title: r.title as string,
+    excerpt: r.excerpt as string,
+    body: (r.body as PostBlock[]) ?? [],
+    faqs: (r.faqs as Faq[]) ?? [],
+    cover: r.cover as string,
+    author: r.author as string,
+    publishedAt: (r.published_at as string) ?? (r.updated_at as string),
+    updatedAt: r.updated_at as string,
+  };
+}

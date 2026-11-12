@@ -27,7 +27,7 @@ function groupBlocks(blocks: PostBlock[]): PostBlock[][] {
   }
   return groups;
 }
-export const dynamicParams = false;
+// New catalogue rows render on first request (ISR); unknown slugs 404 via notFound().
 type Props = { params: Promise<{ slug: string }> };
 
 export async function generateStaticParams() {

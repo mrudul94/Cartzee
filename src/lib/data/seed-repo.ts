@@ -6,14 +6,15 @@ import { seedReviews } from "@/lib/seed/reviews";
 import type { Order, OrderItem } from "@/lib/types";
 import { shippingFor } from "@/lib/utils/delivery";
 import { paths } from "@/lib/utils/paths";
-import type { ProductQuery, Repo } from "./repo";
+import { OrderError, type ProductQuery, type Repo } from "./repo";
 
 /**
  * Development repository backed by seed files and an in-memory order store.
  * Orders live on globalThis so they survive dev hot reloads (lost on server restart).
  */
-const g = globalThis as unknown as { __citySellerOrders?: Map<string, Order> };
+const g = globalThis as unknown as { __citySellerOrders?: Map<string, Order>; __citySellerStock?: Map<string, number> };
 const orders = (g.__citySellerOrders ??= new Map<string, Order>());
+const stock = (g.__citySellerStock ??= new Map(seedProducts.map((p) => [p.id, p.stock])));
 
 const tokens = (s: string) => s.toLowerCase().split(/[^a-z0-9]+/).filter((t) => t.length > 1);
 
@@ -22,8 +23,12 @@ function matches(q: string, haystack: string) {
   return tokens(q).every((t) => words.some((w) => w.startsWith(t) || (t.length > 3 && w.startsWith(t.replace(/s$/, "")))));
 }
 
+function withStock<T extends { id: string; stock: number }>(p: T): T {
+  return { ...p, stock: stock.get(p.id) ?? p.stock };
+}
+
 function applyQuery(query: ProductQuery = {}) {
-  let list = seedProducts.filter((p) => {
+  let list = seedProducts.map(withStock).filter((p) => {
     if (query.category && p.categorySlug !== query.category) return false;
     if (query.subcategory && p.subcategorySlug !== query.subcategory) return false;
     if (query.minPrice !== undefined && p.price < query.minPrice) return false;
@@ -47,6 +52,7 @@ let counter = 1000 + orders.size;
 const newId = () => `ord_${Date.now().toString(36)}${Math.random().toString(36).slice(2, 8)}`;
 
 export const seedRepo: Repo = {
+  kind: "seed",
   async listCategories() {
     return seedCategories;
   },
@@ -57,7 +63,8 @@ export const seedRepo: Repo = {
     return applyQuery(query);
   },
   async getProductBySlug(slug) {
-    return seedProducts.find((p) => p.slug === slug) ?? null;
+    const p = seedProducts.find((x) => x.slug === slug);
+    return p ? withStock(p) : null;
   },
   async listReviews(productId) {
     return seedReviews.filter((r) => r.productId === productId);
@@ -69,10 +76,13 @@ export const seedRepo: Repo = {
     return seedPosts.find((p) => p.slug === slug) ?? null;
   },
   async createOrder({ address, items }) {
-    const lines: OrderItem[] = items.map(({ productId, quantity }) => {
+    const merged = new Map<string, number>();
+    for (const i of items) merged.set(i.productId, (merged.get(i.productId) ?? 0) + i.quantity);
+    const lines: OrderItem[] = [...merged].map(([productId, quantity]) => {
       const p = seedProducts.find((x) => x.id === productId);
-      if (!p) throw new Error(`Unknown product ${productId}`);
-      if (p.stock < quantity) throw new Error(`${p.title} is out of stock`);
+      if (!p) throw new OrderError("A product in your cart is no longer available");
+      if (quantity > 10) throw new OrderError(`Quantity for ${p.title} must be between 1 and 10`);
+      if ((stock.get(p.id) ?? 0) < quantity) throw new OrderError(`${p.title} is out of stock`);
       return {
         productId: p.id,
         slug: p.slug,
@@ -82,8 +92,8 @@ export const seedRepo: Repo = {
         quantity,
         unitPrice: p.price,
         unitMrp: p.mrp,
-        meeshoPrice: p.meeshoPrice,
-        meeshoUrl: p.meeshoUrl,
+        meeshoPrice: p.meeshoPrice ?? 0,
+        meeshoUrl: p.meeshoUrl ?? "",
       };
     });
     const subtotal = lines.reduce((s, l) => s + l.unitPrice * l.quantity, 0);
@@ -99,7 +109,7 @@ export const seedRepo: Repo = {
       shipping,
       discount: 0,
       total: subtotal + shipping,
-      events: [{ status: "pending_payment", at: now }],
+      events: [{ status: "pending_payment", at: now, note: "Order created" }],
       createdAt: now,
     };
     orders.set(order.id, order);
@@ -108,11 +118,39 @@ export const seedRepo: Repo = {
   async getOrder(id) {
     return orders.get(id) ?? null;
   },
+  async findOrderByRazorpayOrderId(razorpayOrderId) {
+    for (const o of orders.values()) if (o.razorpayOrderId === razorpayOrderId) return o;
+    return null;
+  },
   async findOrderForTracking(number, phone) {
     for (const o of orders.values()) {
       if (o.number.toUpperCase() === number.toUpperCase() && o.address.phone === phone) return o;
     }
     return null;
+  },
+  async attachRazorpayOrder(orderId, razorpayOrderId) {
+    const o = orders.get(orderId);
+    if (o) orders.set(orderId, { ...o, razorpayOrderId });
+  },
+  async markOrderPaid(orderId, payment) {
+    // Single-threaded JS: check-and-set below cannot interleave, mirroring the row lock in SQL.
+    const o = orders.get(orderId);
+    if (!o) throw new OrderError("Order not found");
+    if (o.status !== "pending_payment") return { order: o, changed: false };
+    if (payment.razorpayOrderId && o.razorpayOrderId !== payment.razorpayOrderId) throw new OrderError("Payment does not belong to this order");
+    if (payment.amountPaise !== undefined && Math.round(o.total * 100) !== payment.amountPaise) {
+      throw new OrderError(`Paid amount ${payment.amountPaise} does not match order total ${Math.round(o.total * 100)}`);
+    }
+    const at = new Date().toISOString();
+    const updated: Order = {
+      ...o,
+      status: "paid",
+      razorpayPaymentId: payment.razorpayPaymentId ?? o.razorpayPaymentId,
+      events: [...o.events, { status: "paid", at, note: "Payment captured" }],
+    };
+    orders.set(orderId, updated);
+    for (const i of o.items) stock.set(i.productId, Math.max(0, (stock.get(i.productId) ?? 0) - i.quantity));
+    return { order: updated, changed: true };
   },
   async updateOrderStatus(id, status, patch = {}, note) {
     const o = orders.get(id);

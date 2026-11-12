@@ -33,9 +33,10 @@ export type Product = {
   colour: string;
   price: number;
   mrp: number;
-  meeshoUrl: string;
-  meeshoPrice: number;
-  priceCheckedAt: string;
+  /** Supplier data: present only for server-side/admin reads, never sent to the browser. */
+  meeshoUrl?: string;
+  meeshoPrice?: number;
+  priceCheckedAt?: string;
   rating: number;
   reviewCount: number;
   stock: number;

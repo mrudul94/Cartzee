@@ -8,6 +8,7 @@ import { CartLineItem } from "@/components/commerce/CartLineItem";
 import { CartView } from "@/components/commerce/CartView";
 import { CategoryListing } from "@/components/commerce/CategoryListing";
 import { CheckoutForm } from "@/components/commerce/CheckoutForm";
+import { OrderStatusPoller } from "@/components/commerce/OrderStatusPoller";
 import { FreeShippingProgress, OrderSummary } from "@/components/commerce/OrderSummary";
 import { PincodeChecker } from "@/components/commerce/PincodeChecker";
 import { PrepaidNotice } from "@/components/commerce/PrepaidNotice";
@@ -231,6 +232,7 @@ export const demos: Record<string, ReactNode> = {
   CartLineItem: <ul className="max-w-modal"><CartLineItem line={sampleLine} /></ul>,
   OrderSummary: <OrderSummary subtotal={898} shipping={0} total={898} savings={900} showFreeShippingHint className="max-w-modal" />,
   FreeShippingProgress: <FreeShippingProgress subtotal={320} className="max-w-modal" />,
+  OrderStatusPoller: <OrderStatusPoller maxAttempts={0} />,
   CartDrawer: (
     <div className={row}>
       <CartDrawer />

@@ -14,6 +14,8 @@ import { Input, Select } from "@/components/ui/Input";
 import { toast } from "@/components/ui/Toast";
 import { cartTotals, useCart } from "@/hooks/useCart";
 import { useHydrated } from "@/hooks/useHydrated";
+import { PaymentDismissedError, useRazorpay } from "@/hooks/useRazorpay";
+import { color } from "@/design-system/tokens";
 import { formatINR } from "@/lib/utils/format";
 import { paths } from "@/lib/utils/paths";
 import { addressSchema, INDIAN_STATES } from "@/lib/utils/validators";
@@ -31,6 +33,7 @@ export function CheckoutForm() {
   const items = useCart((s) => s.items);
   const clear = useCart((s) => s.clear);
   const router = useRouter();
+  const openRazorpay = useRazorpay();
   const [submitting, setSubmitting] = useState(false);
   const totals = cartTotals(items);
 
@@ -58,11 +61,25 @@ export function CheckoutForm() {
           body: JSON.stringify({ orderId: data.orderId }),
         });
         if (!pay.ok) throw new Error("Payment failed. You have not been charged.");
+      } else {
+        const result = await openRazorpay(data.checkout, { color: color.primary });
+        // Payment succeeded at Razorpay. Confirm fast via signature check; the webhook confirms
+        // independently, so a failed verify call still lands on the success page (which polls).
+        await fetch("/api/checkout/verify", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ orderId: data.orderId, ...result }),
+        }).catch(() => undefined);
       }
       clear();
       router.push(paths.orderSuccess(data.orderId));
     } catch (e) {
-      toast({ tone: "error", title: "Payment not completed", description: e instanceof Error ? e.message : undefined });
+      const dismissed = e instanceof PaymentDismissedError;
+      toast({
+        tone: dismissed ? "info" : "error",
+        title: dismissed ? "Payment cancelled" : "Payment not completed",
+        description: e instanceof Error ? e.message : undefined,
+      });
       setSubmitting(false);
     }
   };
