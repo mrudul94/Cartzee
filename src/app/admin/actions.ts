@@ -11,6 +11,7 @@ import { adminRepo, AdminError } from "@/lib/data/admin-repo";
 import { changeOrderStatus } from "@/lib/orders/service";
 import { canTransition } from "@/lib/orders/status";
 import { refundPayment, toPaise } from "@/lib/payments/razorpay";
+import { paths } from "@/lib/utils/paths";
 
 /* ------------------------------------------------------------------ auth */
 
@@ -28,12 +29,12 @@ export async function signInAction(_prev: ActionState, fd: FormData): Promise<Ac
     await supabase.auth.signOut();
     return { message: "This account does not have admin access." };
   }
-  redirect("/admin");
+  redirect(paths.admin());
 }
 
 export async function signOutAction() {
   if (isSupabaseConfigured) await (await supabaseAuthClient()).auth.signOut();
-  redirect("/admin/login");
+  redirect(paths.admin("/login"));
 }
 
 /* ------------------------------------------------------------------ orders */
@@ -96,7 +97,7 @@ export async function saveProductAction(_prev: ActionState, fd: FormData): Promi
   }
   // Catalogue changes affect listings, home, product and feeds: refresh all storefront ISR pages.
   revalidatePath("/", "layout");
-  if (!parsed.data.id) redirect(`/admin/products/${id}?created=1`);
+  if (!parsed.data.id) redirect(paths.admin(`/products/${id}?created=1`));
   return { ok: true, message: "Product saved. The storefront is updated." };
 }
 

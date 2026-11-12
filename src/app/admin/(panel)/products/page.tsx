@@ -9,6 +9,7 @@ import { DataTable } from "@/components/ui/DataTable";
 import { Input } from "@/components/ui/Input";
 import { adminRepo } from "@/lib/data/admin-repo";
 import { daysSince, formatINR } from "@/lib/utils/format";
+import { paths } from "@/lib/utils/paths";
 
 export const metadata = { title: "Products" };
 
@@ -26,13 +27,13 @@ export default async function AdminProductsPage({ searchParams }: Props) {
   } as const;
   const pick = filters[filter as keyof typeof filters] ?? filters.all;
   const rows = all.filter((p) => pick(p) && (!needle || `${p.title} ${p.slug}`.toLowerCase().includes(needle)));
-  const href = (f: string) => `/admin/products?filter=${f}${q ? `&q=${encodeURIComponent(q)}` : ""}`;
+  const href = (f: string) => paths.admin(`/products?filter=${f}${q ? `&q=${encodeURIComponent(q)}` : ""}`);
 
   return (
     <div className="flex flex-col gap-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <h1 className="font-heading text-3xl font-semibold">Products</h1>
-        <Button href="/admin/products/new" variant="secondary" icon={<Plus aria-hidden className="h-4 w-4" />}>
+        <Button href={paths.admin("/products/new")} variant="secondary" icon={<Plus aria-hidden className="h-4 w-4" />}>
           Add product
         </Button>
       </div>
@@ -61,7 +62,7 @@ export default async function AdminProductsPage({ searchParams }: Props) {
           {
             header: "Product",
             cell: (p) => (
-              <Link href={`/admin/products/${p.id}`} className="flex items-center gap-3 hover:underline">
+              <Link href={paths.admin(`/products/${p.id}`)} className="flex items-center gap-3 hover:underline">
                 <span className="relative h-12 w-12 shrink-0 overflow-hidden rounded-md bg-background">
                   {p.images[0] && <Image src={p.images[0].src} alt="" fill sizes="48px" className="object-cover" />}
                 </span>

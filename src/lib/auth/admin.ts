@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { createServerClient } from "@supabase/ssr";
 import { config, isSupabaseConfigured } from "@/lib/config";
 import { svc } from "@/lib/data/supabase-clients";
+import { paths } from "@/lib/utils/paths";
 
 export type AdminUser = { id: string; email: string; mode: "supabase" | "dev" };
 
@@ -51,6 +52,6 @@ export async function getAdmin(): Promise<AdminUser | null> {
 /** Guard for admin pages and server actions. */
 export async function requireAdmin(): Promise<AdminUser> {
   const admin = await getAdmin();
-  if (!admin) redirect("/admin/login");
+  if (!admin) redirect(paths.admin("/login"));
   return admin;
 }

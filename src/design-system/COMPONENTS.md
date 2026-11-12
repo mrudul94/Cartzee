@@ -6,7 +6,7 @@
 component with a new variant if it is close, and only create a new component (then register it) if nothing similar exists.
 Live previews: `/design-system`.
 
-Total entries: **112**
+Total entries: **115**
 
 | Name | Category | Path | Description | Variants | Used in |
 |---|---|---|---|---|---|
@@ -53,6 +53,7 @@ Total entries: **112**
 | [ProductBuyBox](#productbuybox) | commerce | `components/commerce/ProductBuyBox.tsx` | Quantity + Add to Cart + Buy Now; drives the mobile StickyBuyBar. | – | 1 |
 | [ProductCard](#productcard) | commerce | `components/commerce/ProductCard.tsx` | Product tile: hover second image, discount/sold-out/bestseller badges, title, rating, price, Add to Cart. | default, plain | 4 |
 | [ProductGallery](#productgallery) | commerce | `components/commerce/ProductGallery.tsx` | Main image, thumbnails, counter, arrows and zoom modal with hover magnify. | – | 1 |
+| [PurchaseTracker](#purchasetracker) | commerce | `components/commerce/PurchaseTracker.tsx` | Sends the GA4 purchase event once per order on the order success page. | – | 1 |
 | [RatingStars](#ratingstars) | commerce | `components/commerce/RatingStars.tsx` | Read-only star rating with fractional fill. | – | 3 |
 | [ReviewList](#reviewlist) | commerce | `components/commerce/ReviewList.tsx` | Rating summary with distribution plus reviews with photos. | – | 1 |
 | [SearchBox](#searchbox) | commerce | `components/commerce/SearchBox.tsx` | GET form to /search (works without JS; SearchAction target). | – | 2 |
@@ -71,6 +72,7 @@ Total entries: **112**
 | [ProductGrid](#productgrid) | section | `components/sections/ProductGrid.tsx` | Titled product section; grid or mobile carousel (Bestsellers, Flash sale, Related). | grid, carousel | 2 |
 | [SaleBanner](#salebanner) | section | `components/sections/SaleBanner.tsx` | Promo banner with live text over decorative art. | soft, sand, ink | 1 |
 | [ValueProps](#valueprops) | section | `components/sections/InfoSections.tsx` | Five value propositions (range, pricing, shipping, returns, secure prepaid). | – | 2 |
+| [Analytics](#analytics) | layout | `components/layout/Analytics.tsx` | Loads GA4 (NEXT_PUBLIC_GA_ID) and Microsoft Clarity (NEXT_PUBLIC_CLARITY_ID) after the page is interactive; shop only, never in the admin. | – | 1 |
 | [Breadcrumbs](#breadcrumbs) | layout | `components/layout/Breadcrumbs.tsx` | Breadcrumb trail with BreadcrumbList JSON-LD; Home auto-prepended. | – | 14 |
 | [BudgetMenu](#budgetmenu) | layout | `components/layout/MegaMenu.tsx` | 'Shop by Budget' dropdown of five price tiers. | – | 1 |
 | [Container](#container) | layout | `components/layout/Container.tsx` | Centred page-width wrapper with standard gutters. | default, narrow, prose, full | 18 |
@@ -97,21 +99,22 @@ Total entries: **112**
 | [useCart](#usecart) | hook | `hooks/useCart.ts` | Zustand cart store persisted to localStorage (items, drawer state, add/setQuantity/remove/clear). | – | 6 |
 | [useHydrated](#usehydrated) | hook | `hooks/useHydrated.ts` | True after client hydration (guards localStorage-backed UI). | – | 4 |
 | [useRazorpay](#userazorpay) | hook | `hooks/useRazorpay.ts` | Loads Razorpay Checkout.js on demand and opens it; resolves with the signed success payload or rejects (PaymentDismissedError on close). | – | 1 |
-| [buildCategoryTree](#buildcategorytree) | util | `components/layout/MegaMenu.tsx` | Turns flat categories into a top-level tree with children. | – | 3 |
+| [buildCategoryTree](#buildcategorytree) | util | `components/layout/MegaMenu.tsx` | Turns flat categories into a top-level tree with children. | – | 4 |
 | [calcDiscount](#calcdiscount) | util | `lib/utils/format.ts` | Whole-number discount % from MRP and price. | – | 3 |
 | [calcMargin](#calcmargin) | util | `lib/utils/format.ts` | Margin amount and % of price between selling price and supplier cost. | – | 2 |
 | [cn](#cn) | util | `lib/utils/cn.ts` | clsx + tailwind-merge configured for token class names. | – | 38 |
 | [daysSince](#dayssince) | util | `lib/utils/format.ts` | Whole days since an ISO date (stale Meesho price checks). | – | 3 |
 | [estimateDelivery](#estimatedelivery) | util | `lib/utils/delivery.ts` | PIN-zone delivery window (dates + region); SHIPPING constant in the same file. | – | 2 |
 | [formatDate](#formatdate) | util | `lib/utils/format.ts` | ISO date → '12 Nov 2026' (en-IN). | – | 9 |
-| [formatINR](#formatinr) | util | `lib/utils/format.ts` | Formats rupees with Indian grouping: 1299 → ₹1,299. | – | 18 |
+| [formatINR](#formatinr) | util | `lib/utils/format.ts` | Formats rupees with Indian grouping: 1299 → ₹1,299. | – | 19 |
 | [getBudgetTier](#getbudgettier) | util | `lib/utils/budget.ts` | Looks up a BUDGET_TIERS entry by slug (BUDGET_TIERS constant lives in the same file). | – | 1 |
 | [inBudget](#inbudget) | util | `lib/utils/budget.ts` | Whether a price falls inside a budget tier. | – | 0 |
-| [paths](#paths) | util | `lib/utils/paths.ts` | Canonical URL builders (the only place URL shapes are defined). | – | 35 |
+| [paths](#paths) | util | `lib/utils/paths.ts` | Canonical URL builders (the only place URL shapes are defined). | – | 48 |
 | [shippingFor](#shippingfor) | util | `lib/utils/delivery.ts` | Delivery fee for a subtotal (free above threshold). | – | 2 |
 | [slugify](#slugify) | util | `lib/utils/format.ts` | Text → URL slug. | – | 5 |
 | [toCardProduct](#tocardproduct) | util | `lib/utils/product.ts` | Product → serializable CardProduct for client components. | – | 9 |
 | [tokenStyle](#tokenstyle) | util | `lib/utils/token-style.ts` | Maps token names to inline CSS-variable styles for width/height/colour props. | – | 2 |
+| [track](#track) | util | `lib/utils/analytics.ts` | GA4 ecommerce event helper (add_to_cart, begin_checkout, purchase, view_item); no-op when GA is not loaded. | – | 3 |
 | [validators](#validators) | util | `lib/utils/validators.ts` | Zod schemas: pincodeSchema, phoneSchema, addressSchema, checkoutSchema, trackOrderSchema, INDIAN_STATES. | – | 0 |
 | [buildArticleJsonLd](#buildarticlejsonld) | seo | `lib/seo/jsonld.ts` | Article JSON-LD for guides. | – | 1 |
 | [buildBreadcrumbJsonLd](#buildbreadcrumbjsonld) | seo | `lib/seo/jsonld.ts` | BreadcrumbList JSON-LD. | – | 1 |
@@ -1114,6 +1117,27 @@ Main image, thumbnails, counter, arrows and zoom modal with hover magnify.
 <ProductGallery images={p.images} title={p.title} />
 ```
 
+## PurchaseTracker
+
+`src/components/commerce/PurchaseTracker.tsx` · commerce · updated 2026-11-12
+
+Sends the GA4 purchase event once per order on the order success page.
+
+**Props**
+
+- `orderNumber`: string
+- `total`: number
+- `shipping`: number
+- `items`: {id,title,price,quantity}[]
+
+**Accessibility:** Renders no UI.
+
+**Used in:** app:/order/[id]
+
+```tsx
+{paid && <PurchaseTracker orderNumber={o.number} total={o.total} shipping={o.shipping} items={…} />}
+```
+
 ## RatingStars
 
 `src/components/commerce/RatingStars.tsx` · commerce · updated 2026-11-12
@@ -1544,6 +1568,20 @@ Five value propositions (range, pricing, shipping, returns, secure prepaid).
 <ValueProps />
 ```
 
+## Analytics
+
+`src/components/layout/Analytics.tsx` · layout · updated 2026-11-12
+
+Loads GA4 (NEXT_PUBLIC_GA_ID) and Microsoft Clarity (NEXT_PUBLIC_CLARITY_ID) after the page is interactive; shop only, never in the admin.
+
+**Accessibility:** Renders no UI.
+
+**Used in:** StoreShell
+
+```tsx
+<Analytics /> // in StoreShell
+```
+
 ## Breadcrumbs
 
 `src/components/layout/Breadcrumbs.tsx` · layout · updated 2026-11-12
@@ -1554,6 +1592,7 @@ Breadcrumb trail with BreadcrumbList JSON-LD; Home auto-prepended.
 
 - `items`: {label,href?}[]
 - `withJsonLd`: boolean
+- `home`: Crumb (default Home → /; admin passes Dashboard)
 
 **Tokens:** `color.text` `color.textMuted` `font.size.sm` `space.1` `space.3` `space.9`
 
@@ -2095,7 +2134,7 @@ Turns flat categories into a top-level tree with children.
 
 **Tokens:** `color.background` `color.primary` `color.text` `color.textMuted` `font.family.heading` `font.size.base` `font.size.lg` `font.size.sm` `font.weight.semibold` `radius.md` `space.1` `space.11` `space.2` `space.3` `space.8` `space.9`
 
-**Used in:** StoreShell, app:/, lib/admin/product-values
+**Used in:** StoreShell, app:/, app:/llms.txt (route), lib/admin/product-values
 
 ```tsx
 buildCategoryTree(await repo.listCategories())
@@ -2211,7 +2250,7 @@ Formats rupees with Indian grouping: 1299 → ₹1,299.
 
 - `amount`: number
 
-**Used in:** CartLineItem, CheckoutForm, PincodeChecker, PriceBlock, ProductForm, TrackOrderForm, admin/AdminBits, app:/[category]/[sub]/[product], app:/admin, app:/admin/orders, app:/admin/orders/[id], app:/admin/products, app:/order/[id], commerce/OrderSummary, commerce/ProductBuyBox, lib/admin/whatsapp, lib/orders/service, sections/InfoSections
+**Used in:** CartLineItem, CheckoutForm, PincodeChecker, PriceBlock, ProductForm, TrackOrderForm, admin/AdminBits, app:/[category]/[sub]/[product], app:/admin, app:/admin/orders, app:/admin/orders/[id], app:/admin/products, app:/llms.txt (route), app:/order/[id], commerce/OrderSummary, commerce/ProductBuyBox, lib/admin/whatsapp, lib/orders/service, sections/InfoSections
 
 ```tsx
 formatINR(1299)
@@ -2260,8 +2299,9 @@ Canonical URL builders (the only place URL shapes are defined).
 - `product(p)`: string
 - `budget(slug)`: string
 - `…`: see file
+- `admin(path)`: string (clean URL on the admin host, /admin/… locally)
 
-**Used in:** AddToCartButton, CartDrawer, CartView, CheckoutForm, Footer, GuideCards, Header, MobileNav, NotFoundContent, TopBar, app:/, app:/[category], app:/[category]/[sub], app:/[category]/[sub]/[product], app:/about, app:/account, app:/bestsellers, app:/budget/[tier], app:/cart, app:/checkout, app:/contact, app:/faq, app:/flash-sale, app:/guides, app:/guides/[slug], app:/order/[id], app:/policies/[slug], app:/search, app:/track-order, layout/MegaMenu, lib/admin/product-values, lib/data/seed-repo, lib/seo/jsonld, sections/InfoSections, toCardProduct
+**Used in:** AddToCartButton, AdminShell, CartDrawer, CartView, CheckoutForm, Footer, GuideCards, Header, MobileNav, NotFoundContent, TopBar, app:/, app:/[category], app:/[category]/[sub], app:/[category]/[sub]/[product], app:/about, app:/account, app:/admin, app:/admin/actions.ts, app:/admin/login, app:/admin/orders, app:/admin/orders/[id], app:/admin/products, app:/admin/products/[id], app:/admin/products/new, app:/bestsellers, app:/budget/[tier], app:/cart, app:/checkout, app:/contact, app:/faq, app:/feeds/google.xml (route), app:/flash-sale, app:/guides, app:/guides/[slug], app:/llms.txt (route), app:/order/[id], app:/policies/[slug], app:/search, app:/sitemap.ts, app:/track-order, layout/MegaMenu, lib/admin/product-values, lib/auth/admin, lib/data/seed-repo, lib/seo/jsonld, sections/InfoSections, toCardProduct
 
 ```tsx
 paths.product(p)
@@ -2332,6 +2372,23 @@ Maps token names to inline CSS-variable styles for width/height/colour props.
 
 ```tsx
 tokenStyle({ width: "12", bg: "success" })
+```
+
+## track
+
+`src/lib/utils/analytics.ts` · util · updated 2026-11-12
+
+GA4 ecommerce event helper (add_to_cart, begin_checkout, purchase, view_item); no-op when GA is not loaded.
+
+**Props**
+
+- `event`: string
+- `params`: { value, transaction_id, shipping, items }
+
+**Used in:** AddToCartButton, CheckoutForm, PurchaseTracker
+
+```tsx
+track("add_to_cart", { value: 449, items: [...] })
 ```
 
 ## validators

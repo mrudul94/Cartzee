@@ -6,6 +6,7 @@ import { adminRepo } from "@/lib/data/admin-repo";
 import { ADMIN_STATUS_LABEL } from "@/lib/orders/status";
 import { ORDER_STATUSES, type Order, type OrderStatus } from "@/lib/types";
 import { formatDate, formatINR } from "@/lib/utils/format";
+import { paths } from "@/lib/utils/paths";
 
 export const metadata = { title: "Orders" };
 
@@ -27,8 +28,8 @@ export default async function AdminOrdersPage({ searchParams }: Props) {
       <ChipNav
         label="Filter orders by status"
         chips={[
-          ...ORDER_STATUSES.map((s) => ({ label: ADMIN_STATUS_LABEL[s], href: `/admin/orders?status=${s}`, active: status === s, count: counts[s] })),
-          { label: "All", href: "/admin/orders?status=all", active: !status, count: total },
+          ...ORDER_STATUSES.map((s) => ({ label: ADMIN_STATUS_LABEL[s], href: paths.admin(`/orders?status=${s}`), active: status === s, count: counts[s] })),
+          { label: "All", href: paths.admin("/orders?status=all"), active: !status, count: total },
         ]}
       />
       <DataTable
@@ -40,7 +41,7 @@ export default async function AdminOrdersPage({ searchParams }: Props) {
           {
             header: "Order",
             cell: (o) => (
-              <Link href={`/admin/orders/${o.id}`} className="font-semibold underline-offset-4 hover:underline">
+              <Link href={paths.admin(`/orders/${o.id}`)} className="font-semibold underline-offset-4 hover:underline">
                 {o.number}
               </Link>
             ),

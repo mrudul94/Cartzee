@@ -4,12 +4,13 @@ import { Logo } from "@/components/layout/Logo";
 import { Card } from "@/components/ui/Card";
 import { adminAuthAvailable, getAdmin } from "@/lib/auth/admin";
 import { signInAction } from "../actions";
+import { paths } from "@/lib/utils/paths";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Sign in" };
 
 export default async function AdminLoginPage() {
-  if (await getAdmin()) redirect("/admin");
+  if (await getAdmin()) redirect(paths.admin());
   return (
     <main id="main" className="flex min-h-screen items-center justify-center bg-background px-4">
       <Card padding="lg" elevation="raised" className="w-full max-w-narrow">

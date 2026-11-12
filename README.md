@@ -4,8 +4,22 @@ An Indian home-needs store with prepaid-only checkout (Razorpay). Orders are ful
 Built with Next.js 15 (App Router), TypeScript, Tailwind CSS 3 driven by design tokens, Radix UI, Supabase,
 Razorpay and Resend.
 
-> **Status:** Milestones A (design system + storefront), B (database, payments, emails) and C (admin panel) are done.
-> Next: Milestone D (SEO feeds, llms.txt, Cloudflare deploy).
+> **Status:** all four milestones are done: A (design system + storefront), B (database, payments, emails),
+> C (admin panel) and D (two websites, SEO/AI-search files, analytics, Cloudflare deployment).
+
+## Two websites
+
+| | Shop | Admin |
+|---|---|---|
+| Address | `cityseller.in` (`www` redirects here) | `admin.cityseller.in` |
+| For | Customers | You and your partners |
+| Access | Public | Cloudflare Access (approved emails) → Supabase sign-in → `admins` table |
+| Search engines | Indexed (sitemap, robots, llms.txt, feed) | Blocked (`Disallow: /`, `noindex`) |
+| Other site's pages | `/admin…` returns the normal 404 | Shop pages and APIs return 404 |
+
+Both run from one Cloudflare Worker and share the database, so orders and price changes appear instantly on the other side.
+The split is done in `src/middleware.ts` and switched on by `NEXT_PUBLIC_ADMIN_HOST`. Locally the admin stays at `/admin`, or you can
+set `NEXT_PUBLIC_ADMIN_HOST=admin.localhost` and open `http://admin.localhost:3000`.
 
 ## Run locally
 
@@ -93,7 +107,7 @@ Then use the tunnel URL as the webhook URL in Razorpay.
 
 1. In Supabase, go to Authentication → Users → Add user. Enter their email and a password, and tick "Auto confirm".
 2. In the SQL editor, run `insert into public.admins (user_id) select id from auth.users where email = 'partner@example.com';`
-3. The partner signs in at `/admin/login`. Accounts that aren't in `admins` are refused.
+3. Add their email to the Cloudflare Access policy (see Deploy). They then sign in at `admin.cityseller.in/login`. Accounts that aren't in `admins` are refused.
 
 Without Supabase, `pnpm dev` opens the admin panel without sign-in, edits are kept in memory, and a banner says so.
 A production build without Supabase locks the panel completely. The style guide is available to admins at `/admin/design-system`.
@@ -109,6 +123,8 @@ A production build without Supabase locks the panel completely. The style guide 
 | `pnpm check:registry` | Fails if an export is unregistered or lacks a `/design-system` demo |
 | `pnpm db:seed-sql` | Regenerates `supabase/seed.sql` from the TypeScript seed data |
 | `pnpm placeholders` | Regenerates the SVG placeholder images |
+| `pnpm cf:preview` | Builds the Cloudflare Worker and runs it locally in workerd |
+| `pnpm cf:deploy` | Lint + tests, then builds and deploys both websites to Cloudflare |
 
 ## Design system
 
@@ -116,8 +132,59 @@ A production build without Supabase locks the panel completely. The style guide 
 - Registry: `src/design-system/registry.json` + generated `COMPONENTS.md`. Reuse or extend components before creating new ones.
 - Living style guide: `/design-system`. Available in dev, or in production with `DESIGN_SYSTEM_PUBLIC=true`.
 
+## SEO, answer engines and analytics
+
+| URL | What it is |
+|---|---|
+| `/sitemap.xml` | Every indexable page, with product images (cart, checkout, search, admin excluded) |
+| `/robots.txt` | Allows search and AI crawlers (Googlebot, Bingbot, GPTBot, PerplexityBot, ClaudeBot…), blocks private paths |
+| `/llms.txt` | Markdown summary of the store for AI assistants: policies, categories, bestsellers, guides, FAQ (generated from live data) |
+| `/feeds/google.xml` | Google Merchant Center feed. Add it in Merchant Center → Products → Feeds → Scheduled fetch |
+| `/og?title=…` | Generated 1200×630 PNG share image, used when a page has no photo |
+
+Every page also has a unique title, a meta description, a canonical URL, Open Graph tags and JSON-LD.
+Analytics load on the shop only, and only when their IDs are set:
+
+- **GA4** (`NEXT_PUBLIC_GA_ID`) receives the `add_to_cart`, `begin_checkout` and `purchase` events.
+- **Microsoft Clarity** (`NEXT_PUBLIC_CLARITY_ID`) records sessions.
+- **Search Console** verification uses `NEXT_PUBLIC_GSC_VERIFICATION`.
+
+## Deploy to Cloudflare
+
+**One-time setup**
+
+1. **Domain.** Add `cityseller.in` to Cloudflare (Websites → Add a site) and switch your registrar's nameservers to Cloudflare.
+2. **Cache bucket.** Run `pnpm wrangler login`, then `pnpm wrangler r2 bucket create city-seller-opennext-cache`.
+3. **Server secrets.** These are stored on the Worker, never in Git. Run `pnpm wrangler secret put <NAME>` once for each name:
+   ```
+   SUPABASE_SERVICE_ROLE_KEY  RAZORPAY_KEY_ID  RAZORPAY_KEY_SECRET  RAZORPAY_WEBHOOK_SECRET
+   RESEND_API_KEY  TELEGRAM_BOT_TOKEN  TELEGRAM_CHAT_ID  CF_ACCESS_TEAM_DOMAIN  CF_ACCESS_AUD
+   NEXT_PUBLIC_SUPABASE_URL  NEXT_PUBLIC_SUPABASE_ANON_KEY
+   ```
+   The last two are not secret, but server code also reads them at runtime.
+4. **Build-time values.** Put `NEXT_PUBLIC_SITE_URL=https://cityseller.in`, `NEXT_PUBLIC_ADMIN_HOST=admin.cityseller.in`, the Supabase URL and anon key,
+   and any analytics IDs in `.env.production.local` for a manual deploy, or in GitHub repository variables for automatic deploys.
+5. **Cloudflare Access for the admin.**
+   1. In Zero Trust → Access → Applications, add a *Self-hosted* application for `admin.cityseller.in`.
+   2. Add an *Allow* policy with your partners' emails, using login method *One-time PIN*.
+   3. Copy the application's *AUD tag* into `CF_ACCESS_AUD`, and your team domain (`<team>.cloudflareaccess.com`) into `CF_ACCESS_TEAM_DOMAIN`.
+6. **Rate limiting.** In Security → WAF → Rate limiting rules, limit `/api/track` and `/api/checkout` to about 20 requests per minute per IP.
+7. **Razorpay webhook.** Point it at `https://cityseller.in/api/razorpay/webhook`.
+
+**Deploying**
+
+- **Manual:** `pnpm cf:deploy`. This runs lint and tests, then builds and deploys both domains.
+  The `routes` in `wrangler.jsonc` attach `cityseller.in`, `www.cityseller.in` and `admin.cityseller.in` automatically.
+- **Automatic:** `.github/workflows/deploy.yml` deploys on every push to `main`, and `ci.yml` checks every other branch and pull request.
+  Add `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID` as repository secrets, and the `NEXT_PUBLIC_*` values as repository variables.
+
+`workers_dev` and preview URLs are disabled, so the admin can't be reached through a side address.
+The project uses pnpm's hoisted `node_modules` layout (`pnpm-workspace.yaml`), because the Cloudflare bundler can't copy pnpm's symlinks on Windows.
+
 ## Before launch
 
 - Replace the seed products, **sample ratings and reviews**, the placeholder phone number and email in `src/lib/site.ts`, and the SVG placeholders with real data and photos.
 - The 5% UPI discount is advertised in the top bar. Configure it as a Razorpay offer, or remove the text.
 - Switch from Razorpay test keys to live keys, and update the webhook secret to match.
+- Replace the SVG placeholder photos. Google Merchant Center and social apps do not accept SVG images.
+- After the first deploy, submit `https://cityseller.in/sitemap.xml` in Search Console, then run the Rich Results Test and a Lighthouse mobile check on the home, a category and a product page.

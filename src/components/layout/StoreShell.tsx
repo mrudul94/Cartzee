@@ -2,6 +2,7 @@ import { CartDrawer } from "@/components/commerce/CartDrawer";
 import { repo } from "@/lib/data";
 import { buildOrganizationJsonLd, buildWebSiteJsonLd } from "@/lib/seo/jsonld";
 import { JsonLd } from "@/lib/seo/JsonLdScript";
+import { Analytics } from "./Analytics";
 import { Footer } from "./Footer";
 import { Header } from "./Header";
 import { buildCategoryTree } from "./MegaMenu";
@@ -24,6 +25,7 @@ export async function StoreShell({ children }: { children: React.ReactNode }) {
       <Footer tree={tree} />
       <CartDrawer />
       <JsonLd data={[buildOrganizationJsonLd(), buildWebSiteJsonLd()]} />
+      <Analytics />
     </>
   );
 }

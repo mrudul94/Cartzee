@@ -6,12 +6,13 @@ import type { ReactNode } from "react";
 import { ExternalLink, LayoutDashboard, LogOut, Package, Palette, ShoppingCart } from "lucide-react";
 import { Logo } from "@/components/layout/Logo";
 import { cn } from "@/lib/utils/cn";
+import { paths } from "@/lib/utils/paths";
 
 const NAV = [
-  { href: "/admin", label: "Dashboard", icon: LayoutDashboard, exact: true },
-  { href: "/admin/orders", label: "Orders", icon: ShoppingCart },
-  { href: "/admin/products", label: "Products", icon: Package },
-  { href: "/admin/design-system", label: "Design system", icon: Palette },
+  { href: paths.admin(), label: "Dashboard", icon: LayoutDashboard, exact: true },
+  { href: paths.admin("/orders"), label: "Orders", icon: ShoppingCart },
+  { href: paths.admin("/products"), label: "Products", icon: Package },
+  { href: paths.admin("/design-system"), label: "Design system", icon: Palette },
 ];
 
 export type AdminShellProps = {
@@ -40,7 +41,7 @@ export function AdminShell({ email, devMode = false, pendingCount = 0, signOut, 
       >
         <Glyph aria-hidden className="h-5 w-5" />
         {label}
-        {href === "/admin/orders" && pendingCount > 0 && (
+        {href === paths.admin("/orders") && pendingCount > 0 && (
           <span className="ml-auto rounded-full bg-primary px-2 text-xs font-bold text-text-inverse" aria-label={`${pendingCount} to place`}>
             {pendingCount}
           </span>

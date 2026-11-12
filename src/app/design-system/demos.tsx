@@ -392,6 +392,8 @@ export const demos: Record<string, ReactNode> = {
       ]}
     />
   ),
+  Analytics: <p className="text-text-muted">Loads GA4 and Microsoft Clarity when their IDs are set. Mounted in StoreShell only; renders nothing.</p>,
+  PurchaseTracker: <p className="text-text-muted">Fires the GA4 purchase event once on the order success page; renders nothing.</p>,
   StoreShell: <p className="text-text-muted">Wraps every storefront page (TopBar, Header, Footer, CartDrawer, site JSON-LD). See <Link className="underline" href="/">the homepage</Link>.</p>,
 };
 

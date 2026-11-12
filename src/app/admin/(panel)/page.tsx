@@ -6,6 +6,7 @@ import { SectionHeader } from "@/components/ui/SectionHeader";
 import { adminRepo } from "@/lib/data/admin-repo";
 import { daysSince, formatDate, formatINR } from "@/lib/utils/format";
 import { markPriceCheckedAction } from "../actions";
+import { paths } from "@/lib/utils/paths";
 
 export const metadata = { title: "Dashboard" };
 
@@ -35,14 +36,14 @@ export default async function AdminDashboard() {
       </section>
 
       <section aria-labelledby="queue-heading">
-        <SectionHeader id="queue-heading" title="Next orders to place" viewAllHref="/admin/orders?status=paid" viewAllLabel="Open queue" />
+        <SectionHeader id="queue-heading" title="Next orders to place" viewAllHref={paths.admin("/orders?status=paid")} viewAllLabel="Open queue" />
         <DataTable
           caption="Paid orders waiting to be placed on Meesho"
           rows={toPlace}
           rowKey={(o) => o.id}
           empty="All paid orders have been placed."
           columns={[
-            { header: "Order", cell: (o) => <Link className="font-semibold underline-offset-4 hover:underline" href={`/admin/orders/${o.id}`}>{o.number}</Link> },
+            { header: "Order", cell: (o) => <Link className="font-semibold underline-offset-4 hover:underline" href={paths.admin(`/orders/${o.id}`)}>{o.number}</Link> },
             { header: "Customer", cell: (o) => `${o.address.name}, ${o.address.city}` },
             { header: "Placed", cell: (o) => formatDate(o.createdAt), hideOnMobile: true },
             { header: "Total", cell: (o) => formatINR(o.total), align: "right" },
@@ -63,7 +64,7 @@ export default async function AdminDashboard() {
           rowKey={(p) => p.id}
           empty="All Meesho prices were checked in the last week."
           columns={[
-            { header: "Product", cell: (p) => <Link className="hover:underline" href={`/admin/products/${p.id}`}>{p.title}</Link> },
+            { header: "Product", cell: (p) => <Link className="hover:underline" href={paths.admin(`/products/${p.id}`)}>{p.title}</Link> },
             { header: "Last checked", cell: (p) => <span className="text-warning">{daysSince(p.priceCheckedAt)} days ago</span> },
             { header: "Meesho price", cell: (p) => formatINR(p.meeshoPrice), align: "right", hideOnMobile: true },
             { header: "Margin", cell: (p) => <MarginText price={p.price} cost={p.meeshoPrice} />, align: "right", hideOnMobile: true },
@@ -98,7 +99,7 @@ export default async function AdminDashboard() {
             rows={lowStock}
             rowKey={(p) => p.id}
             columns={[
-              { header: "Product", cell: (p) => <Link className="hover:underline" href={`/admin/products/${p.id}`}>{p.title}</Link> },
+              { header: "Product", cell: (p) => <Link className="hover:underline" href={paths.admin(`/products/${p.id}`)}>{p.title}</Link> },
               { header: "Stock", cell: (p) => <span className={p.stock === 0 ? "font-semibold text-error" : "text-warning"}>{p.stock}</span>, align: "right" },
             ]}
           />

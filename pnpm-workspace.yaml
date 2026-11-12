@@ -2,3 +2,6 @@ allowBuilds:
   esbuild: true
   sharp: true
   unrs-resolver: true
+  workerd: true
+# Flat node_modules (npm-style): required for the OpenNext/Cloudflare bundler, which cannot copy pnpm symlinks on Windows.
+nodeLinker: hoisted

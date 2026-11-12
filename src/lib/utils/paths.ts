@@ -21,4 +21,13 @@ export const paths = {
   contact: () => "/contact",
   faq: () => "/faq",
   login: () => "/account",
+  /**
+   * Admin URLs. With NEXT_PUBLIC_ADMIN_HOST set (production: admin.cityseller.in) the admin is its
+   * own website and URLs have no /admin prefix (admin.cityseller.in/orders); locally they stay /admin/…
+   * Route files always live under app/admin; middleware maps between the two.
+   */
+  admin: (path = "/") => {
+    const clean = path === "/" ? "" : path;
+    return process.env.NEXT_PUBLIC_ADMIN_HOST ? clean || "/" : `/admin${clean}`;
+  },
 } as const;

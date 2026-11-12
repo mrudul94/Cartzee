@@ -21,7 +21,13 @@ export function buildMetadata(i: BuildMetadataInput): Metadata {
   const title = clip(i.seoTitle ?? i.title, 60);
   const description = clip(i.seoDescription ?? i.description, 160);
   const url = `${site.url}${i.path}`;
-  const image = i.image ? (i.image.startsWith("http") ? i.image : `${site.url}${i.image}`) : `${site.url}/placeholders/og-default.svg`;
+  // Social apps can't render SVG: fall back to the generated PNG card for missing/SVG images.
+  const usable = i.image && !/\.svg($|\?)/i.test(i.image) ? i.image : undefined;
+  const image = usable
+    ? usable.startsWith("http")
+      ? usable
+      : `${site.url}${usable}`
+    : `${site.url}/og?title=${encodeURIComponent(i.seoTitle ?? i.title)}`;
   return {
     title,
     description,

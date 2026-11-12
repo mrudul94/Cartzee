@@ -17,6 +17,7 @@ import { useHydrated } from "@/hooks/useHydrated";
 import { PaymentDismissedError, useRazorpay } from "@/hooks/useRazorpay";
 import { color } from "@/design-system/tokens";
 import { formatINR } from "@/lib/utils/format";
+import { track } from "@/lib/utils/analytics";
 import { paths } from "@/lib/utils/paths";
 import { addressSchema, INDIAN_STATES } from "@/lib/utils/validators";
 import { OrderSummary } from "./OrderSummary";
@@ -45,6 +46,7 @@ export function CheckoutForm() {
 
   const onSubmit = async (address: Out) => {
     setSubmitting(true);
+    track("begin_checkout", { value: totals.total, items: items.map((i) => ({ item_id: i.productId, item_name: i.title, price: i.price, quantity: i.quantity })) });
     try {
       const res = await fetch("/api/checkout", {
         method: "POST",

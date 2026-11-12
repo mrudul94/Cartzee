@@ -12,6 +12,7 @@ import { repo } from "@/lib/data";
 import { adminTransitions } from "@/lib/orders/status";
 import { formatDate, formatINR } from "@/lib/utils/format";
 import { updateOrderAction } from "../../../actions";
+import { paths } from "@/lib/utils/paths";
 
 type Props = { params: Promise<{ id: string }> };
 
@@ -34,7 +35,7 @@ export default async function AdminOrderPage({ params }: Props) {
 
   return (
     <div className="flex flex-col gap-6">
-      <Breadcrumbs items={[{ label: "Orders", href: "/admin/orders" }, { label: order.number }]} withJsonLd={false} className="-mb-4" />
+      <Breadcrumbs items={[{ label: "Orders", href: paths.admin("/orders") }, { label: order.number }]} withJsonLd={false} home={{ label: "Dashboard", href: paths.admin() }} className="-mb-4" />
       <div className="flex flex-wrap items-center gap-3">
         <h1 className="font-heading text-3xl font-semibold">Order {order.number}</h1>
         <OrderStatusBadge status={order.status} />

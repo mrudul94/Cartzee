@@ -2490,7 +2490,8 @@
       "variants": [],
       "props": {
         "items": "{label,href?}[]",
-        "withJsonLd": "boolean"
+        "withJsonLd": "boolean",
+        "home": "Crumb (default Home → /; admin passes Dashboard)"
       },
       "tokensUsed": [
         "color.text",
@@ -2717,6 +2718,7 @@
       "usedIn": [
         "StoreShell",
         "app:/",
+        "app:/llms.txt (route)",
         "lib/admin/product-values"
       ],
       "accessibility": "",
@@ -2990,6 +2992,7 @@
         "app:/admin/orders",
         "app:/admin/orders/[id]",
         "app:/admin/products",
+        "app:/llms.txt (route)",
         "app:/order/[id]",
         "commerce/OrderSummary",
         "commerce/ProductBuyBox",
@@ -3147,11 +3150,13 @@
         "category(c)": "string",
         "product(p)": "string",
         "budget(slug)": "string",
-        "…": "see file"
+        "…": "see file",
+        "admin(path)": "string (clean URL on the admin host, /admin/… locally)"
       },
       "tokensUsed": [],
       "usedIn": [
         "AddToCartButton",
+        "AdminShell",
         "CartDrawer",
         "CartView",
         "CheckoutForm",
@@ -3167,21 +3172,33 @@
         "app:/[category]/[sub]/[product]",
         "app:/about",
         "app:/account",
+        "app:/admin",
+        "app:/admin/actions.ts",
+        "app:/admin/login",
+        "app:/admin/orders",
+        "app:/admin/orders/[id]",
+        "app:/admin/products",
+        "app:/admin/products/[id]",
+        "app:/admin/products/new",
         "app:/bestsellers",
         "app:/budget/[tier]",
         "app:/cart",
         "app:/checkout",
         "app:/contact",
         "app:/faq",
+        "app:/feeds/google.xml (route)",
         "app:/flash-sale",
         "app:/guides",
         "app:/guides/[slug]",
+        "app:/llms.txt (route)",
         "app:/order/[id]",
         "app:/policies/[slug]",
         "app:/search",
+        "app:/sitemap.ts",
         "app:/track-order",
         "layout/MegaMenu",
         "lib/admin/product-values",
+        "lib/auth/admin",
         "lib/data/seed-repo",
         "lib/seo/jsonld",
         "sections/InfoSections",
@@ -4021,6 +4038,61 @@
         "now": "Date"
       },
       "example": "daysSince(p.priceCheckedAt) > 7"
+    },
+    {
+      "variants": [],
+      "tokensUsed": [],
+      "usedIn": [
+        "StoreShell"
+      ],
+      "lastUpdated": "2026-11-12",
+      "accessibility": "Renders no UI.",
+      "name": "Analytics",
+      "path": "src/components/layout/Analytics.tsx",
+      "category": "layout",
+      "description": "Loads GA4 (NEXT_PUBLIC_GA_ID) and Microsoft Clarity (NEXT_PUBLIC_CLARITY_ID) after the page is interactive; shop only, never in the admin.",
+      "props": {},
+      "example": "<Analytics /> // in StoreShell"
+    },
+    {
+      "variants": [],
+      "tokensUsed": [],
+      "usedIn": [
+        "app:/order/[id]"
+      ],
+      "lastUpdated": "2026-11-12",
+      "accessibility": "Renders no UI.",
+      "name": "PurchaseTracker",
+      "path": "src/components/commerce/PurchaseTracker.tsx",
+      "category": "commerce",
+      "description": "Sends the GA4 purchase event once per order on the order success page.",
+      "props": {
+        "orderNumber": "string",
+        "total": "number",
+        "shipping": "number",
+        "items": "{id,title,price,quantity}[]"
+      },
+      "example": "{paid && <PurchaseTracker orderNumber={o.number} total={o.total} shipping={o.shipping} items={…} />}"
+    },
+    {
+      "variants": [],
+      "tokensUsed": [],
+      "usedIn": [
+        "AddToCartButton",
+        "CheckoutForm",
+        "PurchaseTracker"
+      ],
+      "lastUpdated": "2026-11-12",
+      "accessibility": "",
+      "name": "track",
+      "path": "src/lib/utils/analytics.ts",
+      "category": "util",
+      "description": "GA4 ecommerce event helper (add_to_cart, begin_checkout, purchase, view_item); no-op when GA is not loaded.",
+      "props": {
+        "event": "string",
+        "params": "{ value, transaction_id, shipping, items }"
+      },
+      "example": "track(\"add_to_cart\", { value: 449, items: [...] })"
     }
   ]
 }

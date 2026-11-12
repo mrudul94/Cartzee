@@ -14,6 +14,8 @@ export const metadata: Metadata = {
   description: site.description,
   applicationName: site.name,
   formatDetection: { telephone: false },
+  // Google Search Console HTML-tag verification (Settings → Ownership verification).
+  verification: process.env.NEXT_PUBLIC_GSC_VERIFICATION ? { google: process.env.NEXT_PUBLIC_GSC_VERIFICATION } : undefined,
 };
 
 export const viewport: Viewport = { themeColor: color.background, width: "device-width", initialScale: 1 };

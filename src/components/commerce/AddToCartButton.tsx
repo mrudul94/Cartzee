@@ -6,6 +6,7 @@ import { Button, type ButtonProps } from "@/components/ui/Button";
 import { toast } from "@/components/ui/Toast";
 import { useCart } from "@/hooks/useCart";
 import type { CardProduct } from "@/lib/utils/product";
+import { track } from "@/lib/utils/analytics";
 import { paths } from "@/lib/utils/paths";
 
 export type AddToCartButtonProps = {
@@ -44,6 +45,7 @@ export function AddToCartButton({ product, quantity = 1, mode = "add", label, sh
       },
       quantity,
     );
+    track("add_to_cart", { value: product.price * quantity, items: [{ item_id: product.id, item_name: product.title, price: product.price, quantity }] });
     if (mode === "buy") {
       router.push(paths.checkout());
     } else {

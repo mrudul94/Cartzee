@@ -4,11 +4,17 @@ import { buildBreadcrumbJsonLd, type Crumb } from "@/lib/seo/jsonld";
 import { JsonLd } from "@/lib/seo/JsonLdScript";
 import { cn } from "@/lib/utils/cn";
 
-export type BreadcrumbsProps = { items: Crumb[]; withJsonLd?: boolean; className?: string };
+export type BreadcrumbsProps = {
+  items: Crumb[];
+  withJsonLd?: boolean;
+  /** First crumb; defaults to the shop home. The admin passes its dashboard. */
+  home?: Crumb;
+  className?: string;
+};
 
-/** Visible breadcrumb trail + matching BreadcrumbList JSON-LD. "Home" is prepended automatically. */
-export function Breadcrumbs({ items, withJsonLd = true, className }: BreadcrumbsProps) {
-  const all: Crumb[] = [{ label: "Home", href: "/" }, ...items];
+/** Visible breadcrumb trail + matching BreadcrumbList JSON-LD. A home crumb is prepended automatically. */
+export function Breadcrumbs({ items, withJsonLd = true, home = { label: "Home", href: "/" }, className }: BreadcrumbsProps) {
+  const all: Crumb[] = [home, ...items];
   return (
     <>
       <nav aria-label="Breadcrumb" className={cn("py-3 text-sm", className)}>
