@@ -1,0 +1,53 @@
+/* Token CSS variables are injected on :root by the plugin in tailwind.config.ts (source: src/design-system/tokens.ts). */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    @apply bg-background font-body text-base text-text antialiased;
+    -webkit-tap-highlight-color: transparent;
+  }
+  body {
+    @apply min-h-screen bg-background leading-relaxed;
+  }
+  :focus-visible {
+    @apply outline-none shadow-focus;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+@layer components {
+  /** Long-form copy (policies, guides, product description). */
+  .prose-body {
+    @apply max-w-prose text-base leading-relaxed text-text;
+  }
+  :where(.prose-body) h2 {
+    @apply mb-3 mt-8 font-heading text-2xl font-semibold;
+  }
+  :where(.prose-body) h3 {
+    @apply mb-2 mt-6 text-lg font-semibold;
+  }
+  :where(.prose-body) p,
+  :where(.prose-body) ul,
+  :where(.prose-body) ol {
+    @apply mb-4;
+  }
+  :where(.prose-body) ul {
+    @apply list-disc pl-6;
+  }
+  :where(.prose-body) ol {
+    @apply list-decimal pl-6;
+  }
+  :where(.prose-body) a {
+    @apply underline underline-offset-4 hover:text-primary;
+  }
+}
