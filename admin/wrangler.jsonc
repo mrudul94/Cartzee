@@ -1,0 +1,36 @@
+{
+  "$schema": "../node_modules/wrangler/config-schema.json",
+  // Admin website (admin.cityseller.in), protected by Cloudflare Access. The shop is a separate Worker in ../shop.
+  "name": "city-seller-admin",
+  "main": ".open-next/worker.js",
+  "compatibility_date": "2026-11-01",
+  "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
+  "assets": {
+    "directory": ".open-next/assets",
+    "binding": "ASSETS"
+  },
+  "services": [
+    // Self-reference used by OpenNext for caching; must match "name".
+    { "binding": "WORKER_SELF_REFERENCE", "service": "city-seller-admin" }
+  ],
+  "r2_buckets": [
+    // Create once: pnpm wrangler r2 bucket create city-seller-admin-opennext-cache
+    { "binding": "NEXT_INC_CACHE_R2_BUCKET", "bucket_name": "city-seller-admin-opennext-cache" }
+  ],
+  "images": {
+    // next/image optimisation via Cloudflare Images.
+    "binding": "IMAGES"
+  },
+  // Only the real domains: no *.workers.dev or preview URLs (they would bypass Cloudflare Access).
+  "workers_dev": false,
+  "preview_urls": false,
+  "routes": [
+    { "pattern": "admin.cityseller.in", "custom_domain": true }
+  ],
+  // Non-secret runtime values. Secrets go in with `wrangler secret put` (see README).
+  // NEXT_PUBLIC_* values are baked in at build time: set them in .env.production (or CI) before `pnpm deploy`.
+  "vars": {
+    "EMAIL_FROM": "City Seller <orders@cityseller.in>"
+  },
+  "observability": { "enabled": true }
+}

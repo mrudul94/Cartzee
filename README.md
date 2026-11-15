@@ -7,26 +7,30 @@ Razorpay and Resend.
 > **Status:** all four milestones are done: A (design system + storefront), B (database, payments, emails),
 > C (admin panel) and D (two websites, SEO/AI-search files, analytics, Cloudflare deployment).
 
-## Two websites
+## Two websites, three folders
+
+```
+shop/     cityseller.in        Next.js app for customers (Cloudflare Worker "city-seller-shop")
+admin/    admin.cityseller.in  Next.js app for you and your team (Worker "city-seller-admin")
+shared/   design system, components and data code used by both (compiled by each app, no build step)
+```
 
 | | Shop | Admin |
 |---|---|---|
 | Address | `cityseller.in` (`www` redirects here) | `admin.cityseller.in` |
-| For | Customers | You and your partners |
-| Access | Public | Cloudflare Access (approved emails) → Supabase sign-in → `admins` table |
+| For | Customers | You and your team |
+| Access | Browse freely; sign in (email + password) to place an order | Optional Cloudflare Access → password → authenticator code (MFA) → role permissions |
 | Search engines | Indexed (sitemap, robots, llms.txt, feed) | Blocked (`Disallow: /`, `noindex`) |
-| Other site's pages | `/admin…` returns the normal 404 | Shop pages and APIs return 404 |
 
-Both run from one Cloudflare Worker and share the database, so orders and price changes appear instantly on the other side.
-The split is done in `src/middleware.ts` and switched on by `NEXT_PUBLIC_ADMIN_HOST`. Locally the admin stays at `/admin`, or you can
-set `NEXT_PUBLIC_ADMIN_HOST=admin.localhost` and open `http://admin.localhost:3000`.
+Both use the same Supabase database and deploy independently. Admin-only code is never bundled into the shop.
+When an admin saves, the admin calls the shop's `/api/revalidate` (protected by `REVALIDATE_SECRET`) so the shop shows the change immediately.
 
 ## Run locally
 
 ```bash
 pnpm install
 cp .env.example .env.local   # optional: leave values empty for mock mode
-pnpm dev                     # http://localhost:3000
+pnpm dev                     # shop http://localhost:3000, admin http://localhost:3001
 ```
 
 Each integration switches on when its variables are set and is mocked otherwise:
@@ -38,23 +42,34 @@ Each integration switches on when its variables are set and is mocked otherwise:
 | Resend email | `RESEND_API_KEY`, `EMAIL_FROM` | Emails printed to the server console |
 | Telegram admin alert | `TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID` | Alert printed to the server console |
 
+Locally both apps read the root `.env.local`; an app's own `shop/.env.local` or `admin/.env.local` overrides it.
+For deployment each app gets only its own variables (`shop/.env.example`, `admin/.env.example`). The admin never gets Razorpay keys.
+
+In mock mode (no Supabase) each app keeps its own in-memory data, so an edit made in the admin does not appear in the shop.
+Connect Supabase to see both sides working together. Customer accounts also need Supabase; without it checkout stays open for local testing.
+
 A production build with no Razorpay keys **refuses checkout**. It does not fall back to simulated payments,
 unless `ALLOW_MOCK_PAYMENTS=true` is set for a staging demo.
 
 ## Set up Supabase
 
 1. Create a project at supabase.com (region: Mumbai `ap-south-1`).
-2. In the SQL editor, run the files in `supabase/migrations/` in order (`0001`, `0002`, `0003`), then
+2. In the SQL editor, run the files in `supabase/migrations/` in order (`0001` … `0005`), then
    `supabase/seed.sql`. If you use the Supabase CLI instead, run `supabase link` then `supabase db push`.
 3. Copy the project URL, the anon key and the service-role key into `.env.local`.
+4. **Customer accounts.** In Authentication → Providers keep *Email* on with "Confirm email" enabled.
+   In Authentication → URL Configuration set *Site URL* to `https://cityseller.in` and add `https://cityseller.in/auth/callback`
+   and `http://localhost:3000/auth/callback` to *Redirect URLs* (used by sign-up confirmation and password reset).
 
-To regenerate `seed.sql` after editing `src/lib/seed/*`, run `pnpm db:seed-sql`.
+To regenerate `seed.sql` after editing `shared/src/lib/seed/*`, run `pnpm db:seed-sql`.
 
 The security model is in `0003_security.sql`:
 
 - The storefront reads the catalogue with the anon key.
 - RLS limits what the anon key can read, and column grants hide `meesho_url` and `meesho_price` from it.
 - Orders and customers are reachable only through server code that uses the service-role key.
+  A signed-in customer can additionally read only their own orders (`0005_accounts_rbac.sql`).
+- Admin access comes only from the `admins` table, which no browser key can write. Customer accounts can never become admins.
 - Order creation and payment confirmation are Postgres functions:
   - `create_order` re-prices every item from the database and checks stock.
   - `mark_order_paid` locks the order row. It is idempotent and checks the paid amount.
@@ -80,7 +95,7 @@ Then use the tunnel URL as the webhook URL in Razorpay.
 - **Telegram:** create a bot with @BotFather. Send the bot a message, then open
   `https://api.telegram.org/bot<TOKEN>/getUpdates` to find your chat id. Set `TELEGRAM_BOT_TOKEN` and `TELEGRAM_CHAT_ID`.
 
-## Admin panel (`/admin`)
+## Admin panel (`admin.cityseller.in`)
 
 **Pages**
 
@@ -103,14 +118,41 @@ Then use the tunnel URL as the webhook URL in Razorpay.
 - Cancelling or completing a return can refund the customer in full through Razorpay.
 - An order can only become "paid" through a confirmed payment. There is no manual button for it.
 
-**Add a partner (admin)**
+**Editing the shop (no developer needed)**
 
-1. In Supabase, go to Authentication → Users → Add user. Enter their email and a password, and tick "Auto confirm".
-2. In the SQL editor, run `insert into public.admins (user_id) select id from auth.users where email = 'partner@example.com';`
-3. Add their email to the Cloudflare Access policy (see Deploy). They then sign in at `admin.cityseller.in/login`. Accounts that aren't in `admins` are refused.
+| Admin menu | What you can change |
+|---|---|
+| **Homepage** | Hero slides (up to 5; more than one becomes a carousel; each can be switched off, or made clickable to open a category or link), offer banners, banner grids, product rows (bestsellers, flash sale, new arrivals, a category, or hand-picked), category tiles, budget tiles, "why shop with us", customer care, brand story, guides and FAQ sections. You can reorder, show/hide, add or delete sections, and schedule any section, slide or banner with show-from / hide-after dates (IST). "Reset to original layout" restores the built-in homepage. |
+| **Products** | Everything on a product, plus one-click **Sold out / In stock**, **Hide / Show**, **New badge** (automatic for 30 days after adding, or always / never) and **Duplicate**. New products appear on `/new-arrivals`. |
+| **Categories** | Add or edit categories and subcategories: name, URL, image, intro answer, blurb, order, visibility, SEO and FAQs. A category that still has products can't be deleted; hide it instead. |
+| **Guides** | Write buying guides with headings, paragraphs and product picks, a cover image and FAQs. Publish or keep as a draft. |
+| **Pages** | About, Shipping, Returns, Privacy, Terms, and the store FAQs. |
+| **Reviews** | Approve, hide or delete reviews. Only approved reviews show on product pages. |
+| **Settings** | Promo strip, phone, WhatsApp (plus the floating WhatsApp chat button: on/off and its message), email, hours, social links, free-delivery threshold and fee (checkout charges these), return days, and the UPI discount text. |
 
-Without Supabase, `pnpm dev` opens the admin panel without sign-in, edits are kept in memory, and a banner says so.
-A production build without Supabase locks the panel completely. The style guide is available to admins at `/admin/design-system`.
+Saving refreshes the shop immediately, and the dashboard's **Recent changes** list shows who changed what and when.
+Links may only be site paths (`/kitchen`) or `https://` addresses, and all content is plain text, so nothing typed into the admin can run scripts on the shop.
+Secrets (payment, database and email keys) and security settings are deliberately **not** editable in the admin. They live only in server environment variables.
+Content is stored in the `site_content` table (`supabase/migrations/0004_cms.sql`). In local mock mode it's kept in memory.
+
+**Admin sign-in and team**
+
+- There is no public sign-up. Sign-in needs the password **and** a 6-digit code from an authenticator app (Google Authenticator, Authy, 1Password…).
+  The first sign-in shows a QR code to set it up.
+- 5 wrong passwords for an account (or 20 from one network) lock sign-in for 15 minutes. Attempts are logged.
+- Sessions are HttpOnly, Secure cookies; signing out ends the session on every device.
+- **Roles:** *Super Admin* can do everything, including managing the team. *Admin* can only use the areas ticked for them
+  (Orders, Products, Content, Reviews, Settings). Every page and action checks this on the server.
+- Sign-ins, failed or locked attempts, MFA setup, team changes and all edits are recorded in **Recent changes** (Super Admins).
+
+**First Super Admin** (once): in Supabase, Authentication → Users → Add user (tick "Auto confirm"), then in the SQL editor:
+`insert into public.admins (user_id, role) select id, 'super_admin' from auth.users where email = 'you@example.com';`
+
+**Add more people:** sign in as a Super Admin and open **Team**. Enter their email, a temporary password, the role and permissions.
+Emails that already have a customer account are refused, so shoppers can never be promoted by accident.
+
+Without Supabase, `pnpm dev` opens the admin as a local Super Admin without sign-in, and a banner says so.
+A production build without Supabase locks the panel completely. The style guide is available to admins at `/design-system`.
 
 ## Commands
 
@@ -118,19 +160,19 @@ A production build without Supabase locks the panel completely. The style guide 
 |---|---|
 | `pnpm test` | Vitest: migrations, RLS and SQL functions on in-process Postgres (PGlite), plus payment routes and utilities |
 | `pnpm lint` | ESLint + token guard + registry check |
-| `pnpm check:tokens` | Fails on raw hex/rgb/px or arbitrary Tailwind values in `src/components` |
+| `pnpm check:tokens` | Fails on raw hex/rgb/px or arbitrary Tailwind values in `shared/src/components` and `admin/src/components` |
 | `pnpm registry:sync` | Recomputes `usedIn` / `tokensUsed` and regenerates `COMPONENTS.md` |
 | `pnpm check:registry` | Fails if an export is unregistered or lacks a `/design-system` demo |
 | `pnpm db:seed-sql` | Regenerates `supabase/seed.sql` from the TypeScript seed data |
 | `pnpm placeholders` | Regenerates the SVG placeholder images |
-| `pnpm cf:preview` | Builds the Cloudflare Worker and runs it locally in workerd |
-| `pnpm cf:deploy` | Lint + tests, then builds and deploys both websites to Cloudflare |
+| `pnpm build` | Token and registry checks, then production builds of both apps |
+| `pnpm deploy:shop` / `pnpm deploy:admin` | Lint + tests, then builds and deploys that one website to Cloudflare |
 
 ## Design system
 
-- Tokens: `src/design-system/tokens.ts`. This is the only place visual values live. Tailwind's default theme is replaced by these tokens.
-- Registry: `src/design-system/registry.json` + generated `COMPONENTS.md`. Reuse or extend components before creating new ones.
-- Living style guide: `/design-system`. Available in dev, or in production with `DESIGN_SYSTEM_PUBLIC=true`.
+- Tokens: `shared/src/design-system/tokens.ts`. This is the only place visual values live. Tailwind's default theme is replaced by these tokens.
+- Registry: `shared/src/design-system/registry.json` + generated `COMPONENTS.md`. Reuse or extend components before creating new ones.
+- Living style guide: `/design-system` in the admin (signed-in admins only).
 
 ## SEO, answer engines and analytics
 
@@ -154,36 +196,38 @@ Analytics load on the shop only, and only when their IDs are set:
 **One-time setup**
 
 1. **Domain.** Add `cityseller.in` to Cloudflare (Websites → Add a site) and switch your registrar's nameservers to Cloudflare.
-2. **Cache bucket.** Run `pnpm wrangler login`, then `pnpm wrangler r2 bucket create city-seller-opennext-cache`.
-3. **Server secrets.** These are stored on the Worker, never in Git. Run `pnpm wrangler secret put <NAME>` once for each name:
+2. **Cache bucket.** Run `pnpm wrangler login`, then `pnpm wrangler r2 bucket create city-seller-shop-opennext-cache` and `pnpm wrangler r2 bucket create city-seller-admin-opennext-cache`.
+3. **Server secrets.** Stored on each Worker, never in Git. Run `npx wrangler secret put <NAME>` inside that app's folder:
    ```
-   SUPABASE_SERVICE_ROLE_KEY  RAZORPAY_KEY_ID  RAZORPAY_KEY_SECRET  RAZORPAY_WEBHOOK_SECRET
-   RESEND_API_KEY  TELEGRAM_BOT_TOKEN  TELEGRAM_CHAT_ID  CF_ACCESS_TEAM_DOMAIN  CF_ACCESS_AUD
-   NEXT_PUBLIC_SUPABASE_URL  NEXT_PUBLIC_SUPABASE_ANON_KEY
+   shop/   SUPABASE_SERVICE_ROLE_KEY  RAZORPAY_KEY_ID  RAZORPAY_KEY_SECRET  RAZORPAY_WEBHOOK_SECRET  REVALIDATE_SECRET
+           RESEND_API_KEY  TELEGRAM_BOT_TOKEN  TELEGRAM_CHAT_ID  NEXT_PUBLIC_SUPABASE_URL  NEXT_PUBLIC_SUPABASE_ANON_KEY
+   admin/  SUPABASE_SERVICE_ROLE_KEY  REVALIDATE_SECRET  RESEND_API_KEY  TELEGRAM_BOT_TOKEN  TELEGRAM_CHAT_ID
+           CF_ACCESS_TEAM_DOMAIN  CF_ACCESS_AUD  NEXT_PUBLIC_SUPABASE_URL  NEXT_PUBLIC_SUPABASE_ANON_KEY
    ```
-   The last two are not secret, but server code also reads them at runtime.
-4. **Build-time values.** Put `NEXT_PUBLIC_SITE_URL=https://cityseller.in`, `NEXT_PUBLIC_ADMIN_HOST=admin.cityseller.in`, the Supabase URL and anon key,
-   and any analytics IDs in `.env.production.local` for a manual deploy, or in GitHub repository variables for automatic deploys.
+   `REVALIDATE_SECRET` must be the same long random value in both. The Supabase URL and anon key are not secret, but server code reads them at runtime.
+4. **Build-time values.** `NEXT_PUBLIC_SITE_URL=https://cityseller.in` (both apps), the Supabase URL and anon key, and the analytics IDs (shop)
+   go in `shop/.env.production.local` / `admin/.env.production.local` for a manual deploy, or in GitHub repository variables for automatic deploys.
 5. **Cloudflare Access for the admin.**
    1. In Zero Trust → Access → Applications, add a *Self-hosted* application for `admin.cityseller.in`.
    2. Add an *Allow* policy with your partners' emails, using login method *One-time PIN*.
    3. Copy the application's *AUD tag* into `CF_ACCESS_AUD`, and your team domain (`<team>.cloudflareaccess.com`) into `CF_ACCESS_TEAM_DOMAIN`.
-6. **Rate limiting.** In Security → WAF → Rate limiting rules, limit `/api/track` and `/api/checkout` to about 20 requests per minute per IP.
+6. **Rate limiting.** In Security → WAF → Rate limiting rules, limit `/api/track`, `/api/checkout` and `/login` (both sites) to about 20 requests per minute per IP.
 7. **Razorpay webhook.** Point it at `https://cityseller.in/api/razorpay/webhook`.
 
 **Deploying**
 
-- **Manual:** `pnpm cf:deploy`. This runs lint and tests, then builds and deploys both domains.
-  The `routes` in `wrangler.jsonc` attach `cityseller.in`, `www.cityseller.in` and `admin.cityseller.in` automatically.
-- **Automatic:** `.github/workflows/deploy.yml` deploys on every push to `main`, and `ci.yml` checks every other branch and pull request.
-  Add `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID` as repository secrets, and the `NEXT_PUBLIC_*` values as repository variables.
+- **Manual:** `pnpm deploy:shop` or `pnpm deploy:admin`. Each runs lint and tests, then builds and deploys only that website.
+  The `routes` in each `wrangler.jsonc` attach `cityseller.in` + `www.cityseller.in` (shop) and `admin.cityseller.in` (admin).
+- **Automatic:** `.github/workflows/deploy-shop.yml` and `deploy-admin.yml` deploy on pushes to `main` that touch that app or `shared/`;
+  `ci.yml` checks every other branch and pull request. Add `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID` as repository secrets,
+  and the `NEXT_PUBLIC_*` values as repository variables.
 
 `workers_dev` and preview URLs are disabled, so the admin can't be reached through a side address.
 The project uses pnpm's hoisted `node_modules` layout (`pnpm-workspace.yaml`), because the Cloudflare bundler can't copy pnpm's symlinks on Windows.
 
 ## Before launch
 
-- Replace the seed products, **sample ratings and reviews**, the placeholder phone number and email in `src/lib/site.ts`, and the SVG placeholders with real data and photos.
+- Replace the seed products, **sample ratings and reviews**, the placeholder phone, WhatsApp number (+91 90000 00000, in Admin → Settings) and email, and the SVG placeholders with real data and photos.
 - The 5% UPI discount is advertised in the top bar. Configure it as a Razorpay offer, or remove the text.
 - Switch from Razorpay test keys to live keys, and update the webhook secret to match.
 - Replace the SVG placeholder photos. Google Merchant Center and social apps do not accept SVG images.

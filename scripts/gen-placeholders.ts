@@ -5,12 +5,12 @@
  */
 import { mkdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
-import { color } from "../src/design-system/tokens";
-import { seedCategories } from "../src/lib/seed/categories";
-import { seedPosts } from "../src/lib/seed/posts";
-import { seedProducts } from "../src/lib/seed/products";
+import { color } from "../shared/src/design-system/tokens";
+import { seedCategories } from "../shared/src/lib/seed/categories";
+import { seedPosts } from "../shared/src/lib/seed/posts";
+import { seedProducts } from "../shared/src/lib/seed/products";
 
-const OUT = join(process.cwd(), "public", "placeholders");
+const OUT = join(process.cwd(), "shop", "public", "placeholders");
 const BG = "#F1ECE4";
 const INK = color.text;
 

@@ -5,7 +5,7 @@ import { adminTransitions } from "@/lib/orders/status";
 import { seedProducts } from "@/lib/seed/products";
 
 // Server actions call revalidatePath/redirect, which need a Next request context.
-vi.mock("next/cache", () => ({ revalidatePath: vi.fn() }));
+vi.mock("next/cache", () => ({ revalidatePath: vi.fn(), revalidateTag: vi.fn(), unstable_cache: (fn: unknown) => fn }));
 vi.mock("next/navigation", () => ({
   redirect: (url: string) => {
     throw Object.assign(new Error("NEXT_REDIRECT"), { url });
@@ -121,10 +121,11 @@ describe("admin repo + actions (mock mode)", () => {
   it("moves an order through fulfilment with validation, events and customer emails", async () => {
     const { repo } = await import("@/lib/data");
     const { markOrderPaid } = await import("@/lib/orders/service");
-    const { updateOrderAction } = await import("@/app/admin/actions");
+    const { updateOrderAction } = await import("@admin/app/actions");
     const order = await repo.createOrder({
       address: { name: "Asha Rao", phone: "9876501234", email: "asha@example.com", line1: "4 Lake View Road", city: "Bengaluru", state: "Karnataka", pincode: "560001" },
       items: [{ productId: seedProducts[0]!.id, quantity: 1 }],
+      delivery: { freeAbove: 499, fee: 49 },
     });
     const fd = (o: Record<string, string>) => {
       const f = new FormData();

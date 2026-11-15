@@ -9,7 +9,7 @@ import { readdirSync, readFileSync, statSync } from "node:fs";
 import { join } from "node:path";
 
 const ROOT = process.cwd();
-const DIRS = ["src/components"];
+const DIRS = ["shared/src/components", "admin/src/components"];
 const walk = (dir: string): string[] =>
   readdirSync(join(ROOT, dir)).flatMap((f) => {
     const rel = `${dir}/${f}`;
@@ -43,7 +43,7 @@ for (const file of DIRS.flatMap(walk)) {
 }
 
 if (failures) {
-  console.error(`\n${failures} raw value(s) found. Use design tokens (src/design-system/tokens.ts) instead.`);
+  console.error(`\n${failures} raw value(s) found. Use design tokens (shared/src/design-system/tokens.ts) instead.`);
   process.exit(1);
 }
 console.log("Token check passed: no raw colours, pixel values or arbitrary values in components.");

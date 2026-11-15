@@ -128,6 +128,58 @@ describe("set_order_status", () => {
   });
 });
 
+describe("CMS tables (migration 0004)", () => {
+  it("lets anyone read site content but only the service role write it", async () => {
+    await db.query(`insert into site_content (key, value) values ('settings', '{"care":{"phone":"+91 1"}}')`);
+    await asRole(db, "anon", async () => {
+      expect((await db.query("select key from site_content")).rows).toHaveLength(1);
+      await expect(db.query(`insert into site_content (key, value) values ('home', '{}')`)).rejects.toThrow(/permission denied/);
+      await expect(db.query(`update site_content set value = '{}'`)).rejects.toThrow(/permission denied/);
+      await expect(db.query("select * from admin_activity")).rejects.toThrow(/permission denied/);
+      expect((await db.query("select id, is_new from products limit 1")).rows).toHaveLength(1);
+    });
+    await asRole(db, "service_role", () => db.query(`insert into site_content (key, value) values ('page:about', '{}')`));
+    await expect(db.query(`insert into site_content (key, value) values ('Bad Key!', '{}')`)).rejects.toThrow(/check/);
+  });
+
+  it("hides inactive categories from the public", async () => {
+    await db.query("update categories set is_active = false where slug = 'door-window'");
+    const visible = await asRole(db, "anon", () => db.query<{ slug: string }>("select slug from categories"));
+    expect(visible.rows.map((r) => r.slug)).not.toContain("door-window");
+    await db.query("update categories set is_active = true where slug = 'door-window'");
+  });
+});
+
+describe("customer accounts and admin roles (migration 0005)", () => {
+  it("lets a signed-in customer read only their own orders", async () => {
+    const alice = "33333333-3333-3333-3333-333333333333";
+    const bob = "44444444-4444-4444-4444-444444444444";
+    await db.query("insert into auth.users (id) values ($1), ($2)", [alice, bob]);
+    const id = await createOrder([{ product_id: await pid("prd_010"), quantity: 1 }]);
+    await db.query("update orders set user_id = $1 where id = $2", [alice, id]);
+
+    const mine = await asRole(db, "authenticated", () => db.query("select id from orders"), alice);
+    expect(mine.rows).toEqual([{ id }]);
+    const items = await asRole(db, "authenticated", () => db.query("select id from order_items"), alice);
+    expect(items.rows.length).toBe(1);
+    expect((await asRole(db, "authenticated", () => db.query("select id from orders"), bob)).rows).toHaveLength(0);
+    await asRole(db, "authenticated", async () => {
+      await expect(db.query("update orders set total = 1")).rejects.toThrow(/permission denied/);
+      await expect(db.query("insert into admins (user_id) values ($1)", [alice])).rejects.toThrow(/permission denied/);
+      await expect(db.query("select * from auth_attempts")).rejects.toThrow(/permission denied/);
+    }, alice);
+  });
+
+  it("validates admin roles and permissions", async () => {
+    const u = "55555555-5555-5555-5555-555555555555";
+    await db.query("insert into auth.users (id) values ($1)", [u]);
+    await expect(db.query("insert into admins (user_id, role) values ($1, 'owner')", [u])).rejects.toThrow(/check/);
+    await expect(db.query("insert into admins (user_id, permissions) values ($1, '{hack}')", [u])).rejects.toThrow(/check/);
+    await db.query("insert into admins (user_id, permissions) values ($1, '{orders,reviews}')", [u]);
+    expect((await one<{ role: string }>("select role from admins where user_id = $1", [u])).role).toBe("admin");
+  });
+});
+
 describe("row-level security", () => {
   it("lets anon read the public catalogue but not supplier columns", async () => {
     await asRole(db, "anon", async () => {

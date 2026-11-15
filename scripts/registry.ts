@@ -6,7 +6,7 @@
  */
 import { readdirSync, readFileSync, statSync, writeFileSync } from "node:fs";
 import { basename, extname, join, relative } from "node:path";
-import { aspect, color, duration, font, maxWidth, radius, shadow, space, zIndex } from "../src/design-system/tokens";
+import { aspect, color, duration, font, maxWidth, radius, shadow, space, zIndex } from "../shared/src/design-system/tokens";
 
 type Entry = {
   name: string;
@@ -24,10 +24,10 @@ type Entry = {
 };
 
 const ROOT = process.cwd();
-const REG = join(ROOT, "src/design-system/registry.json");
-const MD = join(ROOT, "src/design-system/COMPONENTS.md");
-const DEMOS = join(ROOT, "src/app/design-system/demos.tsx");
-const SCOPED = ["src/components", "src/hooks", "src/lib/utils", "src/lib/seo"];
+const REG = join(ROOT, "shared/src/design-system/registry.json");
+const MD = join(ROOT, "shared/src/design-system/COMPONENTS.md");
+const DEMOS = join(ROOT, "admin/src/app/design-system/demos.tsx");
+const SCOPED = ["shared/src/components", "shared/src/hooks", "shared/src/lib/utils", "shared/src/lib/seo", "admin/src/components"];
 const DEMO_CATEGORIES = /^(ui\/|commerce|section|layout|admin)/;
 const check = process.argv.includes("--check");
 
@@ -77,21 +77,22 @@ for (const e of entries) {
 }
 
 /* ------------------------------------------------------------ usedIn */
-const allFiles = walk("src");
+const allFiles = ["shared/src", "shop/src", "admin/src"].flatMap(walk);
 const texts = new Map(allFiles.map((f) => [f, readFileSync(join(ROOT, f), "utf8")]));
 
 function labelFor(file: string): string {
-  if (file.startsWith("src/app/")) {
+  const app = file.match(/^(shop|admin)\/src\/app/);
+  if (app) {
     const route = file
-      .replace(/^src\/app/, "")
+      .replace(/^(shop|admin)\/src\/app/, "")
       .replace(/\/\([^)]+\)/g, "")
       .replace(/\/(page|layout|route|not-found)\.tsx?$/, (_, kind: string) => (kind === "page" ? "" : ` (${kind})`));
-    return `app:${route || "/"}`;
+    return `${app[1]}:${route || "/"}`;
   }
   const own = entries.filter((e) => e.path === file);
   // Single-entry files are labelled by the entry; multi-entry files by "folder/File".
   if (own.length === 1) return own[0]!.name;
-  return file.replace(/^src\/(components\/)?/, "").replace(/\.tsx?$/, "");
+  return file.replace(/^(shared|admin|shop)\/src\/(components\/)?/, "").replace(/\.tsx?$/, "");
 }
 
 function usedIn(e: Entry): string[] {
@@ -99,7 +100,7 @@ function usedIn(e: Entry): string[] {
   const importRe = new RegExp(`import[^;]*\\b${e.name}\\b[^;]*from\\s+["'][^"']*/${mod}["']`);
   const out = new Set<string>();
   for (const [file, text] of texts) {
-    if (file.startsWith("src/app/design-system/")) continue; // the style guide uses everything
+    if (file.startsWith("admin/src/app/design-system/")) continue; // the style guide uses everything
     if (file === e.path) {
       // same-file use by another registered entry (e.g. OrderSummary uses FreeShippingProgress)
       const others = entries.filter((o) => o.path === file && o.name !== e.name);
@@ -182,7 +183,7 @@ const md = [
   "|---|---|---|---|---|---|",
   ...sorted.map(
     (e) =>
-      `| [${e.name}](#${e.name.toLowerCase()}) | ${e.category} | \`${e.path.replace("src/", "")}\` | ${esc(e.description)} | ${e.variants.join(", ") || "–"} | ${e.usedIn.length} |`,
+      `| [${e.name}](#${e.name.toLowerCase()}) | ${e.category} | \`${e.path}\` | ${esc(e.description)} | ${e.variants.join(", ") || "–"} | ${e.usedIn.length} |`,
   ),
   "",
   ...sorted.flatMap((e) => [

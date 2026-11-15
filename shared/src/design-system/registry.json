@@ -1,0 +1,5210 @@
+{
+  "version": 1,
+  "components": [
+    {
+      "name": "Button",
+      "path": "shared/src/components/ui/Button.tsx",
+      "category": "ui/action",
+      "description": "Primary action button used for Add to Cart, Buy Now, forms and links styled as buttons.",
+      "variants": [
+        "primary",
+        "secondary",
+        "soft",
+        "outline",
+        "ghost",
+        "link",
+        "danger",
+        "inverse"
+      ],
+      "sizes": {
+        "sm": "h-9 px-3 text-sm",
+        "md": "h-11 px-5 text-base",
+        "lg": "h-12 px-6 text-lg",
+        "icon": "h-11 w-11"
+      },
+      "props": {
+        "variant": "primary|secondary|soft|outline|ghost|link|danger|inverse",
+        "size": "sm|md|lg|icon",
+        "fullWidth": "boolean",
+        "width": "space token|auto|full",
+        "height": "space token|auto|full",
+        "color": "color token (background override)",
+        "textColor": "color token",
+        "icon": "ReactNode",
+        "iconPosition": "left|right",
+        "loading": "boolean",
+        "disabled": "boolean",
+        "href": "string (renders next/link)",
+        "onClick": "function",
+        "type": "button|submit|reset"
+      },
+      "tokensUsed": [
+        "color.background",
+        "color.borderStrong",
+        "color.error",
+        "color.ink",
+        "color.primary",
+        "color.primaryHover",
+        "color.secondary",
+        "color.secondaryStrong",
+        "color.surface",
+        "color.text",
+        "color.textInverse",
+        "duration.fast",
+        "font.family.body",
+        "font.size.base",
+        "font.size.lg",
+        "font.size.sm",
+        "font.weight.semibold",
+        "radius.md",
+        "shadow.focus",
+        "space.0",
+        "space.11",
+        "space.12",
+        "space.2",
+        "space.3",
+        "space.4",
+        "space.5",
+        "space.6",
+        "space.9"
+      ],
+      "usedIn": [
+        "AddToCartButton",
+        "CartDrawer",
+        "CartView",
+        "CategoryForm",
+        "CategoryListing",
+        "CheckoutForm",
+        "CustomerAuthForm",
+        "HeroBanner",
+        "HomeEditor",
+        "ImageManager",
+        "LoginForm",
+        "MfaForm",
+        "MobileNav",
+        "NotFoundContent",
+        "OrderActions",
+        "PincodeChecker",
+        "PostForm",
+        "ProductForm",
+        "ProductQuickActions",
+        "SaleBanner",
+        "SetPasswordForm",
+        "TeamManager",
+        "TrackOrderForm",
+        "admin/BlockEditor",
+        "admin/EditorKit",
+        "admin/PageEditors",
+        "admin:/",
+        "admin:/categories",
+        "admin:/content/home",
+        "admin:/guides",
+        "admin:/orders/[id]",
+        "admin:/products",
+        "admin:/reviews",
+        "sections/InfoSections",
+        "shop:/account",
+        "shop:/order/[id]"
+      ],
+      "accessibility": "Focus ring (shadow-focus); aria-busy while loading; md/lg/icon sizes meet 44px touch target; primary colour reserved for buy actions.",
+      "example": "<Button variant=\"primary\" size=\"lg\" icon={<ShoppingBag/>}>Add to Cart</Button>",
+      "lastUpdated": "2026-11-12"
+    },
+    {
+      "name": "Input",
+      "path": "shared/src/components/ui/Input.tsx",
+      "category": "ui/form",
+      "description": "Text input sharing fieldVariants with Textarea and Select; optional leading icon.",
+      "variants": [
+        "default",
+        "invalid"
+      ],
+      "sizes": {
+        "sm": "h-9 px-3 text-sm",
+        "md": "h-11 px-4",
+        "lg": "h-12 px-4 text-lg"
+      },
+      "props": {
+        "size": "sm|md|lg",
+        "invalid": "boolean",
+        "leadingIcon": "ReactNode",
+        "ref": "Ref<HTMLInputElement>",
+        "...input": "native input attributes"
+      },
+      "tokensUsed": [
+        "color.background",
+        "color.borderStrong",
+        "color.error",
+        "color.primary",
+        "color.surface",
+        "color.text",
+        "color.textMuted",
+        "duration.fast",
+        "font.family.body",
+        "font.size.base",
+        "font.size.lg",
+        "font.size.sm",
+        "radius.md",
+        "shadow.focus",
+        "space.1",
+        "space.10",
+        "space.11",
+        "space.12",
+        "space.3",
+        "space.4",
+        "space.9"
+      ],
+      "usedIn": [
+        "CategoryForm",
+        "CheckoutForm",
+        "CustomerAuthForm",
+        "ImageManager",
+        "LoginForm",
+        "MfaForm",
+        "OrderActions",
+        "PasswordInput",
+        "PincodeChecker",
+        "PostForm",
+        "ProductForm",
+        "ProductPicker",
+        "SearchBox",
+        "TeamManager",
+        "TrackOrderForm",
+        "admin/EditorKit",
+        "admin:/products"
+      ],
+      "accessibility": "aria-invalid when invalid; pair with FormField for label and described-by error.",
+      "example": "<Input id=\"pin\" inputMode=\"numeric\" invalid={!!error} />",
+      "lastUpdated": "2026-11-12"
+    },
+    {
+      "name": "Textarea",
+      "path": "shared/src/components/ui/Input.tsx",
+      "category": "ui/form",
+      "description": "Multi-line text field with the same look as Input.",
+      "variants": [
+        "default",
+        "invalid"
+      ],
+      "props": {
+        "invalid": "boolean",
+        "rows": "number",
+        "ref": "Ref<HTMLTextAreaElement>"
+      },
+      "tokensUsed": [
+        "color.background",
+        "color.borderStrong",
+        "color.error",
+        "color.primary",
+        "color.surface",
+        "color.text",
+        "color.textMuted",
+        "duration.fast",
+        "font.family.body",
+        "font.size.base",
+        "font.size.lg",
+        "font.size.sm",
+        "radius.md",
+        "shadow.focus",
+        "space.1",
+        "space.10",
+        "space.11",
+        "space.12",
+        "space.3",
+        "space.4",
+        "space.9"
+      ],
+      "usedIn": [
+        "CategoryForm",
+        "OrderActions",
+        "PostForm",
+        "ProductForm",
+        "admin/EditorKit"
+      ],
+      "accessibility": "aria-invalid; use inside FormField.",
+      "example": "<Textarea id=\"msg\" rows={4} />",
+      "lastUpdated": "2026-11-12"
+    },
+    {
+      "name": "Select",
+      "path": "shared/src/components/ui/Input.tsx",
+      "category": "ui/form",
+      "description": "Native select styled with field tokens (best mobile UX); used for sort, state picker.",
+      "variants": [
+        "default",
+        "invalid"
+      ],
+      "sizes": {
+        "sm": "h-9",
+        "md": "h-11",
+        "lg": "h-12"
+      },
+      "props": {
+        "options": "{value,label}[]",
+        "placeholder": "string",
+        "size": "sm|md|lg",
+        "invalid": "boolean",
+        "ref": "Ref<HTMLSelectElement>"
+      },
+      "tokensUsed": [
+        "color.background",
+        "color.borderStrong",
+        "color.error",
+        "color.primary",
+        "color.surface",
+        "color.text",
+        "color.textMuted",
+        "duration.fast",
+        "font.family.body",
+        "font.size.base",
+        "font.size.lg",
+        "font.size.sm",
+        "radius.md",
+        "shadow.focus",
+        "space.1",
+        "space.10",
+        "space.11",
+        "space.12",
+        "space.3",
+        "space.4",
+        "space.9"
+      ],
+      "usedIn": [
+        "CategoryForm",
+        "CategoryListing",
+        "CheckoutForm",
+        "HomeEditor",
+        "ProductForm",
+        "SectionEditor",
+        "TeamManager"
+      ],
+      "accessibility": "Native semantics and keyboard; label via FormField or sr-only label.",
+      "example": "<Select id=\"sort\" options={SORT_OPTIONS} value={sort} onChange={…} />",
+      "lastUpdated": "2026-11-12"
+    },
+    {
+      "name": "FormField",
+      "path": "shared/src/components/ui/FormField.tsx",
+      "category": "ui/form",
+      "description": "Label + control + hint/error wrapper for all form controls.",
+      "variants": [],
+      "props": {
+        "id": "string",
+        "label": "string",
+        "hint": "string",
+        "error": "string",
+        "required": "boolean",
+        "hideLabel": "boolean",
+        "children": "ReactNode"
+      },
+      "tokensUsed": [
+        "color.error",
+        "color.text",
+        "color.textMuted",
+        "font.size.sm",
+        "font.weight.medium",
+        "space.1.5"
+      ],
+      "usedIn": [
+        "CategoryForm",
+        "CheckoutForm",
+        "CustomerAuthForm",
+        "LoginForm",
+        "MfaForm",
+        "OrderActions",
+        "PostForm",
+        "ProductForm",
+        "SectionEditor",
+        "SetPasswordForm",
+        "TeamManager",
+        "TrackOrderForm",
+        "admin/EditorKit"
+      ],
+      "accessibility": "Visible label bound with htmlFor; error rendered with role=alert at `${id}-desc` for aria-describedby.",
+      "example": "<FormField id=\"phone\" label=\"Mobile\" error={err}><Input id=\"phone\" /></FormField>",
+      "lastUpdated": "2026-11-12"
+    },
+    {
+      "name": "Checkbox",
+      "path": "shared/src/components/ui/Checkbox.tsx",
+      "category": "ui/form",
+      "description": "Radix checkbox with label row; used in filter facets.",
+      "variants": [],
+      "props": {
+        "id": "string",
+        "label": "ReactNode",
+        "checked": "boolean",
+        "onCheckedChange": "(checked:boolean)=>void",
+        "disabled": "boolean",
+        "name": "string (form field)",
+        "defaultChecked": "boolean"
+      },
+      "tokensUsed": [
+        "color.borderStrong",
+        "color.ink",
+        "color.surface",
+        "color.text",
+        "color.textInverse",
+        "duration.fast",
+        "font.size.base",
+        "radius.full",
+        "radius.sm",
+        "shadow.focus",
+        "space.11",
+        "space.2",
+        "space.3",
+        "space.4",
+        "space.5"
+      ],
+      "usedIn": [
+        "CategoryForm",
+        "CategoryListing",
+        "HomeEditor",
+        "OrderActions",
+        "PostForm",
+        "ProductForm",
+        "SectionEditor",
+        "SettingsForm",
+        "TeamManager"
+      ],
+      "accessibility": "Whole row is the label (44px min height); visible focus ring; Space toggles.",
+      "example": "<Checkbox id=\"m-steel\" label=\"Steel\" checked={on} onCheckedChange={setOn} />",
+      "lastUpdated": "2026-11-12"
+    },
+    {
+      "name": "RadioGroup",
+      "path": "shared/src/components/ui/Checkbox.tsx",
+      "category": "ui/form",
+      "description": "Radix radio group rendering a list of labelled options; used for budget and rating filters.",
+      "variants": [],
+      "props": {
+        "name": "string",
+        "value": "string",
+        "onValueChange": "(v)=>void",
+        "options": "{value,label}[]",
+        "label": "string (aria-label)"
+      },
+      "tokensUsed": [
+        "color.borderStrong",
+        "color.ink",
+        "color.surface",
+        "color.text",
+        "color.textInverse",
+        "duration.fast",
+        "font.size.base",
+        "radius.full",
+        "radius.sm",
+        "shadow.focus",
+        "space.11",
+        "space.2",
+        "space.3",
+        "space.4",
+        "space.5"
+      ],
+      "usedIn": [
+        "CategoryListing"
+      ],
+      "accessibility": "Arrow-key navigation, roving focus, 44px rows.",
+      "example": "<RadioGroup name=\"rating\" options={[…]} value={v} onValueChange={setV} />",
+      "lastUpdated": "2026-11-12"
+    },
+    {
+      "name": "Badge",
+      "path": "shared/src/components/ui/Badge.tsx",
+      "category": "ui/display",
+      "description": "Small status label: discount %, Sold out, Bestseller.",
+      "variants": [
+        "sale",
+        "success",
+        "warning",
+        "error",
+        "neutral",
+        "outline",
+        "dark"
+      ],
+      "sizes": {
+        "sm": "px-2 py-0.5 text-xs",
+        "md": "px-3 py-1 text-sm"
+      },
+      "props": {
+        "variant": "string",
+        "size": "sm|md"
+      },
+      "tokensUsed": [
+        "color.borderStrong",
+        "color.error",
+        "color.errorSoft",
+        "color.ink",
+        "color.primary",
+        "color.secondary",
+        "color.success",
+        "color.successSoft",
+        "color.surface",
+        "color.text",
+        "color.textInverse",
+        "color.warning",
+        "color.warningSoft",
+        "font.size.sm",
+        "font.size.xs",
+        "font.tracking.wide",
+        "font.weight.semibold",
+        "radius.sm",
+        "space.0.5",
+        "space.1",
+        "space.2",
+        "space.3"
+      ],
+      "usedIn": [
+        "HomeEditor",
+        "ProductCard",
+        "TeamManager",
+        "admin/AdminBits",
+        "admin:/categories",
+        "admin:/guides",
+        "admin:/products",
+        "admin:/reviews",
+        "shop:/[category]/[sub]/[product]",
+        "shop:/account"
+      ],
+      "accessibility": "Text content conveys meaning; all variants pass AA contrast.",
+      "example": "<Badge variant=\"sale\">50% off</Badge>",
+      "lastUpdated": "2026-11-12"
+    },
+    {
+      "name": "Card",
+      "path": "shared/src/components/ui/Card.tsx",
+      "category": "ui/layout",
+      "description": "Surface container with padding/elevation variants; polymorphic `as`.",
+      "variants": [
+        "flat",
+        "raised",
+        "outline",
+        "interactive"
+      ],
+      "sizes": {
+        "none": "p-0",
+        "sm": "p-3",
+        "md": "p-4 md:p-6",
+        "lg": "p-6 md:p-8"
+      },
+      "props": {
+        "as": "ElementType",
+        "padding": "none|sm|md|lg",
+        "elevation": "flat|raised|outline",
+        "interactive": "boolean",
+        "background": "color token"
+      },
+      "tokensUsed": [
+        "color.border",
+        "color.borderStrong",
+        "color.surface",
+        "color.text",
+        "duration.base",
+        "radius.lg",
+        "shadow.lg",
+        "shadow.md",
+        "space.0",
+        "space.3",
+        "space.4",
+        "space.6",
+        "space.8"
+      ],
+      "usedIn": [
+        "CartView",
+        "CategoryForm",
+        "CheckoutForm",
+        "CustomerAuthForm",
+        "HomeEditor",
+        "PostForm",
+        "ProductForm",
+        "SetPasswordForm",
+        "SettingsForm",
+        "TeamManager",
+        "TrackOrderForm",
+        "admin/AdminBits",
+        "admin/PageEditors",
+        "admin:/content/pages",
+        "admin:/login",
+        "admin:/mfa",
+        "admin:/orders/[id]",
+        "admin:/reviews",
+        "shop:/account",
+        "shop:/order/[id]"
+      ],
+      "accessibility": "Use as=\"fieldset\"/\"section\" when grouping semantics are needed.",
+      "example": "<Card padding=\"md\" elevation=\"raised\">…</Card>",
+      "lastUpdated": "2026-11-12"
+    },
+    {
+      "name": "Heading",
+      "path": "shared/src/components/ui/Heading.tsx",
+      "category": "ui/typography",
+      "description": "Heading with semantic level independent from visual size (keeps one H1 and logical H2/H3).",
+      "variants": [
+        "sm",
+        "md",
+        "lg",
+        "xl",
+        "display"
+      ],
+      "props": {
+        "as": "h1|h2|h3|h4|p",
+        "size": "sm|md|lg|xl|display"
+      },
+      "tokensUsed": [
+        "color.text",
+        "font.family.heading",
+        "font.size.2xl",
+        "font.size.3xl",
+        "font.size.4xl",
+        "font.size.5xl",
+        "font.size.lg",
+        "font.size.xl",
+        "font.tracking.tight",
+        "font.weight.semibold"
+      ],
+      "usedIn": [
+        "SectionHeader"
+      ],
+      "accessibility": "Choose `as` for document outline, `size` for look.",
+      "example": "<Heading as=\"h2\" size=\"lg\">Bestsellers</Heading>",
+      "lastUpdated": "2026-11-12"
+    },
+    {
+      "name": "SectionHeader",
+      "path": "shared/src/components/ui/SectionHeader.tsx",
+      "category": "ui/typography",
+      "description": "Section title row with eyebrow, subtitle and View all link.",
+      "variants": [
+        "left",
+        "center"
+      ],
+      "props": {
+        "title": "string",
+        "id": "string",
+        "subtitle": "string",
+        "eyebrow": "string",
+        "viewAllHref": "string",
+        "viewAllLabel": "string",
+        "align": "left|center",
+        "as": "h1|h2|h3"
+      },
+      "tokensUsed": [
+        "color.primary",
+        "color.text",
+        "color.textMuted",
+        "font.size.base",
+        "font.size.sm",
+        "font.tracking.wider",
+        "font.weight.semibold",
+        "maxWidth.prose",
+        "space.1",
+        "space.11",
+        "space.2",
+        "space.4",
+        "space.6",
+        "space.8"
+      ],
+      "usedIn": [
+        "CategoryTiles",
+        "GuideCards",
+        "HomeSections",
+        "ProductGrid",
+        "admin:/",
+        "sections/InfoSections",
+        "shop:/[category]/[sub]/[product]"
+      ],
+      "accessibility": "View all link includes sr-only section name for unique link text.",
+      "example": "<SectionHeader title=\"Bestsellers\" viewAllHref=\"/bestsellers\" />",
+      "lastUpdated": "2026-11-12"
+    },
+    {
+      "name": "Icon",
+      "path": "shared/src/components/ui/Icon.tsx",
+      "category": "ui/icon",
+      "description": "Token-sized wrapper for lucide icons.",
+      "variants": [],
+      "sizes": {
+        "xs": "h-3 w-3",
+        "sm": "h-4 w-4",
+        "md": "h-5 w-5",
+        "lg": "h-6 w-6",
+        "xl": "h-8 w-8"
+      },
+      "props": {
+        "icon": "LucideIcon",
+        "size": "xs|sm|md|lg|xl",
+        "label": "string (omit for decorative)"
+      },
+      "tokensUsed": [
+        "space.3",
+        "space.4",
+        "space.5",
+        "space.6",
+        "space.8"
+      ],
+      "usedIn": [],
+      "accessibility": "aria-hidden unless label given (then role=img + aria-label).",
+      "example": "<Icon icon={Truck} size=\"md\" />",
+      "lastUpdated": "2026-11-12"
+    },
+    {
+      "name": "SocialIcon",
+      "path": "shared/src/components/ui/Icon.tsx",
+      "category": "ui/icon",
+      "description": "Inline brand marks (Instagram, Facebook, YouTube, WhatsApp).",
+      "variants": [
+        "instagram",
+        "facebook",
+        "youtube",
+        "whatsapp"
+      ],
+      "props": {
+        "brand": "instagram|facebook|youtube|whatsapp",
+        "size": "xs|sm|md|lg|xl"
+      },
+      "tokensUsed": [
+        "space.3",
+        "space.4",
+        "space.5",
+        "space.6",
+        "space.8"
+      ],
+      "usedIn": [
+        "Footer",
+        "MobileNav",
+        "TopBar",
+        "WhatsAppButton"
+      ],
+      "accessibility": "Decorative; the wrapping link carries aria-label.",
+      "example": "<a aria-label=\"Instagram\" href={…}><SocialIcon brand=\"instagram\" /></a>",
+      "lastUpdated": "2026-11-12"
+    },
+    {
+      "name": "Modal",
+      "path": "shared/src/components/ui/Modal.tsx",
+      "category": "ui/overlay",
+      "description": "Centred Radix dialog (product image zoom, confirmations).",
+      "variants": [],
+      "sizes": {
+        "sm": "max-w-narrow",
+        "md": "max-w-modal",
+        "lg": "max-w-menu",
+        "full": "max-w-container"
+      },
+      "props": {
+        "open": "boolean",
+        "onOpenChange": "(open)=>void",
+        "trigger": "ReactNode",
+        "title": "string",
+        "hideTitle": "boolean",
+        "description": "string",
+        "footer": "ReactNode",
+        "size": "sm|md|lg|full"
+      },
+      "tokensUsed": [
+        "color.border",
+        "color.overlay",
+        "color.secondary",
+        "color.surface",
+        "color.text",
+        "color.textMuted",
+        "font.family.heading",
+        "font.size.sm",
+        "font.size.xl",
+        "font.weight.semibold",
+        "maxWidth.container",
+        "maxWidth.drawer",
+        "maxWidth.menu",
+        "maxWidth.modal",
+        "maxWidth.narrow",
+        "radius.lg",
+        "radius.md",
+        "shadow.focus",
+        "shadow.lg",
+        "space.0",
+        "space.1",
+        "space.11",
+        "space.2",
+        "space.3",
+        "space.4",
+        "space.5",
+        "zIndex.modal",
+        "zIndex.overlay"
+      ],
+      "usedIn": [
+        "ProductGallery"
+      ],
+      "accessibility": "Focus trap, Escape closes, scroll lock, labelled by title, 44px close button.",
+      "example": "<Modal open={o} onOpenChange={setO} title=\"Zoom\">…</Modal>",
+      "lastUpdated": "2026-11-12"
+    },
+    {
+      "name": "Drawer",
+      "path": "shared/src/components/ui/Modal.tsx",
+      "category": "ui/overlay",
+      "description": "Slide-in panel built on the same dialog frame (cart, filters, mobile menu).",
+      "variants": [
+        "left",
+        "right",
+        "bottom"
+      ],
+      "props": {
+        "side": "left|right|bottom",
+        "open": "boolean",
+        "onOpenChange": "fn",
+        "trigger": "ReactNode",
+        "title": "string",
+        "footer": "ReactNode"
+      },
+      "tokensUsed": [
+        "color.border",
+        "color.overlay",
+        "color.secondary",
+        "color.surface",
+        "color.text",
+        "color.textMuted",
+        "font.family.heading",
+        "font.size.sm",
+        "font.size.xl",
+        "font.weight.semibold",
+        "maxWidth.container",
+        "maxWidth.drawer",
+        "maxWidth.menu",
+        "maxWidth.modal",
+        "maxWidth.narrow",
+        "radius.lg",
+        "radius.md",
+        "shadow.focus",
+        "shadow.lg",
+        "space.0",
+        "space.1",
+        "space.11",
+        "space.2",
+        "space.3",
+        "space.4",
+        "space.5",
+        "zIndex.modal",
+        "zIndex.overlay"
+      ],
+      "usedIn": [
+        "CartDrawer",
+        "CategoryListing",
+        "MobileNav"
+      ],
+      "accessibility": "Same as Modal.",
+      "example": "<Drawer side=\"right\" title=\"Your cart\" open={isOpen} onOpenChange={setOpen}>…</Drawer>",
+      "lastUpdated": "2026-11-12"
+    },
+    {
+      "name": "Accordion",
+      "path": "shared/src/components/ui/Disclosure.tsx",
+      "category": "ui/disclosure",
+      "description": "Radix accordion for FAQs and mobile nav.",
+      "variants": [
+        "plain",
+        "boxed",
+        "single",
+        "multiple"
+      ],
+      "props": {
+        "items": "{id,title,content}[]",
+        "type": "single|multiple",
+        "defaultOpen": "string[]",
+        "variant": "plain|boxed",
+        "headingLevel": "h2|h3|h4"
+      },
+      "tokensUsed": [
+        "color.border",
+        "color.ink",
+        "color.surface",
+        "color.text",
+        "color.textMuted",
+        "duration.base",
+        "duration.fast",
+        "font.family.body",
+        "font.lineHeight.relaxed",
+        "font.size.base",
+        "font.weight.medium",
+        "font.weight.semibold",
+        "radius.md",
+        "shadow.focus",
+        "space.0",
+        "space.1",
+        "space.11",
+        "space.3",
+        "space.4",
+        "space.5",
+        "space.6"
+      ],
+      "usedIn": [
+        "MobileNav",
+        "sections/InfoSections"
+      ],
+      "accessibility": "Triggers are buttons inside headings; aria-expanded; content in DOM for crawlers when open.",
+      "example": "<Accordion items={faqs.map(…)} />",
+      "lastUpdated": "2026-11-12"
+    },
+    {
+      "name": "Tabs",
+      "path": "shared/src/components/ui/Disclosure.tsx",
+      "category": "ui/disclosure",
+      "description": "Radix tabs for grouped content.",
+      "variants": [],
+      "props": {
+        "items": "{value,label,content}[]",
+        "defaultValue": "string"
+      },
+      "tokensUsed": [
+        "color.border",
+        "color.ink",
+        "color.surface",
+        "color.text",
+        "color.textMuted",
+        "duration.base",
+        "duration.fast",
+        "font.family.body",
+        "font.lineHeight.relaxed",
+        "font.size.base",
+        "font.weight.medium",
+        "font.weight.semibold",
+        "radius.md",
+        "shadow.focus",
+        "space.0",
+        "space.1",
+        "space.11",
+        "space.3",
+        "space.4",
+        "space.5",
+        "space.6"
+      ],
+      "usedIn": [],
+      "accessibility": "Arrow keys move between tabs; roving tabindex.",
+      "example": "<Tabs items={[{value:'a',label:'Details',content:…}]} />",
+      "lastUpdated": "2026-11-12"
+    },
+    {
+      "name": "Toaster",
+      "path": "shared/src/components/ui/Toast.tsx",
+      "category": "ui/feedback",
+      "description": "Toast viewport; mount once in root layout.",
+      "variants": [],
+      "props": {},
+      "tokensUsed": [
+        "color.border",
+        "color.error",
+        "color.success",
+        "color.surface",
+        "color.text",
+        "color.textMuted",
+        "font.size.sm",
+        "font.weight.semibold",
+        "radius.md",
+        "shadow.focus",
+        "shadow.lg",
+        "space.0.5",
+        "space.11",
+        "space.2",
+        "space.24",
+        "space.3",
+        "space.4",
+        "space.5",
+        "space.6",
+        "zIndex.toast"
+      ],
+      "usedIn": [
+        "admin: (layout)",
+        "shop: (layout)"
+      ],
+      "accessibility": "aria-live=polite region; dismiss button 44px.",
+      "example": "<Toaster />",
+      "lastUpdated": "2026-11-12"
+    },
+    {
+      "name": "toast",
+      "path": "shared/src/components/ui/Toast.tsx",
+      "category": "ui/feedback",
+      "description": "Imperative function to show a toast from client code.",
+      "variants": [
+        "success",
+        "error",
+        "info"
+      ],
+      "props": {
+        "title": "string",
+        "description": "string",
+        "tone": "success|error|info"
+      },
+      "tokensUsed": [
+        "color.border",
+        "color.error",
+        "color.success",
+        "color.surface",
+        "color.text",
+        "color.textMuted",
+        "font.size.sm",
+        "font.weight.semibold",
+        "radius.md",
+        "shadow.focus",
+        "shadow.lg",
+        "space.0.5",
+        "space.11",
+        "space.2",
+        "space.24",
+        "space.3",
+        "space.4",
+        "space.5",
+        "space.6",
+        "zIndex.toast"
+      ],
+      "usedIn": [
+        "AddToCartButton",
+        "CheckoutForm",
+        "Toaster"
+      ],
+      "accessibility": "Announced politely.",
+      "example": "toast({ title: \"Added to cart\" })",
+      "lastUpdated": "2026-11-12"
+    },
+    {
+      "name": "Skeleton",
+      "path": "shared/src/components/ui/Misc.tsx",
+      "category": "ui/feedback",
+      "description": "Pulse placeholder block sized with token classes.",
+      "variants": [],
+      "props": {
+        "className": "token size classes"
+      },
+      "tokensUsed": [
+        "color.background",
+        "color.border",
+        "color.borderStrong",
+        "color.ink",
+        "color.secondary",
+        "color.surface",
+        "color.text",
+        "color.textInverse",
+        "color.textMuted",
+        "duration.fast",
+        "font.size.base",
+        "font.size.sm",
+        "font.weight.medium",
+        "font.weight.semibold",
+        "radius.md",
+        "shadow.focus",
+        "space.1",
+        "space.11",
+        "space.2",
+        "space.3",
+        "space.32",
+        "space.4",
+        "space.5",
+        "space.8",
+        "space.9",
+        "space.px"
+      ],
+      "usedIn": [
+        "PageSkeleton"
+      ],
+      "accessibility": "aria-hidden.",
+      "example": "<Skeleton className=\"h-4 w-32\" />",
+      "lastUpdated": "2026-11-12"
+    },
+    {
+      "name": "Separator",
+      "path": "shared/src/components/ui/Misc.tsx",
+      "category": "ui/layout",
+      "description": "Horizontal or vertical rule.",
+      "variants": [
+        "horizontal",
+        "vertical"
+      ],
+      "props": {
+        "orientation": "horizontal|vertical"
+      },
+      "tokensUsed": [
+        "color.background",
+        "color.border",
+        "color.borderStrong",
+        "color.ink",
+        "color.secondary",
+        "color.surface",
+        "color.text",
+        "color.textInverse",
+        "color.textMuted",
+        "duration.fast",
+        "font.size.base",
+        "font.size.sm",
+        "font.weight.medium",
+        "font.weight.semibold",
+        "radius.md",
+        "shadow.focus",
+        "space.1",
+        "space.11",
+        "space.2",
+        "space.3",
+        "space.32",
+        "space.4",
+        "space.5",
+        "space.8",
+        "space.9",
+        "space.px"
+      ],
+      "usedIn": [],
+      "accessibility": "role=separator.",
+      "example": "<Separator />",
+      "lastUpdated": "2026-11-12"
+    },
+    {
+      "name": "Pagination",
+      "path": "shared/src/components/ui/Misc.tsx",
+      "category": "ui/navigation",
+      "description": "Crawlable page links with prev/next and ellipsis.",
+      "variants": [],
+      "props": {
+        "page": "number",
+        "totalPages": "number",
+        "hrefFor": "(page)=>string"
+      },
+      "tokensUsed": [
+        "color.background",
+        "color.border",
+        "color.borderStrong",
+        "color.ink",
+        "color.secondary",
+        "color.surface",
+        "color.text",
+        "color.textInverse",
+        "color.textMuted",
+        "duration.fast",
+        "font.size.base",
+        "font.size.sm",
+        "font.weight.medium",
+        "font.weight.semibold",
+        "radius.md",
+        "shadow.focus",
+        "space.1",
+        "space.11",
+        "space.2",
+        "space.3",
+        "space.32",
+        "space.4",
+        "space.5",
+        "space.8",
+        "space.9",
+        "space.px"
+      ],
+      "usedIn": [
+        "CategoryListing"
+      ],
+      "accessibility": "nav landmark, aria-current=page, rel prev/next, 44px targets.",
+      "example": "<Pagination page={2} totalPages={5} hrefFor={(n)=>`?page=${n}`} />",
+      "lastUpdated": "2026-11-12"
+    },
+    {
+      "name": "Table",
+      "path": "shared/src/components/ui/Misc.tsx",
+      "category": "ui/display",
+      "description": "Key–value HTML table (product specs, order details).",
+      "variants": [],
+      "props": {
+        "rows": "{label,value}[]",
+        "caption": "string"
+      },
+      "tokensUsed": [
+        "color.background",
+        "color.border",
+        "color.borderStrong",
+        "color.ink",
+        "color.secondary",
+        "color.surface",
+        "color.text",
+        "color.textInverse",
+        "color.textMuted",
+        "duration.fast",
+        "font.size.base",
+        "font.size.sm",
+        "font.weight.medium",
+        "font.weight.semibold",
+        "radius.md",
+        "shadow.focus",
+        "space.1",
+        "space.11",
+        "space.2",
+        "space.3",
+        "space.32",
+        "space.4",
+        "space.5",
+        "space.8",
+        "space.9",
+        "space.px"
+      ],
+      "usedIn": [
+        "shop:/[category]/[sub]/[product]"
+      ],
+      "accessibility": "Real <table> with th scope=row and caption (AEO: specs as HTML, not images).",
+      "example": "<Table caption=\"Specifications\" rows={specs} />",
+      "lastUpdated": "2026-11-12"
+    },
+    {
+      "name": "QuantityStepper",
+      "path": "shared/src/components/ui/Misc.tsx",
+      "category": "ui/form",
+      "description": "−/+ quantity control.",
+      "variants": [],
+      "sizes": {
+        "sm": "h-9 w-9 buttons",
+        "md": "h-11 w-11 buttons"
+      },
+      "props": {
+        "value": "number",
+        "onChange": "(n)=>void",
+        "min": "number",
+        "max": "number",
+        "size": "sm|md",
+        "label": "string"
+      },
+      "tokensUsed": [
+        "color.background",
+        "color.border",
+        "color.borderStrong",
+        "color.ink",
+        "color.secondary",
+        "color.surface",
+        "color.text",
+        "color.textInverse",
+        "color.textMuted",
+        "duration.fast",
+        "font.size.base",
+        "font.size.sm",
+        "font.weight.medium",
+        "font.weight.semibold",
+        "radius.md",
+        "shadow.focus",
+        "space.1",
+        "space.11",
+        "space.2",
+        "space.3",
+        "space.32",
+        "space.4",
+        "space.5",
+        "space.8",
+        "space.9",
+        "space.px"
+      ],
+      "usedIn": [
+        "CartLineItem",
+        "commerce/ProductBuyBox"
+      ],
+      "accessibility": "role=group with label; live output; buttons labelled and disabled at limits.",
+      "example": "<QuantityStepper value={q} onChange={setQ} max={10} />",
+      "lastUpdated": "2026-11-12"
+    },
+    {
+      "name": "RatingStars",
+      "path": "shared/src/components/commerce/RatingStars.tsx",
+      "category": "commerce",
+      "description": "Read-only star rating with fractional fill.",
+      "variants": [],
+      "sizes": {
+        "sm": "h-4",
+        "md": "h-5",
+        "lg": "h-6"
+      },
+      "props": {
+        "value": "number 0–5",
+        "count": "number",
+        "size": "sm|md|lg",
+        "showValue": "boolean"
+      },
+      "tokensUsed": [
+        "color.rating",
+        "color.secondaryStrong",
+        "color.text",
+        "color.textMuted",
+        "font.size.sm",
+        "font.weight.semibold",
+        "space.0",
+        "space.1.5",
+        "space.4",
+        "space.5",
+        "space.6"
+      ],
+      "usedIn": [
+        "ProductCard",
+        "ReviewList",
+        "admin:/reviews",
+        "shop:/[category]/[sub]/[product]"
+      ],
+      "accessibility": "role=img with text label 'Rated x out of 5 from n reviews'.",
+      "example": "<RatingStars value={4.4} count={318} />",
+      "lastUpdated": "2026-11-12"
+    },
+    {
+      "name": "PriceBlock",
+      "path": "shared/src/components/commerce/PriceBlock.tsx",
+      "category": "commerce",
+      "description": "Sale price, struck MRP and % off.",
+      "variants": [],
+      "sizes": {
+        "sm": "card",
+        "md": "default",
+        "lg": "product page"
+      },
+      "props": {
+        "price": "number",
+        "mrp": "number",
+        "size": "sm|md|lg",
+        "showTaxNote": "boolean"
+      },
+      "tokensUsed": [
+        "color.success",
+        "color.text",
+        "color.textMuted",
+        "font.family.body",
+        "font.size.3xl",
+        "font.size.base",
+        "font.size.lg",
+        "font.size.sm",
+        "font.size.xl",
+        "font.weight.bold",
+        "font.weight.semibold",
+        "space.0.5",
+        "space.2"
+      ],
+      "usedIn": [
+        "ProductCard",
+        "shop:/[category]/[sub]/[product]"
+      ],
+      "accessibility": "sr-only labels for sale price and MRP.",
+      "example": "<PriceBlock price={449} mrp={899} size=\"lg\" showTaxNote />",
+      "lastUpdated": "2026-11-12"
+    },
+    {
+      "name": "AddToCartButton",
+      "path": "shared/src/components/commerce/AddToCartButton.tsx",
+      "category": "commerce",
+      "description": "Adds a product to the cart (opens drawer) or Buy Now (goes to checkout); renders Sold out when unavailable.",
+      "variants": [
+        "add",
+        "buy",
+        "sold-out"
+      ],
+      "props": {
+        "product": "CardProduct subset",
+        "quantity": "number",
+        "mode": "add|buy",
+        "label": "string",
+        "showIcon": "boolean",
+        "size": "Button size",
+        "fullWidth": "boolean",
+        "variant": "Button variant override"
+      },
+      "tokensUsed": [
+        "space.4"
+      ],
+      "usedIn": [
+        "ProductCard",
+        "commerce/ProductBuyBox"
+      ],
+      "accessibility": "aria-label includes product title; disabled Sold out state.",
+      "example": "<AddToCartButton product={card} mode=\"buy\" size=\"lg\" fullWidth />",
+      "lastUpdated": "2026-11-12"
+    },
+    {
+      "name": "ProductCard",
+      "path": "shared/src/components/commerce/ProductCard.tsx",
+      "category": "commerce",
+      "description": "Product tile: hover second image, discount/sold-out/bestseller badges, title, rating, price, Add to Cart.",
+      "variants": [
+        "default",
+        "plain"
+      ],
+      "props": {
+        "product": "CardProduct",
+        "variant": "default|plain",
+        "priority": "boolean (LCP)",
+        "headingLevel": "h2|h3"
+      },
+      "tokensUsed": [
+        "aspect.product",
+        "color.background",
+        "color.border",
+        "color.surface",
+        "color.text",
+        "duration.slow",
+        "font.lineHeight.snug",
+        "font.size.base",
+        "font.weight.medium",
+        "radius.lg",
+        "shadow.focus",
+        "space.0",
+        "space.1",
+        "space.2",
+        "space.3",
+        "space.4",
+        "zIndex.base",
+        "zIndex.raised"
+      ],
+      "usedIn": [
+        "CategoryListing",
+        "ListingTemplate",
+        "ProductGrid",
+        "shop:/guides/[slug]"
+      ],
+      "accessibility": "Stretched title link makes the card clickable; button sits above it; hover image is aria-hidden.",
+      "example": "<ProductCard product={toCardProduct(p)} />",
+      "lastUpdated": "2026-11-12"
+    },
+    {
+      "name": "PrepaidNotice",
+      "path": "shared/src/components/commerce/PrepaidNotice.tsx",
+      "category": "commerce",
+      "description": "States prepaid-only policy and accepted methods.",
+      "variants": [
+        "inline",
+        "box"
+      ],
+      "props": {
+        "variant": "inline|box"
+      },
+      "tokensUsed": [
+        "color.background",
+        "color.border",
+        "color.success",
+        "color.text",
+        "color.textMuted",
+        "font.size.sm",
+        "font.weight.semibold",
+        "radius.md",
+        "space.0.5",
+        "space.1",
+        "space.1.5",
+        "space.2",
+        "space.4",
+        "space.5"
+      ],
+      "usedIn": [
+        "CartDrawer",
+        "CartView",
+        "CheckoutForm",
+        "shop:/[category]/[sub]/[product]"
+      ],
+      "accessibility": "Plain text; icons decorative.",
+      "example": "<PrepaidNotice variant=\"inline\" />",
+      "lastUpdated": "2026-11-12"
+    },
+    {
+      "name": "PincodeChecker",
+      "path": "shared/src/components/commerce/PincodeChecker.tsx",
+      "category": "commerce",
+      "description": "PIN-code delivery estimate (zone table) with remembered PIN.",
+      "variants": [],
+      "props": {},
+      "tokensUsed": [
+        "color.error",
+        "color.success",
+        "color.text",
+        "color.textMuted",
+        "font.size.sm",
+        "space.0.5",
+        "space.2",
+        "space.4"
+      ],
+      "usedIn": [
+        "shop:/[category]/[sub]/[product]"
+      ],
+      "accessibility": "Labelled input, aria-live result, inline error.",
+      "example": "<PincodeChecker />",
+      "lastUpdated": "2026-11-12"
+    },
+    {
+      "name": "ProductGallery",
+      "path": "shared/src/components/commerce/ProductGallery.tsx",
+      "category": "commerce",
+      "description": "Main image, thumbnails, counter, arrows and zoom modal with hover magnify.",
+      "variants": [],
+      "props": {
+        "images": "{src,alt}[]",
+        "title": "string"
+      },
+      "tokensUsed": [
+        "aspect.product",
+        "aspect.square",
+        "color.background",
+        "color.borderStrong",
+        "color.ink",
+        "color.primary",
+        "color.surface",
+        "color.text",
+        "color.textMuted",
+        "duration.base",
+        "font.size.sm",
+        "radius.full",
+        "radius.lg",
+        "radius.md",
+        "shadow.focus",
+        "shadow.md",
+        "space.0",
+        "space.1",
+        "space.11",
+        "space.16",
+        "space.2",
+        "space.20",
+        "space.3",
+        "space.4",
+        "space.5",
+        "zIndex.base",
+        "zIndex.raised"
+      ],
+      "usedIn": [
+        "shop:/[category]/[sub]/[product]"
+      ],
+      "accessibility": "Arrow keys switch images; labelled buttons; aria-current thumb.",
+      "example": "<ProductGallery images={p.images} title={p.title} />",
+      "lastUpdated": "2026-11-12"
+    },
+    {
+      "name": "ReviewList",
+      "path": "shared/src/components/commerce/ReviewList.tsx",
+      "category": "commerce",
+      "description": "Rating summary with distribution plus reviews with photos.",
+      "variants": [],
+      "props": {
+        "reviews": "Review[]",
+        "rating": "number",
+        "reviewCount": "number",
+        "productTitle": "string"
+      },
+      "tokensUsed": [
+        "color.background",
+        "color.border",
+        "color.rating",
+        "color.secondary",
+        "color.success",
+        "color.text",
+        "color.textMuted",
+        "font.family.heading",
+        "font.size.5xl",
+        "font.size.base",
+        "font.size.sm",
+        "font.weight.medium",
+        "font.weight.semibold",
+        "radius.full",
+        "radius.md",
+        "space.1",
+        "space.1.5",
+        "space.2",
+        "space.20",
+        "space.3",
+        "space.4",
+        "space.6",
+        "space.8"
+      ],
+      "usedIn": [
+        "shop:/[category]/[sub]/[product]"
+      ],
+      "accessibility": "Review photos have descriptive alt text.",
+      "example": "<ReviewList reviews={r} rating={4.4} reviewCount={318} productTitle={t} />",
+      "lastUpdated": "2026-11-12"
+    },
+    {
+      "name": "CartLineItem",
+      "path": "shared/src/components/commerce/CartLineItem.tsx",
+      "category": "commerce",
+      "description": "Cart row with thumbnail, price, quantity stepper and remove.",
+      "variants": [],
+      "sizes": {
+        "sm": "drawer",
+        "md": "cart page"
+      },
+      "props": {
+        "line": "CartLine",
+        "size": "sm|md"
+      },
+      "tokensUsed": [
+        "color.background",
+        "color.error",
+        "color.text",
+        "color.textMuted",
+        "font.size.base",
+        "font.size.sm",
+        "font.weight.medium",
+        "font.weight.semibold",
+        "radius.md",
+        "shadow.focus",
+        "space.1",
+        "space.11",
+        "space.2",
+        "space.20",
+        "space.24",
+        "space.3",
+        "space.4"
+      ],
+      "usedIn": [
+        "CartDrawer",
+        "CartView"
+      ],
+      "accessibility": "Remove button labelled with product title.",
+      "example": "<CartLineItem line={l} />",
+      "lastUpdated": "2026-11-12"
+    },
+    {
+      "name": "OrderSummary",
+      "path": "shared/src/components/commerce/OrderSummary.tsx",
+      "category": "commerce",
+      "description": "Subtotal / delivery / savings / total breakdown.",
+      "variants": [],
+      "props": {
+        "subtotal": "number",
+        "shipping": "number",
+        "total": "number",
+        "savings": "number",
+        "showFreeShippingHint": "boolean",
+        "title": "string"
+      },
+      "tokensUsed": [
+        "color.border",
+        "color.secondary",
+        "color.success",
+        "color.text",
+        "color.textMuted",
+        "duration.slow",
+        "font.family.heading",
+        "font.size.base",
+        "font.size.lg",
+        "font.size.sm",
+        "font.size.xl",
+        "font.weight.bold",
+        "font.weight.semibold",
+        "radius.full",
+        "space.2",
+        "space.3"
+      ],
+      "usedIn": [
+        "CartDrawer",
+        "CartView",
+        "CheckoutForm",
+        "shop:/order/[id]"
+      ],
+      "accessibility": "Definition list semantics.",
+      "example": "<OrderSummary subtotal={899} shipping={0} total={899} />",
+      "lastUpdated": "2026-11-12"
+    },
+    {
+      "name": "FreeShippingProgress",
+      "path": "shared/src/components/commerce/OrderSummary.tsx",
+      "category": "commerce",
+      "description": "'Add ₹X more for free delivery' with progress bar.",
+      "variants": [],
+      "props": {
+        "subtotal": "number"
+      },
+      "tokensUsed": [
+        "color.border",
+        "color.secondary",
+        "color.success",
+        "color.text",
+        "color.textMuted",
+        "duration.slow",
+        "font.family.heading",
+        "font.size.base",
+        "font.size.lg",
+        "font.size.sm",
+        "font.size.xl",
+        "font.weight.bold",
+        "font.weight.semibold",
+        "radius.full",
+        "space.2",
+        "space.3"
+      ],
+      "usedIn": [
+        "CartDrawer",
+        "CartView",
+        "OrderSummary"
+      ],
+      "accessibility": "Bar is aria-hidden; text conveys state.",
+      "example": "<FreeShippingProgress subtotal={320} />",
+      "lastUpdated": "2026-11-12"
+    },
+    {
+      "name": "CartDrawer",
+      "path": "shared/src/components/commerce/CartDrawer.tsx",
+      "category": "commerce",
+      "description": "Slide-in mini cart mounted once in StoreShell.",
+      "variants": [],
+      "props": {},
+      "tokensUsed": [
+        "color.border",
+        "color.textMuted",
+        "font.size.lg",
+        "font.weight.semibold",
+        "space.12",
+        "space.16",
+        "space.2",
+        "space.3",
+        "space.4"
+      ],
+      "usedIn": [
+        "StoreShell"
+      ],
+      "accessibility": "Drawer semantics; empty state with next action.",
+      "example": "<CartDrawer />",
+      "lastUpdated": "2026-11-12"
+    },
+    {
+      "name": "CartButton",
+      "path": "shared/src/components/commerce/CartButton.tsx",
+      "category": "commerce",
+      "description": "Header cart icon with live count; opens CartDrawer.",
+      "variants": [],
+      "props": {},
+      "tokensUsed": [
+        "color.primary",
+        "color.secondary",
+        "color.text",
+        "color.textInverse",
+        "font.size.xs",
+        "font.weight.bold",
+        "radius.full",
+        "radius.md",
+        "shadow.focus",
+        "space.0.5",
+        "space.1",
+        "space.11",
+        "space.5",
+        "space.6"
+      ],
+      "usedIn": [
+        "Header"
+      ],
+      "accessibility": "aria-label includes item count.",
+      "example": "<CartButton />",
+      "lastUpdated": "2026-11-12"
+    },
+    {
+      "name": "CartView",
+      "path": "shared/src/components/commerce/CartView.tsx",
+      "category": "commerce",
+      "description": "Full cart page body.",
+      "variants": [],
+      "props": {},
+      "tokensUsed": [
+        "color.border",
+        "color.textMuted",
+        "font.size.lg",
+        "font.weight.semibold",
+        "space.12",
+        "space.16",
+        "space.2",
+        "space.24",
+        "space.4",
+        "space.8"
+      ],
+      "usedIn": [
+        "shop:/cart"
+      ],
+      "accessibility": "Headings and lists.",
+      "example": "<CartView />",
+      "lastUpdated": "2026-11-12"
+    },
+    {
+      "name": "ProductBuyBox",
+      "path": "shared/src/components/commerce/ProductBuyBox.tsx",
+      "category": "commerce",
+      "description": "Quantity + Add to Cart + Buy Now; drives the mobile StickyBuyBar.",
+      "variants": [],
+      "props": {
+        "product": "CardProduct"
+      },
+      "tokensUsed": [
+        "color.border",
+        "color.surface",
+        "color.textMuted",
+        "duration.base",
+        "font.size.lg",
+        "font.size.sm",
+        "font.weight.bold",
+        "font.weight.medium",
+        "shadow.lg",
+        "space.0",
+        "space.3",
+        "space.4",
+        "zIndex.sticky"
+      ],
+      "usedIn": [
+        "shop:/[category]/[sub]/[product]"
+      ],
+      "accessibility": "Stepper labelled; buttons 48px.",
+      "example": "<ProductBuyBox product={card} />",
+      "lastUpdated": "2026-11-12"
+    },
+    {
+      "name": "StickyBuyBar",
+      "path": "shared/src/components/commerce/ProductBuyBox.tsx",
+      "category": "commerce",
+      "description": "Mobile-only fixed bottom bar with price and buy actions.",
+      "variants": [],
+      "props": {
+        "product": "CardProduct",
+        "quantity": "number",
+        "visible": "boolean"
+      },
+      "tokensUsed": [
+        "color.border",
+        "color.surface",
+        "color.textMuted",
+        "duration.base",
+        "font.size.lg",
+        "font.size.sm",
+        "font.weight.bold",
+        "font.weight.medium",
+        "shadow.lg",
+        "space.0",
+        "space.3",
+        "space.4",
+        "zIndex.sticky"
+      ],
+      "usedIn": [
+        "ProductBuyBox"
+      ],
+      "accessibility": "aria-hidden when off-screen.",
+      "example": "<StickyBuyBar product={card} quantity={1} visible />",
+      "lastUpdated": "2026-11-12"
+    },
+    {
+      "name": "SearchBox",
+      "path": "shared/src/components/commerce/SearchBox.tsx",
+      "category": "commerce",
+      "description": "GET form to /search (works without JS; SearchAction target).",
+      "variants": [],
+      "sizes": {
+        "sm": "h-9",
+        "md": "h-11",
+        "lg": "h-12"
+      },
+      "props": {
+        "defaultValue": "string",
+        "size": "sm|md|lg",
+        "placeholder": "string",
+        "id": "string"
+      },
+      "tokensUsed": [
+        "color.background",
+        "radius.full",
+        "space.4"
+      ],
+      "usedIn": [
+        "Header",
+        "NotFoundContent"
+      ],
+      "accessibility": "role=search, sr-only label.",
+      "example": "<SearchBox />",
+      "lastUpdated": "2026-11-12"
+    },
+    {
+      "name": "CategoryListing",
+      "path": "shared/src/components/commerce/CategoryListing.tsx",
+      "category": "commerce",
+      "description": "Client filters (budget, material, colour, rating), sort and pagination with URL state.",
+      "variants": [],
+      "props": {
+        "products": "CardProduct[]",
+        "hideBudget": "boolean",
+        "emptyMessage": "string"
+      },
+      "tokensUsed": [
+        "color.border",
+        "color.surface",
+        "color.textMuted",
+        "font.weight.semibold",
+        "radius.lg",
+        "space.1",
+        "space.2",
+        "space.3",
+        "space.4",
+        "space.6",
+        "space.8"
+      ],
+      "usedIn": [
+        "ListingTemplate"
+      ],
+      "accessibility": "Fieldsets with legends; result count is aria-live; filters in Drawer on mobile.",
+      "example": "<CategoryListing products={cards} />",
+      "lastUpdated": "2026-11-12"
+    },
+    {
+      "name": "CheckoutForm",
+      "path": "shared/src/components/commerce/CheckoutForm.tsx",
+      "category": "commerce",
+      "description": "Contact + address form (RHF + Zod Indian PIN/phone) and prepaid pay button.",
+      "variants": [],
+      "props": {},
+      "tokensUsed": [
+        "color.background",
+        "color.textMuted",
+        "font.family.heading",
+        "font.size.lg",
+        "font.size.sm",
+        "font.size.xl",
+        "font.weight.semibold",
+        "radius.md",
+        "space.14",
+        "space.16",
+        "space.24",
+        "space.3",
+        "space.4",
+        "space.6",
+        "space.8"
+      ],
+      "usedIn": [
+        "shop:/checkout"
+      ],
+      "accessibility": "Labels, autocomplete tokens, inline errors, fieldset legends.",
+      "example": "<CheckoutForm />",
+      "lastUpdated": "2026-11-14"
+    },
+    {
+      "name": "TrackOrderForm",
+      "path": "shared/src/components/commerce/TrackOrderForm.tsx",
+      "category": "commerce",
+      "description": "Order number + phone lookup with status timeline.",
+      "variants": [],
+      "props": {
+        "defaultOrder": "string"
+      },
+      "tokensUsed": [
+        "color.border",
+        "color.error",
+        "color.errorSoft",
+        "color.success",
+        "color.textMuted",
+        "font.family.heading",
+        "font.size.2xl",
+        "font.size.lg",
+        "font.size.sm",
+        "font.weight.semibold",
+        "radius.md",
+        "space.0",
+        "space.1",
+        "space.2",
+        "space.3",
+        "space.4",
+        "space.6"
+      ],
+      "usedIn": [
+        "shop:/track-order"
+      ],
+      "accessibility": "aria-live results; ordered timeline with sr-only state.",
+      "example": "<TrackOrderForm defaultOrder=\"CS1001\" />",
+      "lastUpdated": "2026-11-12"
+    },
+    {
+      "name": "HeroBanner",
+      "path": "shared/src/components/sections/HeroBanner.tsx",
+      "category": "section",
+      "description": "Offer hero with copy, CTAs, highlight chips and priority image (LCP).",
+      "variants": [],
+      "props": {
+        "eyebrow": "string",
+        "title": "string",
+        "text": "string",
+        "image": "{src,alt}",
+        "primaryCta": "{label,href}",
+        "secondaryCta": "{label,href}",
+        "highlights": "string[]",
+        "background": "Section background token",
+        "as": "h1|h2",
+        "priority": "boolean (LCP; only the first hero)"
+      },
+      "tokensUsed": [
+        "aspect.banner",
+        "color.primary",
+        "color.surface",
+        "color.text",
+        "font.family.heading",
+        "font.size.4xl",
+        "font.size.5xl",
+        "font.size.lg",
+        "font.size.sm",
+        "font.tracking.tight",
+        "font.tracking.wider",
+        "font.weight.medium",
+        "font.weight.semibold",
+        "maxWidth.prose",
+        "radius.full",
+        "radius.xl",
+        "shadow.focus",
+        "space.0",
+        "space.1",
+        "space.12",
+        "space.2",
+        "space.3",
+        "space.4",
+        "space.6",
+        "space.8",
+        "zIndex.base",
+        "zIndex.raised"
+      ],
+      "usedIn": [
+        "HeroCarousel",
+        "HomeSections"
+      ],
+      "accessibility": "Use as=h1 only once per page.",
+      "example": "<HeroBanner title=\"…\" text=\"…\" image={…} primaryCta={…} />",
+      "lastUpdated": "2026-11-14"
+    },
+    {
+      "name": "ProductGrid",
+      "path": "shared/src/components/sections/ProductGrid.tsx",
+      "category": "section",
+      "description": "Titled product section; grid or mobile carousel (Bestsellers, Flash sale, Related).",
+      "variants": [
+        "grid",
+        "carousel"
+      ],
+      "props": {
+        "title": "string",
+        "subtitle": "string",
+        "eyebrow": "string",
+        "products": "CardProduct[]",
+        "viewAllHref": "string",
+        "layout": "grid|carousel",
+        "columns": "3|4",
+        "background": "token",
+        "spacing": "none|sm|md|lg",
+        "priorityCount": "number"
+      },
+      "tokensUsed": [
+        "space.0",
+        "space.2",
+        "space.3",
+        "space.4",
+        "space.6",
+        "space.64"
+      ],
+      "usedIn": [
+        "HomeSections",
+        "shop:/[category]/[sub]/[product]"
+      ],
+      "accessibility": "Section labelled by its heading.",
+      "example": "<ProductGrid title=\"Bestsellers\" products={cards} viewAllHref=\"/bestsellers\" />",
+      "lastUpdated": "2026-11-12"
+    },
+    {
+      "name": "CategoryTiles",
+      "path": "shared/src/components/sections/CategoryTiles.tsx",
+      "category": "section",
+      "description": "Navigational tiles for categories, featured collections and budget tiers.",
+      "variants": [
+        "circle",
+        "card",
+        "price"
+      ],
+      "props": {
+        "title": "string",
+        "subtitle": "string",
+        "items": "{label,href,image?,caption?}[]",
+        "variant": "circle|card|price",
+        "background": "token",
+        "spacing": "token"
+      },
+      "tokensUsed": [
+        "aspect.square",
+        "aspect.tile",
+        "color.border",
+        "color.primary",
+        "color.surface",
+        "color.text",
+        "color.textMuted",
+        "duration.base",
+        "duration.slow",
+        "font.family.heading",
+        "font.size.2xl",
+        "font.size.base",
+        "font.size.sm",
+        "font.weight.medium",
+        "font.weight.semibold",
+        "radius.full",
+        "radius.lg",
+        "shadow.focus",
+        "shadow.md",
+        "space.1",
+        "space.2",
+        "space.24",
+        "space.4"
+      ],
+      "usedIn": [
+        "HomeSections"
+      ],
+      "accessibility": "Tiles are links with visible text.",
+      "example": "<CategoryTiles title=\"Shop by category\" items={…} />",
+      "lastUpdated": "2026-11-12"
+    },
+    {
+      "name": "SaleBanner",
+      "path": "shared/src/components/sections/SaleBanner.tsx",
+      "category": "section",
+      "description": "Promo banner with live text over decorative art.",
+      "variants": [
+        "soft",
+        "sand",
+        "ink"
+      ],
+      "props": {
+        "eyebrow": "string",
+        "title": "string",
+        "text": "string",
+        "cta": "{label,href}",
+        "image": "string",
+        "tone": "soft|sand|ink",
+        "headingLevel": "h2|h3"
+      },
+      "tokensUsed": [
+        "color.ink",
+        "color.primary",
+        "color.primarySoft",
+        "color.secondary",
+        "color.text",
+        "color.textInverse",
+        "font.family.heading",
+        "font.size.2xl",
+        "font.size.3xl",
+        "font.size.base",
+        "font.size.sm",
+        "font.tracking.wider",
+        "font.weight.semibold",
+        "radius.xl",
+        "space.2",
+        "space.48",
+        "space.6",
+        "space.8",
+        "zIndex.base",
+        "zIndex.raised"
+      ],
+      "usedIn": [
+        "HomeSections"
+      ],
+      "accessibility": "Text never baked into images; image alt empty (decorative).",
+      "example": "<SaleBanner title=\"Up to 50% off\" cta={{label:\"Shop\",href:\"/kitchen\"}} />",
+      "lastUpdated": "2026-11-12"
+    },
+    {
+      "name": "ValueProps",
+      "path": "shared/src/components/sections/InfoSections.tsx",
+      "category": "section",
+      "description": "Five value propositions (range, pricing, shipping, returns, secure prepaid).",
+      "variants": [],
+      "props": {
+        "title": "string",
+        "items": "{icon (name), title, text}[] (from Admin → Homepage)",
+        "background": "token",
+        "hideTitle": "boolean"
+      },
+      "tokensUsed": [
+        "color.border",
+        "color.secondary",
+        "color.surface",
+        "color.text",
+        "color.textMuted",
+        "font.family.heading",
+        "font.lineHeight.relaxed",
+        "font.size.3xl",
+        "font.size.4xl",
+        "font.size.base",
+        "font.size.lg",
+        "font.size.sm",
+        "font.tracking.tight",
+        "font.weight.semibold",
+        "maxWidth.prose",
+        "radius.full",
+        "radius.lg",
+        "space.1",
+        "space.10",
+        "space.12",
+        "space.2",
+        "space.4",
+        "space.5",
+        "space.6",
+        "space.8"
+      ],
+      "usedIn": [
+        "HomeSections",
+        "shop:/about"
+      ],
+      "accessibility": "Section has aria-label.",
+      "example": "<ValueProps />",
+      "lastUpdated": "2026-11-12"
+    },
+    {
+      "name": "CustomerCare",
+      "path": "shared/src/components/sections/InfoSections.tsx",
+      "category": "section",
+      "description": "Care block: phone, WhatsApp, email, hours + Track order.",
+      "variants": [],
+      "props": {
+        "care": "Settings.care",
+        "title": "string",
+        "subtitle": "string",
+        "background": "token"
+      },
+      "tokensUsed": [
+        "color.border",
+        "color.secondary",
+        "color.surface",
+        "color.text",
+        "color.textMuted",
+        "font.family.heading",
+        "font.lineHeight.relaxed",
+        "font.size.3xl",
+        "font.size.4xl",
+        "font.size.base",
+        "font.size.lg",
+        "font.size.sm",
+        "font.tracking.tight",
+        "font.weight.semibold",
+        "maxWidth.prose",
+        "radius.full",
+        "radius.lg",
+        "space.1",
+        "space.10",
+        "space.12",
+        "space.2",
+        "space.4",
+        "space.5",
+        "space.6",
+        "space.8"
+      ],
+      "usedIn": [
+        "HomeSections",
+        "shop:/contact",
+        "shop:/faq"
+      ],
+      "accessibility": "Contact links are real tel:/mailto:.",
+      "example": "<CustomerCare />",
+      "lastUpdated": "2026-11-12"
+    },
+    {
+      "name": "BrandStory",
+      "path": "shared/src/components/sections/InfoSections.tsx",
+      "category": "section",
+      "description": "'Why choose City Seller?' story with category blurbs.",
+      "variants": [],
+      "props": {
+        "title": "string",
+        "paragraphs": "string[]",
+        "blurbs": "{title,text,href}[]",
+        "background": "token"
+      },
+      "tokensUsed": [
+        "color.border",
+        "color.secondary",
+        "color.surface",
+        "color.text",
+        "color.textMuted",
+        "font.family.heading",
+        "font.lineHeight.relaxed",
+        "font.size.3xl",
+        "font.size.4xl",
+        "font.size.base",
+        "font.size.lg",
+        "font.size.sm",
+        "font.tracking.tight",
+        "font.weight.semibold",
+        "maxWidth.prose",
+        "radius.full",
+        "radius.lg",
+        "space.1",
+        "space.10",
+        "space.12",
+        "space.2",
+        "space.4",
+        "space.5",
+        "space.6",
+        "space.8"
+      ],
+      "usedIn": [
+        "HomeSections"
+      ],
+      "accessibility": "H2 + H3 blurbs.",
+      "example": "<BrandStory title=\"Why choose City Seller?\" paragraphs={…} blurbs={…} />",
+      "lastUpdated": "2026-11-12"
+    },
+    {
+      "name": "FAQSection",
+      "path": "shared/src/components/sections/InfoSections.tsx",
+      "category": "section",
+      "description": "FAQ accordion with FAQPage JSON-LD.",
+      "variants": [],
+      "props": {
+        "title": "string",
+        "faqs": "Faq[]",
+        "withJsonLd": "boolean",
+        "background": "token",
+        "spacing": "token",
+        "bare": "boolean"
+      },
+      "tokensUsed": [
+        "color.border",
+        "color.secondary",
+        "color.surface",
+        "color.text",
+        "color.textMuted",
+        "font.family.heading",
+        "font.lineHeight.relaxed",
+        "font.size.3xl",
+        "font.size.4xl",
+        "font.size.base",
+        "font.size.lg",
+        "font.size.sm",
+        "font.tracking.tight",
+        "font.weight.semibold",
+        "maxWidth.prose",
+        "radius.full",
+        "radius.lg",
+        "space.1",
+        "space.10",
+        "space.12",
+        "space.2",
+        "space.4",
+        "space.5",
+        "space.6",
+        "space.8"
+      ],
+      "usedIn": [
+        "ContentPage",
+        "HomeSections",
+        "ListingTemplate",
+        "shop:/[category]/[sub]/[product]",
+        "shop:/faq",
+        "shop:/guides/[slug]"
+      ],
+      "accessibility": "Questions are h3 buttons.",
+      "example": "<FAQSection faqs={category.faqs} />",
+      "lastUpdated": "2026-11-12"
+    },
+    {
+      "name": "AnswerIntro",
+      "path": "shared/src/components/sections/InfoSections.tsx",
+      "category": "section",
+      "description": "H1 + 1–2 sentence direct answer for AEO at the top of listing and info pages.",
+      "variants": [],
+      "props": {
+        "title": "string",
+        "answer": "string",
+        "meta": "string"
+      },
+      "tokensUsed": [
+        "color.border",
+        "color.secondary",
+        "color.surface",
+        "color.text",
+        "color.textMuted",
+        "font.family.heading",
+        "font.lineHeight.relaxed",
+        "font.size.3xl",
+        "font.size.4xl",
+        "font.size.base",
+        "font.size.lg",
+        "font.size.sm",
+        "font.tracking.tight",
+        "font.weight.semibold",
+        "maxWidth.prose",
+        "radius.full",
+        "radius.lg",
+        "space.1",
+        "space.10",
+        "space.12",
+        "space.2",
+        "space.4",
+        "space.5",
+        "space.6",
+        "space.8"
+      ],
+      "usedIn": [
+        "ContentPage",
+        "ListingTemplate",
+        "shop:/account",
+        "shop:/contact",
+        "shop:/faq",
+        "shop:/track-order"
+      ],
+      "accessibility": "Provides the page's single H1.",
+      "example": "<AnswerIntro title=\"Kitchen & Dining\" answer=\"…\" />",
+      "lastUpdated": "2026-11-12"
+    },
+    {
+      "name": "GuideCards",
+      "path": "shared/src/components/sections/GuideCards.tsx",
+      "category": "section",
+      "description": "Buying-guide card grid.",
+      "variants": [],
+      "props": {
+        "title": "string",
+        "posts": "Post[]",
+        "viewAllHref": "string",
+        "background": "token",
+        "asPage": "boolean"
+      },
+      "tokensUsed": [
+        "aspect.banner",
+        "color.background",
+        "color.border",
+        "color.surface",
+        "color.textMuted",
+        "font.family.heading",
+        "font.size.base",
+        "font.size.sm",
+        "font.size.xl",
+        "font.weight.semibold",
+        "radius.lg",
+        "space.0",
+        "space.2",
+        "space.4",
+        "space.6"
+      ],
+      "usedIn": [
+        "HomeSections",
+        "shop:/guides"
+      ],
+      "accessibility": "Stretched-link cards.",
+      "example": "<GuideCards posts={posts} />",
+      "lastUpdated": "2026-11-12"
+    },
+    {
+      "name": "ListingTemplate",
+      "path": "shared/src/components/sections/ListingTemplate.tsx",
+      "category": "section",
+      "description": "Shared listing body: breadcrumbs, AnswerIntro, chips, CategoryListing (static fallback grid), FAQs, ItemList JSON-LD.",
+      "variants": [],
+      "props": {
+        "crumbs": "Crumb[]",
+        "title": "string",
+        "answer": "string",
+        "products": "CardProduct[]",
+        "chips": "{label,href,active}[]",
+        "faqs": "Faq[]",
+        "hideBudget": "boolean",
+        "emptyMessage": "string"
+      },
+      "tokensUsed": [
+        "space.3",
+        "space.6"
+      ],
+      "usedIn": [
+        "shop:/[category]",
+        "shop:/[category]/[sub]",
+        "shop:/bestsellers",
+        "shop:/budget/[tier]",
+        "shop:/flash-sale",
+        "shop:/new-arrivals",
+        "shop:/search"
+      ],
+      "accessibility": "Single H1; chips nav labelled Refine.",
+      "example": "<ListingTemplate crumbs={…} title=\"Cleaning\" answer={…} products={cards} />",
+      "lastUpdated": "2026-11-12"
+    },
+    {
+      "name": "ContentPage",
+      "path": "shared/src/components/sections/ContentPage.tsx",
+      "category": "section",
+      "description": "Policy/info page template from ContentPage data.",
+      "variants": [],
+      "props": {
+        "page": "ContentPage",
+        "crumbs": "Crumb[]"
+      },
+      "tokensUsed": [
+        "space.12"
+      ],
+      "usedIn": [
+        "shop:/about",
+        "shop:/policies/[slug]"
+      ],
+      "accessibility": "Article with H1/H2 outline.",
+      "example": "<ContentPage page={policies.shipping} crumbs={…} />",
+      "lastUpdated": "2026-11-12"
+    },
+    {
+      "name": "NotFoundContent",
+      "path": "shared/src/components/sections/NotFoundContent.tsx",
+      "category": "section",
+      "description": "404 body with search and helpful links.",
+      "variants": [],
+      "props": {},
+      "tokensUsed": [
+        "color.primary",
+        "color.textMuted",
+        "font.family.heading",
+        "font.size.3xl",
+        "font.size.5xl",
+        "font.weight.semibold",
+        "maxWidth.modal",
+        "space.3",
+        "space.4"
+      ],
+      "usedIn": [
+        "shop: (not-found)"
+      ],
+      "accessibility": "H1 + search.",
+      "example": "<NotFoundContent />",
+      "lastUpdated": "2026-11-12"
+    },
+    {
+      "name": "Container",
+      "path": "shared/src/components/layout/Container.tsx",
+      "category": "layout",
+      "description": "Centred page-width wrapper with standard gutters.",
+      "variants": [
+        "default",
+        "narrow",
+        "prose",
+        "full"
+      ],
+      "props": {
+        "as": "ElementType",
+        "width": "default|narrow|prose|full"
+      },
+      "tokensUsed": [
+        "color.background",
+        "color.ink",
+        "color.primarySoft",
+        "color.secondary",
+        "color.surface",
+        "color.textInverse",
+        "maxWidth.container",
+        "maxWidth.narrow",
+        "maxWidth.prose",
+        "space.0",
+        "space.10",
+        "space.16",
+        "space.24",
+        "space.4",
+        "space.6",
+        "space.8"
+      ],
+      "usedIn": [
+        "ContentPage",
+        "Footer",
+        "Header",
+        "HeroBanner",
+        "ListingTemplate",
+        "PageSkeleton",
+        "Section",
+        "TopBar",
+        "layout/MegaMenu",
+        "shop:/[category]/[sub]/[product]",
+        "shop:/account",
+        "shop:/account/password",
+        "shop:/cart",
+        "shop:/checkout",
+        "shop:/contact",
+        "shop:/faq",
+        "shop:/guides",
+        "shop:/guides/[slug]",
+        "shop:/login",
+        "shop:/order/[id]",
+        "shop:/track-order"
+      ],
+      "accessibility": "Neutral.",
+      "example": "<Container>…</Container>",
+      "lastUpdated": "2026-11-12"
+    },
+    {
+      "name": "Section",
+      "path": "shared/src/components/layout/Container.tsx",
+      "category": "layout",
+      "description": "Full-bleed band with background token and vertical rhythm.",
+      "variants": [
+        "background",
+        "surface",
+        "secondary",
+        "soft",
+        "ink"
+      ],
+      "sizes": {
+        "none": "py-0",
+        "sm": "py-6 md:py-8",
+        "md": "py-10 md:py-16",
+        "lg": "py-16 md:py-24"
+      },
+      "props": {
+        "background": "background|surface|secondary|soft|ink",
+        "spacing": "none|sm|md|lg",
+        "containerWidth": "Container width"
+      },
+      "tokensUsed": [
+        "color.background",
+        "color.ink",
+        "color.primarySoft",
+        "color.secondary",
+        "color.surface",
+        "color.textInverse",
+        "maxWidth.container",
+        "maxWidth.narrow",
+        "maxWidth.prose",
+        "space.0",
+        "space.10",
+        "space.16",
+        "space.24",
+        "space.4",
+        "space.6",
+        "space.8"
+      ],
+      "usedIn": [
+        "CategoryTiles",
+        "GuideCards",
+        "HomeSections",
+        "NotFoundContent",
+        "ProductGrid",
+        "sections/InfoSections",
+        "shop:/[category]/[sub]/[product]"
+      ],
+      "accessibility": "Pass aria-labelledby to name the region.",
+      "example": "<Section background=\"surface\">…</Section>",
+      "lastUpdated": "2026-11-12"
+    },
+    {
+      "name": "Breadcrumbs",
+      "path": "shared/src/components/layout/Breadcrumbs.tsx",
+      "category": "layout",
+      "description": "Breadcrumb trail with BreadcrumbList JSON-LD; Home auto-prepended.",
+      "variants": [],
+      "props": {
+        "items": "{label,href?}[]",
+        "withJsonLd": "boolean",
+        "home": "Crumb (default Home → /; admin passes Dashboard)"
+      },
+      "tokensUsed": [
+        "color.text",
+        "color.textMuted",
+        "font.size.sm",
+        "space.1",
+        "space.3",
+        "space.9"
+      ],
+      "usedIn": [
+        "ContentPage",
+        "ListingTemplate",
+        "admin:/categories/[id]",
+        "admin:/content/faqs",
+        "admin:/content/pages/[slug]",
+        "admin:/guides/[slug]",
+        "admin:/orders/[id]",
+        "admin:/products/[id]",
+        "admin:/products/new",
+        "shop:/[category]/[sub]/[product]",
+        "shop:/account",
+        "shop:/cart",
+        "shop:/checkout",
+        "shop:/contact",
+        "shop:/faq",
+        "shop:/guides",
+        "shop:/guides/[slug]",
+        "shop:/track-order"
+      ],
+      "accessibility": "nav aria-label=Breadcrumb, aria-current=page.",
+      "example": "<Breadcrumbs items={[{label:\"Kitchen\",href:\"/kitchen\"},{label:\"Jars\"}]} />",
+      "lastUpdated": "2026-11-12"
+    },
+    {
+      "name": "Logo",
+      "path": "shared/src/components/layout/Logo.tsx",
+      "category": "layout",
+      "description": "City Seller wordmark link to home.",
+      "variants": [
+        "default",
+        "inverse"
+      ],
+      "props": {
+        "inverse": "boolean"
+      },
+      "tokensUsed": [
+        "color.primary",
+        "color.surface",
+        "color.text",
+        "color.textInverse",
+        "font.family.heading",
+        "font.size.xl",
+        "font.tracking.tight",
+        "font.weight.bold",
+        "space.11",
+        "space.2",
+        "space.8"
+      ],
+      "usedIn": [
+        "AdminShell",
+        "Footer",
+        "Header",
+        "admin:/login",
+        "admin:/mfa"
+      ],
+      "accessibility": "Link aria-label 'City Seller home'.",
+      "example": "<Logo />",
+      "lastUpdated": "2026-11-12"
+    },
+    {
+      "name": "TopBar",
+      "path": "shared/src/components/layout/TopBar.tsx",
+      "category": "layout",
+      "description": "Promo strip with socials, Track order and Login.",
+      "variants": [],
+      "props": {
+        "settings": "Settings (promo strip, socials)"
+      },
+      "tokensUsed": [
+        "color.ink",
+        "color.surface",
+        "color.textInverse",
+        "font.size.sm",
+        "font.weight.semibold",
+        "radius.md",
+        "space.1",
+        "space.2",
+        "space.4",
+        "space.9"
+      ],
+      "usedIn": [
+        "StoreShell"
+      ],
+      "accessibility": "Social links labelled.",
+      "example": "<TopBar />",
+      "lastUpdated": "2026-11-14"
+    },
+    {
+      "name": "NavDropdown",
+      "path": "shared/src/components/layout/NavDropdown.tsx",
+      "category": "layout",
+      "description": "Disclosure dropdown used by MegaMenu and BudgetMenu (hover + click + Escape).",
+      "variants": [
+        "mega",
+        "menu"
+      ],
+      "props": {
+        "label": "string",
+        "panel": "mega|menu",
+        "children": "ReactNode"
+      },
+      "tokensUsed": [
+        "color.border",
+        "color.secondary",
+        "color.surface",
+        "color.text",
+        "duration.fast",
+        "font.size.base",
+        "font.weight.medium",
+        "radius.md",
+        "shadow.focus",
+        "shadow.lg",
+        "space.0",
+        "space.1",
+        "space.11",
+        "space.3",
+        "space.4",
+        "space.64",
+        "zIndex.dropdown"
+      ],
+      "usedIn": [
+        "layout/MegaMenu"
+      ],
+      "accessibility": "Button with aria-expanded/aria-controls; Escape and outside click close.",
+      "example": "<NavDropdown label=\"Shop by Budget\">…</NavDropdown>",
+      "lastUpdated": "2026-11-12"
+    },
+    {
+      "name": "MegaMenu",
+      "path": "shared/src/components/layout/MegaMenu.tsx",
+      "category": "layout",
+      "description": "Data-driven 'Shop by Category' mega-menu (category → subcategory links with thumbnails).",
+      "variants": [],
+      "props": {
+        "tree": "NavCategory[]"
+      },
+      "tokensUsed": [
+        "color.background",
+        "color.primary",
+        "color.text",
+        "color.textMuted",
+        "font.family.heading",
+        "font.size.base",
+        "font.size.lg",
+        "font.size.sm",
+        "font.weight.semibold",
+        "radius.md",
+        "space.1",
+        "space.11",
+        "space.2",
+        "space.3",
+        "space.8",
+        "space.9"
+      ],
+      "usedIn": [
+        "Header"
+      ],
+      "accessibility": "Links in lists.",
+      "example": "<MegaMenu tree={tree} />",
+      "lastUpdated": "2026-11-12"
+    },
+    {
+      "name": "BudgetMenu",
+      "path": "shared/src/components/layout/MegaMenu.tsx",
+      "category": "layout",
+      "description": "'Shop by Budget' dropdown of five price tiers.",
+      "variants": [],
+      "props": {},
+      "tokensUsed": [
+        "color.background",
+        "color.primary",
+        "color.text",
+        "color.textMuted",
+        "font.family.heading",
+        "font.size.base",
+        "font.size.lg",
+        "font.size.sm",
+        "font.weight.semibold",
+        "radius.md",
+        "space.1",
+        "space.11",
+        "space.2",
+        "space.3",
+        "space.8",
+        "space.9"
+      ],
+      "usedIn": [
+        "Header"
+      ],
+      "accessibility": "Links in list.",
+      "example": "<BudgetMenu />",
+      "lastUpdated": "2026-11-12"
+    },
+    {
+      "name": "buildCategoryTree",
+      "path": "shared/src/components/layout/MegaMenu.tsx",
+      "category": "util",
+      "description": "Turns flat categories into a top-level tree with children.",
+      "variants": [],
+      "props": {
+        "categories": "Category[]"
+      },
+      "tokensUsed": [
+        "color.background",
+        "color.primary",
+        "color.text",
+        "color.textMuted",
+        "font.family.heading",
+        "font.size.base",
+        "font.size.lg",
+        "font.size.sm",
+        "font.weight.semibold",
+        "radius.md",
+        "space.1",
+        "space.11",
+        "space.2",
+        "space.3",
+        "space.8",
+        "space.9"
+      ],
+      "usedIn": [
+        "HomeSections",
+        "StoreShell",
+        "lib/admin/product-values",
+        "shop:/llms.txt (route)"
+      ],
+      "accessibility": "",
+      "example": "buildCategoryTree(await repo.listCategories())",
+      "lastUpdated": "2026-11-12"
+    },
+    {
+      "name": "MobileNav",
+      "path": "shared/src/components/layout/MobileNav.tsx",
+      "category": "layout",
+      "description": "Hamburger + left drawer with category accordion, budget tiers, links and socials.",
+      "variants": [],
+      "props": {
+        "tree": "NavCategory[]",
+        "social": "Settings.social"
+      },
+      "tokensUsed": [
+        "color.border",
+        "color.secondary",
+        "color.text",
+        "color.textMuted",
+        "font.size.base",
+        "font.size.sm",
+        "font.tracking.wider",
+        "font.weight.semibold",
+        "radius.md",
+        "space.1",
+        "space.11",
+        "space.2",
+        "space.4",
+        "space.6"
+      ],
+      "usedIn": [
+        "Header"
+      ],
+      "accessibility": "Drawer semantics; nav aria-label=Mobile.",
+      "example": "<MobileNav tree={tree} />",
+      "lastUpdated": "2026-11-12"
+    },
+    {
+      "name": "Header",
+      "path": "shared/src/components/layout/Header.tsx",
+      "category": "layout",
+      "description": "Sticky header: logo, search, account, cart, desktop nav row.",
+      "variants": [],
+      "props": {
+        "tree": "NavCategory[]",
+        "settings": "Settings"
+      },
+      "tokensUsed": [
+        "color.border",
+        "color.primary",
+        "color.secondary",
+        "color.surface",
+        "color.text",
+        "font.size.base",
+        "font.weight.medium",
+        "maxWidth.narrow",
+        "radius.md",
+        "shadow.focus",
+        "space.0",
+        "space.1",
+        "space.11",
+        "space.2",
+        "space.3",
+        "space.4",
+        "space.6",
+        "zIndex.sticky"
+      ],
+      "usedIn": [
+        "StoreShell"
+      ],
+      "accessibility": "Main nav landmark; mobile search row.",
+      "example": "<Header tree={tree} />",
+      "lastUpdated": "2026-11-12"
+    },
+    {
+      "name": "Footer",
+      "path": "shared/src/components/layout/Footer.tsx",
+      "category": "layout",
+      "description": "Footer: care hours/phone/email, shop, help, policies, socials, business name.",
+      "variants": [],
+      "props": {
+        "tree": "NavCategory[]",
+        "settings": "Settings (care, socials)"
+      },
+      "tokensUsed": [
+        "color.ink",
+        "color.surface",
+        "color.textInverse",
+        "font.family.heading",
+        "font.size.base",
+        "font.size.lg",
+        "font.size.sm",
+        "font.weight.semibold",
+        "radius.md",
+        "space.10",
+        "space.11",
+        "space.12",
+        "space.2",
+        "space.3",
+        "space.4",
+        "space.6",
+        "space.9"
+      ],
+      "usedIn": [
+        "StoreShell"
+      ],
+      "accessibility": "Contentinfo landmark; headings per column.",
+      "example": "<Footer tree={tree} />",
+      "lastUpdated": "2026-11-12"
+    },
+    {
+      "name": "StoreShell",
+      "path": "shared/src/components/layout/StoreShell.tsx",
+      "category": "layout",
+      "description": "Storefront chrome (skip link, TopBar, Header, Footer, CartDrawer, Organization + WebSite JSON-LD).",
+      "variants": [],
+      "props": {
+        "children": "ReactNode"
+      },
+      "tokensUsed": [
+        "color.surface",
+        "radius.md",
+        "shadow.lg",
+        "space.2",
+        "space.4",
+        "zIndex.toast"
+      ],
+      "usedIn": [
+        "shop: (layout)",
+        "shop: (not-found)"
+      ],
+      "accessibility": "Skip-to-content link; main landmark.",
+      "example": "<StoreShell>{children}</StoreShell>",
+      "lastUpdated": "2026-11-14"
+    },
+    {
+      "name": "useCart",
+      "path": "shared/src/hooks/useCart.ts",
+      "category": "hook",
+      "description": "Zustand cart store persisted to localStorage (items, drawer state, add/setQuantity/remove/clear).",
+      "variants": [],
+      "props": {
+        "returns": "{items,isOpen,add,setQuantity,remove,clear,open,close,setOpen}"
+      },
+      "tokensUsed": [],
+      "usedIn": [
+        "AddToCartButton",
+        "CartButton",
+        "CartDrawer",
+        "CartLineItem",
+        "CartView",
+        "CheckoutForm"
+      ],
+      "accessibility": "",
+      "example": "const add = useCart((s) => s.add)",
+      "lastUpdated": "2026-11-12"
+    },
+    {
+      "name": "cartTotals",
+      "path": "shared/src/hooks/useCart.ts",
+      "category": "hook",
+      "description": "Derives count, subtotal, MRP total, savings, shipping and total from cart lines.",
+      "variants": [],
+      "props": {
+        "items": "CartLine[]"
+      },
+      "tokensUsed": [],
+      "usedIn": [
+        "CartButton",
+        "CartDrawer",
+        "CartView",
+        "CheckoutForm"
+      ],
+      "accessibility": "",
+      "example": "const { total } = cartTotals(items)",
+      "lastUpdated": "2026-11-12"
+    },
+    {
+      "name": "useHydrated",
+      "path": "shared/src/hooks/useHydrated.ts",
+      "category": "hook",
+      "description": "True after client hydration (guards localStorage-backed UI).",
+      "variants": [],
+      "props": {
+        "returns": "boolean"
+      },
+      "tokensUsed": [],
+      "usedIn": [
+        "CartButton",
+        "CartDrawer",
+        "CartView",
+        "CheckoutForm"
+      ],
+      "accessibility": "",
+      "example": "const hydrated = useHydrated()",
+      "lastUpdated": "2026-11-12"
+    },
+    {
+      "name": "cn",
+      "path": "shared/src/lib/utils/cn.ts",
+      "category": "util",
+      "description": "clsx + tailwind-merge configured for token class names.",
+      "variants": [],
+      "props": {
+        "inputs": "ClassValue[]"
+      },
+      "tokensUsed": [],
+      "usedIn": [
+        "AdminShell",
+        "Badge",
+        "Breadcrumbs",
+        "Button",
+        "Card",
+        "CartLineItem",
+        "CategoryListing",
+        "CategoryTiles",
+        "ChipNav",
+        "CopyButton",
+        "CustomerAuthForm",
+        "DataTable",
+        "FormField",
+        "Heading",
+        "HeroBanner",
+        "HeroCarousel",
+        "HomeEditor",
+        "Logo",
+        "NavDropdown",
+        "PasswordInput",
+        "PrepaidNotice",
+        "PriceBlock",
+        "ProductCard",
+        "ProductGallery",
+        "ProductGrid",
+        "RatingStars",
+        "SaleBanner",
+        "SearchBox",
+        "SectionHeader",
+        "TrackOrderForm",
+        "admin/AdminBits",
+        "admin/EditorKit",
+        "commerce/OrderSummary",
+        "commerce/ProductBuyBox",
+        "layout/Container",
+        "sections/InfoSections",
+        "ui/Checkbox",
+        "ui/Disclosure",
+        "ui/Icon",
+        "ui/Input",
+        "ui/Misc",
+        "ui/Modal",
+        "ui/Toast"
+      ],
+      "accessibility": "",
+      "example": "cn(\"p-4\", active && \"bg-ink\")",
+      "lastUpdated": "2026-11-12"
+    },
+    {
+      "name": "formatINR",
+      "path": "shared/src/lib/utils/format.ts",
+      "category": "util",
+      "description": "Formats rupees with Indian grouping: 1299 → ₹1,299.",
+      "variants": [],
+      "props": {
+        "amount": "number"
+      },
+      "tokensUsed": [],
+      "usedIn": [
+        "CartLineItem",
+        "CheckoutForm",
+        "PincodeChecker",
+        "PriceBlock",
+        "ProductForm",
+        "TrackOrderForm",
+        "admin/AdminBits",
+        "admin:/",
+        "admin:/orders",
+        "admin:/orders/[id]",
+        "admin:/products",
+        "commerce/OrderSummary",
+        "commerce/ProductBuyBox",
+        "lib/admin/whatsapp",
+        "lib/orders/service",
+        "shop:/[category]/[sub]/[product]",
+        "shop:/account",
+        "shop:/faq",
+        "shop:/llms.txt (route)",
+        "shop:/order/[id]"
+      ],
+      "accessibility": "",
+      "example": "formatINR(1299)",
+      "lastUpdated": "2026-11-12"
+    },
+    {
+      "name": "calcDiscount",
+      "path": "shared/src/lib/utils/format.ts",
+      "category": "util",
+      "description": "Whole-number discount % from MRP and price.",
+      "variants": [],
+      "props": {
+        "mrp": "number",
+        "price": "number"
+      },
+      "tokensUsed": [],
+      "usedIn": [
+        "PriceBlock",
+        "ProductCard",
+        "ProductForm"
+      ],
+      "accessibility": "",
+      "example": "calcDiscount(899, 449) // 50",
+      "lastUpdated": "2026-11-12"
+    },
+    {
+      "name": "formatDate",
+      "path": "shared/src/lib/utils/format.ts",
+      "category": "util",
+      "description": "ISO date → '12 Nov 2026' (en-IN).",
+      "variants": [],
+      "props": {
+        "iso": "string|Date"
+      },
+      "tokensUsed": [],
+      "usedIn": [
+        "ContentPage",
+        "GuideCards",
+        "ReviewList",
+        "TrackOrderForm",
+        "admin/AdminBits",
+        "admin:/",
+        "admin:/content/pages",
+        "admin:/guides",
+        "admin:/orders",
+        "admin:/orders/[id]",
+        "admin:/reviews",
+        "shop:/account",
+        "shop:/guides/[slug]"
+      ],
+      "accessibility": "",
+      "example": "formatDate(order.createdAt)",
+      "lastUpdated": "2026-11-12"
+    },
+    {
+      "name": "slugify",
+      "path": "shared/src/lib/utils/format.ts",
+      "category": "util",
+      "description": "Text → URL slug.",
+      "variants": [],
+      "props": {
+        "input": "string"
+      },
+      "tokensUsed": [],
+      "usedIn": [
+        "CategoryForm",
+        "CategoryTiles",
+        "PostForm",
+        "ProductForm",
+        "ProductGrid",
+        "lib/admin/forms",
+        "sections/InfoSections"
+      ],
+      "accessibility": "",
+      "example": "slugify(\"Airtight Jar Set (6 pc)\")",
+      "lastUpdated": "2026-11-12"
+    },
+    {
+      "name": "getBudgetTier",
+      "path": "shared/src/lib/utils/budget.ts",
+      "category": "util",
+      "description": "Looks up a BUDGET_TIERS entry by slug (BUDGET_TIERS constant lives in the same file).",
+      "variants": [],
+      "props": {
+        "slug": "string"
+      },
+      "tokensUsed": [],
+      "usedIn": [
+        "shop:/budget/[tier]"
+      ],
+      "accessibility": "",
+      "example": "getBudgetTier(\"under-599\")",
+      "lastUpdated": "2026-11-12"
+    },
+    {
+      "name": "inBudget",
+      "path": "shared/src/lib/utils/budget.ts",
+      "category": "util",
+      "description": "Whether a price falls inside a budget tier.",
+      "variants": [],
+      "props": {
+        "price": "number",
+        "tier": "BudgetTier"
+      },
+      "tokensUsed": [],
+      "usedIn": [],
+      "accessibility": "",
+      "example": "inBudget(449, tier)",
+      "lastUpdated": "2026-11-12"
+    },
+    {
+      "name": "estimateDelivery",
+      "path": "shared/src/lib/utils/delivery.ts",
+      "category": "util",
+      "description": "PIN-zone delivery window (dates + region); SHIPPING constant in the same file.",
+      "variants": [],
+      "props": {
+        "pincode": "string",
+        "now": "Date"
+      },
+      "tokensUsed": [],
+      "usedIn": [
+        "PincodeChecker",
+        "shop:/order/[id]"
+      ],
+      "accessibility": "",
+      "example": "estimateDelivery(\"411001\")",
+      "lastUpdated": "2026-11-12"
+    },
+    {
+      "name": "shippingFor",
+      "path": "shared/src/lib/utils/delivery.ts",
+      "category": "util",
+      "description": "Delivery fee for a subtotal (free above threshold).",
+      "variants": [],
+      "props": {
+        "subtotal": "number"
+      },
+      "tokensUsed": [],
+      "usedIn": [
+        "hooks/useCart",
+        "lib/data/seed-repo",
+        "shop:/feeds/google.xml (route)"
+      ],
+      "accessibility": "",
+      "example": "shippingFor(399) // 49",
+      "lastUpdated": "2026-11-12"
+    },
+    {
+      "name": "paths",
+      "path": "shared/src/lib/utils/paths.ts",
+      "category": "util",
+      "description": "Canonical URL builders (the only place URL shapes are defined).",
+      "variants": [],
+      "props": {
+        "category(c)": "string",
+        "product(p)": "string",
+        "budget(slug)": "string",
+        "…": "see file",
+        "admin(path)": "string (clean URL on the admin host, /admin/… locally)"
+      },
+      "tokensUsed": [],
+      "usedIn": [
+        "AddToCartButton",
+        "AdminShell",
+        "CartDrawer",
+        "CartView",
+        "CheckoutForm",
+        "Footer",
+        "GuideCards",
+        "Header",
+        "HomeSections",
+        "MobileNav",
+        "NotFoundContent",
+        "SectionEditor",
+        "TopBar",
+        "admin:/",
+        "admin:/actions.ts",
+        "admin:/categories",
+        "admin:/categories/[id]",
+        "admin:/cms-actions.ts",
+        "admin:/content/faqs",
+        "admin:/content/pages",
+        "admin:/content/pages/[slug]",
+        "admin:/guides",
+        "admin:/guides/[slug]",
+        "admin:/orders",
+        "admin:/orders/[id]",
+        "admin:/products",
+        "admin:/products/[id]",
+        "admin:/products/new",
+        "admin:/reviews",
+        "layout/MegaMenu",
+        "lib/admin/product-values",
+        "lib/data/admin-content",
+        "lib/data/seed-repo",
+        "lib/seo/jsonld",
+        "lib/utils/product",
+        "sections/InfoSections",
+        "shop:/[category]",
+        "shop:/[category]/[sub]",
+        "shop:/[category]/[sub]/[product]",
+        "shop:/about",
+        "shop:/account",
+        "shop:/bestsellers",
+        "shop:/budget/[tier]",
+        "shop:/cart",
+        "shop:/checkout",
+        "shop:/contact",
+        "shop:/faq",
+        "shop:/feeds/google.xml (route)",
+        "shop:/flash-sale",
+        "shop:/guides",
+        "shop:/guides/[slug]",
+        "shop:/llms.txt (route)",
+        "shop:/new-arrivals",
+        "shop:/order/[id]",
+        "shop:/policies/[slug]",
+        "shop:/search",
+        "shop:/sitemap.ts",
+        "shop:/track-order"
+      ],
+      "accessibility": "",
+      "example": "paths.product(p)",
+      "lastUpdated": "2026-11-14"
+    },
+    {
+      "name": "tokenStyle",
+      "path": "shared/src/lib/utils/token-style.ts",
+      "category": "util",
+      "description": "Maps token names to inline CSS-variable styles for width/height/colour props.",
+      "variants": [],
+      "props": {
+        "width": "SizeProp",
+        "height": "SizeProp",
+        "bg": "ColorToken",
+        "fg": "ColorToken"
+      },
+      "tokensUsed": [],
+      "usedIn": [
+        "Button",
+        "Card"
+      ],
+      "accessibility": "",
+      "example": "tokenStyle({ width: \"12\", bg: \"success\" })",
+      "lastUpdated": "2026-11-12"
+    },
+    {
+      "name": "toCardProduct",
+      "path": "shared/src/lib/utils/product.ts",
+      "category": "util",
+      "description": "Product → serializable CardProduct for client components.",
+      "variants": [],
+      "props": {
+        "p": "Product"
+      },
+      "tokensUsed": [],
+      "usedIn": [
+        "HomeSections",
+        "shop:/[category]",
+        "shop:/[category]/[sub]",
+        "shop:/[category]/[sub]/[product]",
+        "shop:/bestsellers",
+        "shop:/budget/[tier]",
+        "shop:/flash-sale",
+        "shop:/guides/[slug]",
+        "shop:/new-arrivals",
+        "shop:/search"
+      ],
+      "accessibility": "",
+      "example": "products.map(toCardProduct)",
+      "lastUpdated": "2026-11-12"
+    },
+    {
+      "name": "validators",
+      "path": "shared/src/lib/utils/validators.ts",
+      "category": "util",
+      "description": "Zod schemas: pincodeSchema, phoneSchema, addressSchema, checkoutSchema, trackOrderSchema, INDIAN_STATES.",
+      "variants": [],
+      "props": {},
+      "tokensUsed": [],
+      "usedIn": [],
+      "accessibility": "",
+      "example": "addressSchema.safeParse(body)",
+      "lastUpdated": "2026-11-12"
+    },
+    {
+      "name": "buildMetadata",
+      "path": "shared/src/lib/seo/metadata.ts",
+      "category": "seo",
+      "description": "Unique title/description, canonical, OG and Twitter metadata with DB overrides.",
+      "variants": [],
+      "props": {
+        "title": "string",
+        "description": "string",
+        "path": "string",
+        "image": "string",
+        "seoTitle": "string",
+        "seoDescription": "string",
+        "type": "website|article",
+        "noindex": "boolean"
+      },
+      "tokensUsed": [],
+      "usedIn": [
+        "shop:/",
+        "shop:/[category]",
+        "shop:/[category]/[sub]",
+        "shop:/[category]/[sub]/[product]",
+        "shop:/about",
+        "shop:/account",
+        "shop:/account/password",
+        "shop:/bestsellers",
+        "shop:/budget/[tier]",
+        "shop:/cart",
+        "shop:/checkout",
+        "shop:/contact",
+        "shop:/faq",
+        "shop:/flash-sale",
+        "shop:/guides",
+        "shop:/guides/[slug]",
+        "shop:/login",
+        "shop:/new-arrivals",
+        "shop:/order/[id]",
+        "shop:/policies/[slug]",
+        "shop:/search",
+        "shop:/track-order"
+      ],
+      "accessibility": "",
+      "example": "export const metadata = buildMetadata({ title, description, path: \"/\" })",
+      "lastUpdated": "2026-11-12"
+    },
+    {
+      "name": "buildOrganizationJsonLd",
+      "path": "shared/src/lib/seo/jsonld.ts",
+      "category": "seo",
+      "description": "OnlineStore/Organization JSON-LD.",
+      "variants": [],
+      "props": {},
+      "tokensUsed": [],
+      "usedIn": [
+        "StoreShell"
+      ],
+      "accessibility": "",
+      "example": "buildOrganizationJsonLd()",
+      "lastUpdated": "2026-11-12"
+    },
+    {
+      "name": "buildWebSiteJsonLd",
+      "path": "shared/src/lib/seo/jsonld.ts",
+      "category": "seo",
+      "description": "WebSite JSON-LD with SearchAction.",
+      "variants": [],
+      "props": {},
+      "tokensUsed": [],
+      "usedIn": [
+        "StoreShell"
+      ],
+      "accessibility": "",
+      "example": "buildWebSiteJsonLd()",
+      "lastUpdated": "2026-11-12"
+    },
+    {
+      "name": "buildBreadcrumbJsonLd",
+      "path": "shared/src/lib/seo/jsonld.ts",
+      "category": "seo",
+      "description": "BreadcrumbList JSON-LD.",
+      "variants": [],
+      "props": {
+        "items": "Crumb[]"
+      },
+      "tokensUsed": [],
+      "usedIn": [
+        "Breadcrumbs"
+      ],
+      "accessibility": "",
+      "example": "buildBreadcrumbJsonLd(crumbs)",
+      "lastUpdated": "2026-11-12"
+    },
+    {
+      "name": "buildFaqJsonLd",
+      "path": "shared/src/lib/seo/jsonld.ts",
+      "category": "seo",
+      "description": "FAQPage JSON-LD.",
+      "variants": [],
+      "props": {
+        "faqs": "Faq[]"
+      },
+      "tokensUsed": [],
+      "usedIn": [
+        "sections/InfoSections"
+      ],
+      "accessibility": "",
+      "example": "buildFaqJsonLd(faqs)",
+      "lastUpdated": "2026-11-12"
+    },
+    {
+      "name": "buildProductJsonLd",
+      "path": "shared/src/lib/seo/jsonld.ts",
+      "category": "seo",
+      "description": "Product + Offer (shipping, returns) + AggregateRating JSON-LD.",
+      "variants": [],
+      "props": {
+        "p": "Product",
+        "categoryName": "string"
+      },
+      "tokensUsed": [],
+      "usedIn": [
+        "shop:/[category]/[sub]/[product]"
+      ],
+      "accessibility": "",
+      "example": "buildProductJsonLd(p, 'Kitchen > Jars')",
+      "lastUpdated": "2026-11-12"
+    },
+    {
+      "name": "buildItemListJsonLd",
+      "path": "shared/src/lib/seo/jsonld.ts",
+      "category": "seo",
+      "description": "ItemList JSON-LD for listing pages.",
+      "variants": [],
+      "props": {
+        "name": "string",
+        "items": "{name,url}[]"
+      },
+      "tokensUsed": [],
+      "usedIn": [
+        "ListingTemplate"
+      ],
+      "accessibility": "",
+      "example": "buildItemListJsonLd(title, items)",
+      "lastUpdated": "2026-11-12"
+    },
+    {
+      "name": "buildArticleJsonLd",
+      "path": "shared/src/lib/seo/jsonld.ts",
+      "category": "seo",
+      "description": "Article JSON-LD for guides.",
+      "variants": [],
+      "props": {
+        "post": "Post"
+      },
+      "tokensUsed": [],
+      "usedIn": [
+        "shop:/guides/[slug]"
+      ],
+      "accessibility": "",
+      "example": "buildArticleJsonLd(post)",
+      "lastUpdated": "2026-11-12"
+    },
+    {
+      "name": "JsonLd",
+      "path": "shared/src/lib/seo/JsonLdScript.tsx",
+      "category": "seo",
+      "description": "Renders JSON-LD script tags safely (escapes <).",
+      "variants": [],
+      "props": {
+        "data": "object|object[]"
+      },
+      "tokensUsed": [],
+      "usedIn": [
+        "Breadcrumbs",
+        "ListingTemplate",
+        "StoreShell",
+        "sections/InfoSections",
+        "shop:/[category]/[sub]/[product]",
+        "shop:/guides/[slug]"
+      ],
+      "accessibility": "",
+      "example": "<JsonLd data={buildFaqJsonLd(faqs)} />",
+      "lastUpdated": "2026-11-12"
+    },
+    {
+      "variants": [],
+      "tokensUsed": [
+        "color.textMuted",
+        "font.size.sm",
+        "space.2",
+        "space.4"
+      ],
+      "usedIn": [
+        "shop:/order/[id]"
+      ],
+      "lastUpdated": "2026-11-12",
+      "name": "OrderStatusPoller",
+      "path": "shared/src/components/commerce/OrderStatusPoller.tsx",
+      "category": "commerce",
+      "description": "Refreshes the order success page every few seconds while payment confirmation (webhook) is pending.",
+      "props": {
+        "intervalMs": "number (default 3000)",
+        "maxAttempts": "number (default 20)"
+      },
+      "accessibility": "role=status live message; spinner is aria-hidden; gives a clear fallback message after the last attempt.",
+      "example": "{!paid && <OrderStatusPoller />}"
+    },
+    {
+      "variants": [],
+      "tokensUsed": [],
+      "usedIn": [
+        "CheckoutForm"
+      ],
+      "lastUpdated": "2026-11-12",
+      "name": "useRazorpay",
+      "path": "shared/src/hooks/useRazorpay.ts",
+      "category": "hook",
+      "description": "Loads Razorpay Checkout.js on demand and opens it; resolves with the signed success payload or rejects (PaymentDismissedError on close).",
+      "props": {
+        "options": "RazorpayCheckoutOptions (from /api/checkout)",
+        "theme": "{ color?: string }",
+        "returns": "(options, theme) => Promise<RazorpaySuccess>"
+      },
+      "accessibility": "",
+      "example": "const open = useRazorpay(); const result = await open(data.checkout, { color: color.primary });"
+    },
+    {
+      "variants": [],
+      "tokensUsed": [
+        "color.background",
+        "color.border",
+        "color.surface",
+        "color.textMuted",
+        "font.size.base",
+        "font.size.sm",
+        "font.weight.semibold",
+        "radius.lg",
+        "space.10",
+        "space.3",
+        "space.4"
+      ],
+      "usedIn": [
+        "admin:/",
+        "admin:/categories",
+        "admin:/guides",
+        "admin:/orders",
+        "admin:/products"
+      ],
+      "lastUpdated": "2026-11-12",
+      "accessibility": "Real table with caption and th scope=col; scrolls horizontally on small screens.",
+      "name": "DataTable",
+      "path": "shared/src/components/ui/DataTable.tsx",
+      "category": "ui/display",
+      "description": "Generic accessible data table (admin orders/products) with per-column alignment and mobile-hidden columns.",
+      "props": {
+        "columns": "{header, cell(row), align?, hideOnMobile?}[]",
+        "rows": "T[]",
+        "rowKey": "(row)=>string",
+        "caption": "string (sr-only)",
+        "empty": "ReactNode"
+      },
+      "example": "<DataTable caption=\"Orders\" rows={orders} rowKey={(o)=>o.id} columns={[…]} />"
+    },
+    {
+      "variants": [],
+      "tokensUsed": [
+        "color.background",
+        "color.borderStrong",
+        "color.success",
+        "color.surface",
+        "color.text",
+        "font.size.sm",
+        "radius.md",
+        "shadow.focus",
+        "space.1",
+        "space.2",
+        "space.4",
+        "space.9"
+      ],
+      "usedIn": [
+        "admin/AdminBits"
+      ],
+      "lastUpdated": "2026-11-12",
+      "accessibility": "aria-label names the value; state change announced via aria-live.",
+      "name": "CopyButton",
+      "path": "shared/src/components/ui/CopyButton.tsx",
+      "category": "ui/action",
+      "description": "Copies a value to the clipboard with a brief Copied state.",
+      "props": {
+        "value": "string",
+        "label": "string (what is copied)"
+      },
+      "example": "<CopyButton value={phone} label=\"Phone\" />"
+    },
+    {
+      "variants": [
+        "default",
+        "active",
+        "with count"
+      ],
+      "tokensUsed": [
+        "color.borderStrong",
+        "color.ink",
+        "color.secondary",
+        "color.surface",
+        "color.text",
+        "color.textInverse",
+        "font.size.sm",
+        "font.size.xs",
+        "font.weight.medium",
+        "radius.full",
+        "shadow.focus",
+        "space.11",
+        "space.2",
+        "space.4"
+      ],
+      "usedIn": [
+        "ListingTemplate",
+        "admin:/orders",
+        "admin:/products",
+        "admin:/reviews"
+      ],
+      "lastUpdated": "2026-11-12",
+      "accessibility": "nav landmark; aria-current on the active chip; 44px targets.",
+      "name": "ChipNav",
+      "path": "shared/src/components/ui/ChipNav.tsx",
+      "category": "ui/navigation",
+      "description": "Scrolling link chips with optional counts: listing refine chips, budget tiers, admin status filters.",
+      "props": {
+        "chips": "{label, href, active?, count?}[]",
+        "label": "string (nav aria-label)"
+      },
+      "example": "<ChipNav label=\"Refine\" chips={[{label:\"All\",href:\"/kitchen\",active:true}]} />"
+    },
+    {
+      "variants": [],
+      "tokensUsed": [
+        "color.background",
+        "color.border",
+        "color.ink",
+        "color.primary",
+        "color.secondary",
+        "color.surface",
+        "color.text",
+        "color.textInverse",
+        "color.textMuted",
+        "color.warning",
+        "color.warningSoft",
+        "font.size.base",
+        "font.size.sm",
+        "font.size.xs",
+        "font.tracking.wide",
+        "font.weight.bold",
+        "font.weight.medium",
+        "font.weight.semibold",
+        "maxWidth.container",
+        "radius.full",
+        "radius.md",
+        "radius.sm",
+        "shadow.focus",
+        "space.0",
+        "space.0.5",
+        "space.1",
+        "space.11",
+        "space.2",
+        "space.3",
+        "space.4",
+        "space.5",
+        "space.6",
+        "space.8"
+      ],
+      "usedIn": [
+        "admin: (layout)"
+      ],
+      "lastUpdated": "2026-11-14",
+      "accessibility": "nav aria-label=Admin, aria-current on active link, main landmark.",
+      "name": "AdminShell",
+      "path": "admin/src/components/admin/AdminShell.tsx",
+      "category": "admin",
+      "description": "Admin layout: sidebar (desktop) / scrolling nav (mobile), pending-orders badge, sign-out, dev-mode banner.",
+      "props": {
+        "email": "string",
+        "devMode": "boolean",
+        "pendingCount": "number",
+        "signOut": "server action",
+        "children": "ReactNode"
+      },
+      "example": "<AdminShell email={admin.email} pendingCount={counts.paid}>…</AdminShell>"
+    },
+    {
+      "variants": [],
+      "tokensUsed": [
+        "color.error",
+        "color.errorSoft",
+        "font.size.sm",
+        "radius.md",
+        "space.3",
+        "space.4"
+      ],
+      "usedIn": [
+        "admin:/login"
+      ],
+      "lastUpdated": "2026-11-14",
+      "accessibility": "Labelled fields, autocomplete tokens, alert on error.",
+      "name": "LoginForm",
+      "path": "admin/src/components/admin/LoginForm.tsx",
+      "category": "admin",
+      "description": "Email + password sign-in for partners in public.admins.",
+      "props": {
+        "action": "server action (prev, FormData) => ActionState"
+      },
+      "example": "<LoginForm action={signInAction} />"
+    },
+    {
+      "variants": [],
+      "tokensUsed": [
+        "color.error",
+        "color.errorSoft",
+        "color.success",
+        "color.successSoft",
+        "color.textMuted",
+        "font.size.sm",
+        "radius.md",
+        "space.2",
+        "space.3",
+        "space.4"
+      ],
+      "usedIn": [
+        "admin:/orders/[id]"
+      ],
+      "lastUpdated": "2026-11-12",
+      "accessibility": "Inline field errors; destructive actions confirm first; result announced.",
+      "name": "OrderActions",
+      "path": "admin/src/components/admin/OrderActions.tsx",
+      "category": "admin",
+      "description": "Order fulfilment form: Meesho order ID/cost, tracking link, note, refund toggle, one button per allowed status, WhatsApp link.",
+      "props": {
+        "orderId": "string",
+        "next": "OrderStatus[]",
+        "defaults": "{meeshoOrderId?, meeshoCost?, trackingUrl?}",
+        "canRefund": "boolean",
+        "whatsappHref": "string",
+        "action": "server action"
+      },
+      "example": "<OrderActions orderId={o.id} next={adminTransitions(o.status)} … />"
+    },
+    {
+      "variants": [],
+      "tokensUsed": [
+        "color.background",
+        "color.border",
+        "color.borderStrong",
+        "color.error",
+        "color.surface",
+        "color.text",
+        "color.textMuted",
+        "font.size.sm",
+        "radius.md",
+        "shadow.focus",
+        "space.0",
+        "space.1",
+        "space.16",
+        "space.2",
+        "space.3",
+        "space.4",
+        "space.9"
+      ],
+      "usedIn": [
+        "ProductForm"
+      ],
+      "lastUpdated": "2026-11-12",
+      "accessibility": "Alt text required per image; labelled reorder/remove buttons.",
+      "name": "ImageManager",
+      "path": "admin/src/components/admin/ImageManager.tsx",
+      "category": "admin",
+      "description": "Product photo list: upload to Supabase Storage or add by path, alt text, reorder, remove.",
+      "props": {
+        "images": "{src,alt}[]",
+        "onChange": "(images)=>void",
+        "upload": "server action (FormData) => {src?, error?}",
+        "slug": "string",
+        "defaultAlt": "string",
+        "error": "string"
+      },
+      "example": "<ImageManager images={imgs} onChange={setImgs} upload={uploadImageAction} slug={slug} defaultAlt={title} />"
+    },
+    {
+      "variants": [],
+      "tokensUsed": [
+        "color.background",
+        "color.border",
+        "color.error",
+        "color.errorSoft",
+        "color.success",
+        "color.successSoft",
+        "color.surface",
+        "color.textMuted",
+        "color.warning",
+        "font.family.heading",
+        "font.size.sm",
+        "font.size.xl",
+        "font.weight.semibold",
+        "radius.lg",
+        "radius.md",
+        "space.0",
+        "space.3",
+        "space.4",
+        "space.6",
+        "zIndex.sticky"
+      ],
+      "usedIn": [
+        "admin:/products/[id]",
+        "admin:/products/new"
+      ],
+      "lastUpdated": "2026-11-12",
+      "accessibility": "Fieldsets with legends, inline errors, live margin region, sticky save bar.",
+      "name": "ProductForm",
+      "path": "admin/src/components/admin/ProductForm.tsx",
+      "category": "admin",
+      "description": "Create/edit product: basics, pricing with live margin and discount, Meesho link/price + checked flag, photos, content, visibility, SEO.",
+      "props": {
+        "values": "ProductFormValues",
+        "categories": "CategoryOption[]",
+        "action": "server action",
+        "upload": "server action",
+        "notice": "string"
+      },
+      "example": "<ProductForm values={toFormValues(p)} categories={cats} action={saveProductAction} upload={uploadImageAction} />"
+    },
+    {
+      "variants": [
+        "pending_payment",
+        "paid",
+        "placed_on_meesho",
+        "shipped",
+        "delivered",
+        "cancelled_refunded",
+        "return_requested",
+        "returned_refunded"
+      ],
+      "tokensUsed": [
+        "color.border",
+        "color.error",
+        "color.ink",
+        "color.success",
+        "color.text",
+        "color.textMuted",
+        "color.warning",
+        "font.family.heading",
+        "font.size.3xl",
+        "font.size.sm",
+        "font.tracking.normal",
+        "font.weight.medium",
+        "font.weight.regular",
+        "font.weight.semibold",
+        "radius.full",
+        "space.0",
+        "space.1",
+        "space.2",
+        "space.3"
+      ],
+      "usedIn": [
+        "admin:/",
+        "admin:/orders",
+        "admin:/orders/[id]"
+      ],
+      "lastUpdated": "2026-11-12",
+      "accessibility": "Text label (colour is not the only signal).",
+      "name": "OrderStatusBadge",
+      "path": "admin/src/components/admin/AdminBits.tsx",
+      "category": "admin",
+      "description": "Admin status pill using internal labels; needs-action states in warning tone.",
+      "props": {
+        "status": "OrderStatus"
+      },
+      "example": "<OrderStatusBadge status=\"paid\" />"
+    },
+    {
+      "variants": [
+        "default",
+        "warning",
+        "success"
+      ],
+      "tokensUsed": [
+        "color.border",
+        "color.error",
+        "color.ink",
+        "color.success",
+        "color.text",
+        "color.textMuted",
+        "color.warning",
+        "font.family.heading",
+        "font.size.3xl",
+        "font.size.sm",
+        "font.tracking.normal",
+        "font.weight.medium",
+        "font.weight.regular",
+        "font.weight.semibold",
+        "radius.full",
+        "space.0",
+        "space.1",
+        "space.2",
+        "space.3"
+      ],
+      "usedIn": [
+        "admin:/"
+      ],
+      "lastUpdated": "2026-11-12",
+      "accessibility": "",
+      "name": "StatCard",
+      "path": "admin/src/components/admin/AdminBits.tsx",
+      "category": "admin",
+      "description": "Dashboard KPI card.",
+      "props": {
+        "label": "string",
+        "value": "ReactNode",
+        "hint": "ReactNode",
+        "tone": "default|warning|success"
+      },
+      "example": "<StatCard label=\"To place\" value={3} tone=\"warning\" />"
+    },
+    {
+      "variants": [],
+      "tokensUsed": [
+        "color.border",
+        "color.error",
+        "color.ink",
+        "color.success",
+        "color.text",
+        "color.textMuted",
+        "color.warning",
+        "font.family.heading",
+        "font.size.3xl",
+        "font.size.sm",
+        "font.tracking.normal",
+        "font.weight.medium",
+        "font.weight.regular",
+        "font.weight.semibold",
+        "radius.full",
+        "space.0",
+        "space.1",
+        "space.2",
+        "space.3"
+      ],
+      "usedIn": [
+        "admin:/",
+        "admin:/orders",
+        "admin:/orders/[id]",
+        "admin:/products"
+      ],
+      "lastUpdated": "2026-11-12",
+      "accessibility": "Value is text; colour is supplementary.",
+      "name": "MarginText",
+      "path": "admin/src/components/admin/AdminBits.tsx",
+      "category": "admin",
+      "description": "Margin in ₹ and % (green ≥ 25%, amber below, red if negative).",
+      "props": {
+        "price": "number",
+        "cost": "number",
+        "quantity": "number"
+      },
+      "example": "<MarginText price={449} cost={260} />"
+    },
+    {
+      "variants": [],
+      "tokensUsed": [
+        "color.border",
+        "color.error",
+        "color.ink",
+        "color.success",
+        "color.text",
+        "color.textMuted",
+        "color.warning",
+        "font.family.heading",
+        "font.size.3xl",
+        "font.size.sm",
+        "font.tracking.normal",
+        "font.weight.medium",
+        "font.weight.regular",
+        "font.weight.semibold",
+        "radius.full",
+        "space.0",
+        "space.1",
+        "space.2",
+        "space.3"
+      ],
+      "usedIn": [
+        "admin:/orders/[id]"
+      ],
+      "lastUpdated": "2026-11-12",
+      "accessibility": "",
+      "name": "CopyField",
+      "path": "admin/src/components/admin/AdminBits.tsx",
+      "category": "admin",
+      "description": "Label + value + copy button for pasting customer details into Meesho.",
+      "props": {
+        "label": "string",
+        "value": "string",
+        "multiline": "boolean"
+      },
+      "example": "<CopyField label=\"Phone\" value={a.phone} />"
+    },
+    {
+      "variants": [],
+      "tokensUsed": [
+        "color.border",
+        "color.error",
+        "color.ink",
+        "color.success",
+        "color.text",
+        "color.textMuted",
+        "color.warning",
+        "font.family.heading",
+        "font.size.3xl",
+        "font.size.sm",
+        "font.tracking.normal",
+        "font.weight.medium",
+        "font.weight.regular",
+        "font.weight.semibold",
+        "radius.full",
+        "space.0",
+        "space.1",
+        "space.2",
+        "space.3"
+      ],
+      "usedIn": [
+        "admin:/orders/[id]"
+      ],
+      "lastUpdated": "2026-11-12",
+      "accessibility": "Ordered list with time elements.",
+      "name": "OrderTimeline",
+      "path": "admin/src/components/admin/AdminBits.tsx",
+      "category": "admin",
+      "description": "Newest-first order event history with time and note.",
+      "props": {
+        "events": "OrderEvent[]"
+      },
+      "example": "<OrderTimeline events={order.events} />"
+    },
+    {
+      "variants": [],
+      "tokensUsed": [],
+      "usedIn": [
+        "ProductForm",
+        "admin/AdminBits"
+      ],
+      "lastUpdated": "2026-11-12",
+      "accessibility": "",
+      "name": "calcMargin",
+      "path": "shared/src/lib/utils/format.ts",
+      "category": "util",
+      "description": "Margin amount and % of price between selling price and supplier cost.",
+      "props": {
+        "price": "number",
+        "cost": "number"
+      },
+      "example": "calcMargin(449, 260) // { amount: 189, percent: 42 }"
+    },
+    {
+      "variants": [],
+      "tokensUsed": [],
+      "usedIn": [
+        "ProductForm",
+        "admin:/",
+        "admin:/products"
+      ],
+      "lastUpdated": "2026-11-12",
+      "accessibility": "",
+      "name": "daysSince",
+      "path": "shared/src/lib/utils/format.ts",
+      "category": "util",
+      "description": "Whole days since an ISO date (stale Meesho price checks).",
+      "props": {
+        "iso": "string",
+        "now": "Date"
+      },
+      "example": "daysSince(p.priceCheckedAt) > 7"
+    },
+    {
+      "variants": [],
+      "tokensUsed": [],
+      "usedIn": [
+        "StoreShell"
+      ],
+      "lastUpdated": "2026-11-12",
+      "accessibility": "Renders no UI.",
+      "name": "Analytics",
+      "path": "shared/src/components/layout/Analytics.tsx",
+      "category": "layout",
+      "description": "Loads GA4 (NEXT_PUBLIC_GA_ID) and Microsoft Clarity (NEXT_PUBLIC_CLARITY_ID) after the page is interactive; shop only, never in the admin.",
+      "props": {},
+      "example": "<Analytics /> // in StoreShell"
+    },
+    {
+      "variants": [],
+      "tokensUsed": [],
+      "usedIn": [
+        "shop:/order/[id]"
+      ],
+      "lastUpdated": "2026-11-12",
+      "accessibility": "Renders no UI.",
+      "name": "PurchaseTracker",
+      "path": "shared/src/components/commerce/PurchaseTracker.tsx",
+      "category": "commerce",
+      "description": "Sends the GA4 purchase event once per order on the order success page.",
+      "props": {
+        "orderNumber": "string",
+        "total": "number",
+        "shipping": "number",
+        "items": "{id,title,price,quantity}[]"
+      },
+      "example": "{paid && <PurchaseTracker orderNumber={o.number} total={o.total} shipping={o.shipping} items={…} />}"
+    },
+    {
+      "variants": [],
+      "tokensUsed": [],
+      "usedIn": [
+        "AddToCartButton",
+        "CheckoutForm",
+        "PurchaseTracker"
+      ],
+      "lastUpdated": "2026-11-12",
+      "accessibility": "",
+      "name": "track",
+      "path": "shared/src/lib/utils/analytics.ts",
+      "category": "util",
+      "description": "GA4 ecommerce event helper (add_to_cart, begin_checkout, purchase, view_item); no-op when GA is not loaded.",
+      "props": {
+        "event": "string",
+        "params": "{ value, transaction_id, shipping, items }"
+      },
+      "example": "track(\"add_to_cart\", { value: 449, items: [...] })"
+    },
+    {
+      "variants": [],
+      "tokensUsed": [
+        "color.background",
+        "color.border",
+        "color.borderStrong",
+        "color.error",
+        "color.success",
+        "color.surface",
+        "color.text",
+        "font.size.sm",
+        "font.weight.semibold",
+        "radius.lg",
+        "radius.md",
+        "shadow.focus",
+        "space.0",
+        "space.16",
+        "space.2",
+        "space.24",
+        "space.3",
+        "space.4",
+        "space.6",
+        "space.9",
+        "zIndex.sticky"
+      ],
+      "usedIn": [
+        "CategoryForm",
+        "PostForm",
+        "SectionEditor",
+        "admin/BlockEditor",
+        "admin/PageEditors"
+      ],
+      "lastUpdated": "2026-11-12",
+      "accessibility": "Each item is a fieldset with a legend; move/remove buttons are labelled with the item name.",
+      "props": {
+        "items": "T[]",
+        "onChange": "(T[])=>void",
+        "renderItem": "(item, update, index)=>ReactNode",
+        "newItem": "()=>T",
+        "itemLabel": "(item, i)=>string",
+        "addLabel": "string",
+        "min": "number",
+        "max": "number"
+      },
+      "name": "ListEditor",
+      "path": "admin/src/components/admin/EditorKit.tsx",
+      "category": "admin",
+      "description": "Generic reorderable list editor (slides, banners, FAQs, paragraphs, blocks) with add / move / remove.",
+      "example": "<ListEditor items={faqs} onChange={setFaqs} newItem={() => ({ q: '', a: '' })} … />"
+    },
+    {
+      "variants": [],
+      "tokensUsed": [
+        "color.background",
+        "color.border",
+        "color.borderStrong",
+        "color.error",
+        "color.success",
+        "color.surface",
+        "color.text",
+        "font.size.sm",
+        "font.weight.semibold",
+        "radius.lg",
+        "radius.md",
+        "shadow.focus",
+        "space.0",
+        "space.16",
+        "space.2",
+        "space.24",
+        "space.3",
+        "space.4",
+        "space.6",
+        "space.9",
+        "zIndex.sticky"
+      ],
+      "usedIn": [
+        "CategoryForm",
+        "PostForm",
+        "SectionEditor"
+      ],
+      "lastUpdated": "2026-11-12",
+      "accessibility": "Labelled input; hidden file input triggered by a labelled button.",
+      "props": {
+        "id": "string",
+        "label": "string",
+        "value": "string",
+        "onChange": "(src)=>void",
+        "upload": "server action",
+        "folder": "products|banners|categories|guides",
+        "slug": "string",
+        "optional": "boolean"
+      },
+      "name": "ImageField",
+      "path": "admin/src/components/admin/EditorKit.tsx",
+      "category": "admin",
+      "description": "Single image picker: preview, upload to Supabase Storage, or paste a site path / https link.",
+      "example": "<ImageField id=\"hero-img\" label=\"Image\" value={src} onChange={setSrc} upload={uploadImageAction} folder=\"banners\" slug=\"hero\" />"
+    },
+    {
+      "variants": [],
+      "tokensUsed": [
+        "color.background",
+        "color.border",
+        "color.borderStrong",
+        "color.error",
+        "color.success",
+        "color.surface",
+        "color.text",
+        "font.size.sm",
+        "font.weight.semibold",
+        "radius.lg",
+        "radius.md",
+        "shadow.focus",
+        "space.0",
+        "space.16",
+        "space.2",
+        "space.24",
+        "space.3",
+        "space.4",
+        "space.6",
+        "space.9",
+        "zIndex.sticky"
+      ],
+      "usedIn": [
+        "SectionEditor"
+      ],
+      "lastUpdated": "2026-11-12",
+      "accessibility": "Native datetime-local inputs with labels and hints.",
+      "props": {
+        "value": "{startsAt, endsAt} ISO",
+        "onChange": "fn",
+        "idPrefix": "string"
+      },
+      "name": "ScheduleFields",
+      "path": "admin/src/components/admin/EditorKit.tsx",
+      "category": "admin",
+      "description": "Optional show-from / hide-after date-times in IST for offers, slides and sections.",
+      "example": "<ScheduleFields idPrefix=\"b1\" value={banner} onChange={update} />"
+    },
+    {
+      "variants": [],
+      "tokensUsed": [
+        "color.background",
+        "color.border",
+        "color.borderStrong",
+        "color.error",
+        "color.success",
+        "color.surface",
+        "color.text",
+        "font.size.sm",
+        "font.weight.semibold",
+        "radius.lg",
+        "radius.md",
+        "shadow.focus",
+        "space.0",
+        "space.16",
+        "space.2",
+        "space.24",
+        "space.3",
+        "space.4",
+        "space.6",
+        "space.9",
+        "zIndex.sticky"
+      ],
+      "usedIn": [
+        "HomeEditor",
+        "SettingsForm",
+        "admin/PageEditors"
+      ],
+      "lastUpdated": "2026-11-12",
+      "accessibility": "Result announced (status/alert).",
+      "props": {
+        "contentKey": "settings|home|faqs|page:*",
+        "value": "unknown",
+        "action": "server action",
+        "saveLabel": "string",
+        "extra": "ReactNode"
+      },
+      "name": "ContentSaveForm",
+      "path": "admin/src/components/admin/EditorKit.tsx",
+      "category": "admin",
+      "description": "Wraps a CMS editor: serialises the edited value to JSON, saves via server action, sticky save bar with result message.",
+      "example": "<ContentSaveForm contentKey=\"faqs\" value={{ items }} action={saveContentAction}>…</ContentSaveForm>"
+    },
+    {
+      "variants": [],
+      "tokensUsed": [
+        "color.background",
+        "color.border",
+        "color.borderStrong",
+        "color.error",
+        "color.success",
+        "color.surface",
+        "color.text",
+        "font.size.sm",
+        "font.weight.semibold",
+        "radius.lg",
+        "radius.md",
+        "shadow.focus",
+        "space.0",
+        "space.16",
+        "space.2",
+        "space.24",
+        "space.3",
+        "space.4",
+        "space.6",
+        "space.9",
+        "zIndex.sticky"
+      ],
+      "usedIn": [
+        "CategoryForm",
+        "PostForm",
+        "SectionEditor",
+        "SettingsForm",
+        "admin/BlockEditor",
+        "admin/PageEditors"
+      ],
+      "lastUpdated": "2026-11-12",
+      "accessibility": "Uses FormField (label + hint).",
+      "props": {
+        "id": "string",
+        "label": "string",
+        "value": "string",
+        "onChange": "fn",
+        "multiline": "boolean",
+        "maxLength": "number",
+        "required": "boolean"
+      },
+      "name": "TextField",
+      "path": "admin/src/components/admin/EditorKit.tsx",
+      "category": "admin",
+      "description": "Compact controlled text input / textarea with label, hint and character counter for CMS forms.",
+      "example": "<TextField id=\"title\" label=\"Title\" value={t} onChange={setT} maxLength={90} />"
+    },
+    {
+      "variants": [],
+      "tokensUsed": [
+        "color.background",
+        "color.border",
+        "color.secondary",
+        "color.surface",
+        "color.text",
+        "color.textMuted",
+        "font.size.sm",
+        "font.weight.medium",
+        "radius.md",
+        "radius.sm",
+        "shadow.focus",
+        "shadow.lg",
+        "space.0",
+        "space.1",
+        "space.11",
+        "space.2",
+        "space.4",
+        "space.8",
+        "space.80",
+        "space.9",
+        "zIndex.dropdown"
+      ],
+      "usedIn": [
+        "SectionEditor",
+        "admin/BlockEditor"
+      ],
+      "lastUpdated": "2026-11-12",
+      "accessibility": "Labelled search; results with role=listbox; labelled reorder/remove buttons.",
+      "props": {
+        "label": "string",
+        "options": "{slug,title,image}[]",
+        "value": "string[]",
+        "onChange": "fn",
+        "max": "number"
+      },
+      "name": "ProductPicker",
+      "path": "admin/src/components/admin/ProductPicker.tsx",
+      "category": "admin",
+      "description": "Search and pick products by title, keeping order (hand-picked rows, product blocks in guides).",
+      "example": "<ProductPicker label=\"Products\" options={opts} value={slugs} onChange={setSlugs} />"
+    },
+    {
+      "variants": [],
+      "tokensUsed": [
+        "color.border",
+        "color.surface",
+        "color.textMuted",
+        "font.size.sm",
+        "font.weight.medium",
+        "font.weight.semibold",
+        "radius.md",
+        "space.1",
+        "space.2",
+        "space.3",
+        "space.4"
+      ],
+      "usedIn": [
+        "HomeEditor"
+      ],
+      "lastUpdated": "2026-11-14",
+      "accessibility": "",
+      "props": {
+        "section": "HomeSection",
+        "onChange": "fn",
+        "categories": "{slug,name,parentSlug}[]",
+        "products": "ProductOption[]",
+        "upload": "server action"
+      },
+      "name": "SectionEditor",
+      "path": "admin/src/components/admin/SectionEditor.tsx",
+      "category": "admin",
+      "description": "Edit form for one homepage section; fields depend on the type (hero slides, product row, banners, tiles, value props, story, guides, FAQ).",
+      "example": "<SectionEditor section={s} onChange={update} … />"
+    },
+    {
+      "variants": [],
+      "tokensUsed": [
+        "color.background",
+        "color.border",
+        "color.error",
+        "color.ink",
+        "color.secondary",
+        "color.text",
+        "color.textMuted",
+        "font.family.heading",
+        "font.size.lg",
+        "font.size.sm",
+        "font.size.xl",
+        "font.weight.semibold",
+        "radius.md",
+        "shadow.focus",
+        "space.0",
+        "space.1",
+        "space.2",
+        "space.3",
+        "space.4",
+        "space.6",
+        "space.9"
+      ],
+      "usedIn": [
+        "admin:/content/home"
+      ],
+      "lastUpdated": "2026-11-12",
+      "accessibility": "Ordered list; aria-current on the section being edited; delete asks for confirmation.",
+      "props": {
+        "initial": "HomeContent",
+        "categories": "…",
+        "products": "…",
+        "shopUrl": "string",
+        "action": "server action",
+        "upload": "server action"
+      },
+      "name": "HomeEditor",
+      "path": "admin/src/components/admin/HomeEditor.tsx",
+      "category": "admin",
+      "description": "Admin → Homepage: section list (reorder, show/hide, schedule badge, delete, add) with an edit panel; saves the whole layout.",
+      "example": "<HomeEditor initial={home} … action={saveContentAction} />"
+    },
+    {
+      "variants": [
+        "h2",
+        "p",
+        "ul",
+        "products"
+      ],
+      "tokensUsed": [
+        "space.2",
+        "space.3",
+        "space.4"
+      ],
+      "usedIn": [
+        "PostForm",
+        "admin/PageEditors"
+      ],
+      "lastUpdated": "2026-11-12",
+      "accessibility": "",
+      "props": {
+        "idPrefix": "string",
+        "blocks": "Block[]",
+        "onChange": "fn",
+        "allow": "BlockType[]",
+        "products": "ProductOption[]"
+      },
+      "name": "BlockEditor",
+      "path": "admin/src/components/admin/BlockEditor.tsx",
+      "category": "admin",
+      "description": "Structured text editor for pages and guides: headings, paragraphs, bullet lists, product picks (plain text, no HTML).",
+      "example": "<BlockEditor blocks={blocks} onChange={setBlocks} allow={[\"p\", \"h2\", \"ul\"]} />"
+    },
+    {
+      "variants": [],
+      "tokensUsed": [
+        "space.2",
+        "space.3",
+        "space.4"
+      ],
+      "usedIn": [
+        "admin/PageEditors"
+      ],
+      "lastUpdated": "2026-11-12",
+      "accessibility": "",
+      "props": {
+        "blocks": "Block[]"
+      },
+      "name": "cleanBlocks",
+      "path": "admin/src/components/admin/BlockEditor.tsx",
+      "category": "util",
+      "description": "Removes empty bullet lines from blocks before saving.",
+      "example": "cleanBlocks(page.blocks)"
+    },
+    {
+      "variants": [],
+      "tokensUsed": [
+        "font.family.heading",
+        "font.size.xl",
+        "font.weight.semibold",
+        "space.4"
+      ],
+      "usedIn": [
+        "admin:/content/pages/[slug]"
+      ],
+      "lastUpdated": "2026-11-12",
+      "accessibility": "",
+      "props": {
+        "initial": "PageContent",
+        "viewHref": "string",
+        "action": "server action"
+      },
+      "name": "PageEditor",
+      "path": "admin/src/components/admin/PageEditors.tsx",
+      "category": "admin",
+      "description": "Edit About / Shipping / Returns / Privacy / Terms: title, answer, meta description, content blocks.",
+      "example": "<PageEditor initial={page} viewHref=\"/about\" action={saveContentAction} />"
+    },
+    {
+      "variants": [],
+      "tokensUsed": [
+        "font.family.heading",
+        "font.size.xl",
+        "font.weight.semibold",
+        "space.4"
+      ],
+      "usedIn": [
+        "admin:/content/faqs"
+      ],
+      "lastUpdated": "2026-11-12",
+      "accessibility": "",
+      "props": {
+        "initial": "Faq[]",
+        "action": "server action"
+      },
+      "name": "FaqEditor",
+      "path": "admin/src/components/admin/PageEditors.tsx",
+      "category": "admin",
+      "description": "Edit the store-wide FAQs.",
+      "example": "<FaqEditor initial={faqs} action={saveContentAction} />"
+    },
+    {
+      "variants": [],
+      "tokensUsed": [
+        "color.border",
+        "color.error",
+        "color.errorSoft",
+        "color.success",
+        "color.successSoft",
+        "color.surface",
+        "color.textMuted",
+        "font.family.heading",
+        "font.size.lg",
+        "font.size.sm",
+        "font.size.xl",
+        "font.weight.semibold",
+        "radius.lg",
+        "radius.md",
+        "space.0",
+        "space.3",
+        "space.4",
+        "space.6",
+        "zIndex.sticky"
+      ],
+      "usedIn": [
+        "admin:/categories/[id]"
+      ],
+      "lastUpdated": "2026-11-12",
+      "accessibility": "",
+      "props": {
+        "values": "CategoryFormValues",
+        "parents": "{slug,name}[]",
+        "action": "server action",
+        "deleteAction": "server action",
+        "upload": "server action"
+      },
+      "name": "CategoryForm",
+      "path": "admin/src/components/admin/CategoryForm.tsx",
+      "category": "admin",
+      "description": "Add/edit a category or subcategory: name, slug, parent, intro answer, blurb, image, order, visibility, SEO, FAQs; guarded delete.",
+      "example": "<CategoryForm values={c} parents={tops} action={saveCategoryAction} … />"
+    },
+    {
+      "variants": [],
+      "tokensUsed": [
+        "color.border",
+        "color.error",
+        "color.errorSoft",
+        "color.success",
+        "color.successSoft",
+        "color.surface",
+        "color.textMuted",
+        "font.family.heading",
+        "font.size.sm",
+        "font.size.xl",
+        "font.weight.semibold",
+        "radius.lg",
+        "radius.md",
+        "space.0",
+        "space.1",
+        "space.2",
+        "space.3",
+        "space.4",
+        "space.6",
+        "zIndex.sticky"
+      ],
+      "usedIn": [
+        "admin:/guides/[slug]"
+      ],
+      "lastUpdated": "2026-11-12",
+      "accessibility": "",
+      "props": {
+        "values": "PostFormValues",
+        "products": "ProductOption[]",
+        "action": "server action",
+        "deleteAction": "server action",
+        "upload": "server action"
+      },
+      "name": "PostForm",
+      "path": "admin/src/components/admin/PostForm.tsx",
+      "category": "admin",
+      "description": "Write/edit a buying guide: title, slug, summary, cover, content blocks with product picks, FAQs, publish toggle, delete.",
+      "example": "<PostForm values={post} products={opts} action={savePostAction} … />"
+    },
+    {
+      "variants": [],
+      "tokensUsed": [
+        "space.1",
+        "space.4"
+      ],
+      "usedIn": [
+        "admin:/products"
+      ],
+      "lastUpdated": "2026-11-12",
+      "accessibility": "Each button label includes the product title.",
+      "props": {
+        "id": "string",
+        "title": "string",
+        "inStock": "boolean",
+        "isActive": "boolean",
+        "isNew": "boolean|null",
+        "showsNew": "boolean",
+        "action": "server action"
+      },
+      "name": "ProductQuickActions",
+      "path": "admin/src/components/admin/ProductQuickActions.tsx",
+      "category": "admin",
+      "description": "One-click product changes in the product list: sold out / in stock, hide / show, New badge (auto/on/off), duplicate.",
+      "example": "<ProductQuickActions id={p.id} title={p.title} … action={productQuickAction} />"
+    },
+    {
+      "variants": [],
+      "tokensUsed": [
+        "color.background",
+        "color.textMuted",
+        "font.family.heading",
+        "font.size.sm",
+        "font.size.xl",
+        "font.weight.semibold",
+        "radius.md",
+        "space.0.5",
+        "space.2",
+        "space.4"
+      ],
+      "usedIn": [
+        "admin:/settings"
+      ],
+      "lastUpdated": "2026-11-14",
+      "accessibility": "",
+      "props": {
+        "initial": "Settings",
+        "action": "server action"
+      },
+      "name": "SettingsForm",
+      "path": "admin/src/components/admin/SettingsForm.tsx",
+      "category": "admin",
+      "description": "Admin → Settings: promo strip, customer care, social links, delivery fee and threshold, return days, UPI discount text. Secrets are not editable.",
+      "example": "<SettingsForm initial={settings} action={saveContentAction} />"
+    },
+    {
+      "variants": [],
+      "tokensUsed": [],
+      "usedIn": [
+        "StoreShell"
+      ],
+      "lastUpdated": "2026-11-12",
+      "accessibility": "Renders no UI.",
+      "props": {
+        "settings": "Settings",
+        "children": "ReactNode"
+      },
+      "name": "SettingsProvider",
+      "path": "shared/src/components/layout/SettingsProvider.tsx",
+      "category": "layout",
+      "description": "Shares Admin → Settings values with client components (delivery fee, UPI %, contact). Filled by StoreShell.",
+      "example": "<SettingsProvider settings={await getSettings()}>…</SettingsProvider>"
+    },
+    {
+      "variants": [],
+      "tokensUsed": [],
+      "usedIn": [
+        "CartButton",
+        "CartDrawer",
+        "CartView",
+        "CheckoutForm",
+        "PincodeChecker",
+        "PrepaidNotice",
+        "commerce/OrderSummary"
+      ],
+      "lastUpdated": "2026-11-12",
+      "accessibility": "",
+      "props": {
+        "returns": "Settings"
+      },
+      "name": "useSettings",
+      "path": "shared/src/components/layout/SettingsProvider.tsx",
+      "category": "hook",
+      "description": "Current store settings in client components (defaults outside a provider).",
+      "example": "const { delivery } = useSettings()"
+    },
+    {
+      "variants": [],
+      "tokensUsed": [
+        "color.ink",
+        "color.surface",
+        "color.text",
+        "duration.base",
+        "radius.full",
+        "shadow.focus",
+        "shadow.md",
+        "space.1",
+        "space.11",
+        "space.2",
+        "space.3",
+        "space.4",
+        "space.5",
+        "space.6"
+      ],
+      "usedIn": [
+        "HomeSections"
+      ],
+      "lastUpdated": "2026-11-14",
+      "accessibility": "Region with aria-roledescription=carousel; slides labelled n of total; pause control; reduced-motion aware.",
+      "props": {
+        "slides": "HeroSlide[]",
+        "intervalMs": "number"
+      },
+      "name": "HeroCarousel",
+      "path": "shared/src/components/sections/HeroCarousel.tsx",
+      "category": "section",
+      "description": "Rotating hero for 2–5 slides: auto-advance (paused on hover, focus or the pause button; off for reduced motion), arrows and dots; first slide is the LCP image.",
+      "example": "<HeroCarousel slides={slides} />"
+    },
+    {
+      "variants": [],
+      "tokensUsed": [
+        "space.4",
+        "space.6"
+      ],
+      "usedIn": [
+        "shop:/"
+      ],
+      "lastUpdated": "2026-11-14",
+      "accessibility": "Guarantees one H1 (screen-reader-only fallback when no hero is live).",
+      "props": {
+        "sections": "HomeSection[]",
+        "ctx": "{categories, posts, faqs, settings}"
+      },
+      "name": "HomeSections",
+      "path": "shared/src/components/sections/HomeSections.tsx",
+      "category": "section",
+      "description": "Renders the homepage from Admin → Homepage content: sections in order, skipping hidden or out-of-schedule items, each mapped to an existing section component.",
+      "example": "<HomeSections sections={home.sections} ctx={…} />"
+    },
+    {
+      "variants": [],
+      "tokensUsed": [],
+      "usedIn": [
+        "Footer",
+        "sections/InfoSections"
+      ],
+      "lastUpdated": "2026-11-12",
+      "accessibility": "",
+      "props": {
+        "phone": "string"
+      },
+      "name": "telHref",
+      "path": "shared/src/lib/utils/contact.ts",
+      "category": "util",
+      "description": "Phone number → tel: link.",
+      "example": "telHref(\"+91 90000 00000\") // tel:+919000000000"
+    },
+    {
+      "variants": [],
+      "tokensUsed": [],
+      "usedIn": [
+        "Footer",
+        "WhatsAppButton",
+        "lib/admin/whatsapp",
+        "sections/InfoSections"
+      ],
+      "lastUpdated": "2026-11-12",
+      "accessibility": "",
+      "props": {
+        "number": "string (digits)",
+        "text": "string"
+      },
+      "name": "whatsappHref",
+      "path": "shared/src/lib/utils/contact.ts",
+      "category": "util",
+      "description": "WhatsApp click-to-chat link with optional prefilled text.",
+      "example": "whatsappHref(\"919876543210\", \"Hi\")"
+    },
+    {
+      "variants": [],
+      "tokensUsed": [],
+      "usedIn": [
+        "admin:/products",
+        "lib/data/seed-repo",
+        "lib/data/supabase-repo",
+        "toCardProduct"
+      ],
+      "lastUpdated": "2026-11-12",
+      "accessibility": "",
+      "props": {
+        "p": "{isNew, createdAt}",
+        "now": "Date"
+      },
+      "name": "isProductNew",
+      "path": "shared/src/lib/utils/product.ts",
+      "category": "util",
+      "description": "New badge rule: manual override wins; otherwise automatic for 30 days after the product is added.",
+      "example": "isProductNew(product)"
+    },
+    {
+      "name": "PasswordInput",
+      "path": "shared/src/components/ui/PasswordInput.tsx",
+      "category": "ui/form",
+      "description": "Password field with a show/hide eye toggle; accepts all Input props.",
+      "variants": [],
+      "props": {
+        "...InputProps": "same as Input"
+      },
+      "tokensUsed": [
+        "color.text",
+        "color.textMuted",
+        "radius.md",
+        "shadow.focus",
+        "space.0",
+        "space.1",
+        "space.11",
+        "space.12",
+        "space.5"
+      ],
+      "usedIn": [
+        "CustomerAuthForm",
+        "LoginForm",
+        "SetPasswordForm",
+        "TeamManager"
+      ],
+      "accessibility": "Toggle is a button with aria-label Show/Hide password and aria-pressed.",
+      "example": "<PasswordInput name=\"password\" autoComplete=\"current-password\" />",
+      "lastUpdated": "2026-11-14"
+    },
+    {
+      "name": "PageSkeleton",
+      "path": "shared/src/components/ui/PageSkeleton.tsx",
+      "category": "ui/feedback",
+      "description": "Route-level loading placeholder shaped like the page that is loading.",
+      "variants": [
+        "home",
+        "listing",
+        "product",
+        "table"
+      ],
+      "props": {
+        "variant": "home|listing|product|table",
+        "bare": "boolean (no Container)"
+      },
+      "tokensUsed": [
+        "aspect.banner",
+        "aspect.product",
+        "color.border",
+        "color.surface",
+        "maxWidth.modal",
+        "maxWidth.prose",
+        "radius.lg",
+        "radius.none",
+        "radius.xl",
+        "space.10",
+        "space.11",
+        "space.12",
+        "space.2",
+        "space.24",
+        "space.3",
+        "space.32",
+        "space.4",
+        "space.40",
+        "space.48",
+        "space.5",
+        "space.6",
+        "space.8",
+        "space.9"
+      ],
+      "usedIn": [
+        "admin:/loading.tsx",
+        "shop:/[category]/[sub]/[product]/loading.tsx",
+        "shop:/loading.tsx"
+      ],
+      "accessibility": "role=status with a visually hidden Loading label.",
+      "example": "<PageSkeleton variant=\"listing\" />",
+      "lastUpdated": "2026-11-14"
+    },
+    {
+      "name": "WhatsAppButton",
+      "path": "shared/src/components/layout/WhatsAppButton.tsx",
+      "category": "layout",
+      "description": "Floating chat button that opens WhatsApp with a pre-filled message; sits above the mobile buy bar.",
+      "variants": [],
+      "props": {
+        "number": "string (digits)",
+        "message": "string"
+      },
+      "tokensUsed": [
+        "color.success",
+        "color.textInverse",
+        "duration.fast",
+        "font.size.base",
+        "font.weight.semibold",
+        "radius.full",
+        "shadow.focus",
+        "shadow.lg",
+        "space.14",
+        "space.2",
+        "space.24",
+        "space.4",
+        "space.6",
+        "zIndex.sticky"
+      ],
+      "usedIn": [
+        "StoreShell"
+      ],
+      "accessibility": "Link with aria-label 'Chat with us on WhatsApp'; opens in a new tab.",
+      "example": "<WhatsAppButton number=\"919000000000\" message=\"Hi\" />",
+      "lastUpdated": "2026-11-14"
+    },
+    {
+      "name": "CustomerAuthForm",
+      "path": "shared/src/components/commerce/CustomerAuthForm.tsx",
+      "category": "commerce",
+      "description": "Shopper sign in / create account / forgot password form (email + password).",
+      "variants": [],
+      "props": {
+        "signIn": "server action",
+        "signUp": "server action",
+        "forgot": "server action",
+        "next": "string"
+      },
+      "tokensUsed": [
+        "color.border",
+        "color.error",
+        "color.errorSoft",
+        "color.ink",
+        "color.success",
+        "color.successSoft",
+        "color.text",
+        "color.textMuted",
+        "font.size.sm",
+        "font.weight.semibold",
+        "radius.md",
+        "shadow.focus",
+        "space.11",
+        "space.2",
+        "space.3",
+        "space.4",
+        "space.5"
+      ],
+      "usedIn": [
+        "shop:/login"
+      ],
+      "accessibility": "Tabs are buttons with aria-pressed; errors announced via role=alert.",
+      "example": "<CustomerAuthForm signIn={a} signUp={b} forgot={c} next=\"/checkout\" />",
+      "lastUpdated": "2026-11-14"
+    },
+    {
+      "name": "SetPasswordForm",
+      "path": "shared/src/components/commerce/SetPasswordForm.tsx",
+      "category": "commerce",
+      "description": "Choose a new password after a reset link.",
+      "variants": [],
+      "props": {
+        "action": "server action"
+      },
+      "tokensUsed": [
+        "color.error",
+        "color.errorSoft",
+        "color.success",
+        "color.successSoft",
+        "font.size.sm",
+        "radius.md",
+        "space.3",
+        "space.4"
+      ],
+      "usedIn": [
+        "shop:/account/password"
+      ],
+      "accessibility": "Errors announced via role=alert.",
+      "example": "<SetPasswordForm action={setPassword} />",
+      "lastUpdated": "2026-11-14"
+    },
+    {
+      "name": "MfaForm",
+      "path": "admin/src/components/admin/MfaForm.tsx",
+      "category": "admin",
+      "description": "Admin two-step verification: enrol an authenticator app (QR + secret) or enter the 6-digit code.",
+      "variants": [],
+      "props": {
+        "enrolled": "boolean",
+        "enroll": "server action",
+        "verify": "server action"
+      },
+      "tokensUsed": [
+        "color.error",
+        "color.errorSoft",
+        "color.surface",
+        "color.textMuted",
+        "font.size.sm",
+        "font.size.xs",
+        "radius.md",
+        "space.2",
+        "space.3",
+        "space.4",
+        "space.48"
+      ],
+      "usedIn": [
+        "admin:/mfa"
+      ],
+      "accessibility": "Code input uses inputMode=numeric and autocomplete=one-time-code.",
+      "example": "<MfaForm enrolled enroll={a} verify={b} />",
+      "lastUpdated": "2026-11-14"
+    },
+    {
+      "name": "TeamManager",
+      "path": "admin/src/components/admin/TeamManager.tsx",
+      "category": "admin",
+      "description": "Super Admin team page: add admins, set role and permissions, remove access.",
+      "variants": [],
+      "props": {
+        "team": "TeamMember[]",
+        "selfId": "string",
+        "add": "server action",
+        "update": "server action",
+        "remove": "server action"
+      },
+      "tokensUsed": [
+        "color.error",
+        "color.success",
+        "color.textMuted",
+        "color.warning",
+        "font.family.heading",
+        "font.size.sm",
+        "font.size.xl",
+        "font.weight.medium",
+        "font.weight.semibold",
+        "space.1",
+        "space.2",
+        "space.3",
+        "space.4",
+        "space.6"
+      ],
+      "usedIn": [
+        "admin:/team"
+      ],
+      "accessibility": "Permission checkboxes are labelled; destructive remove asks for confirmation.",
+      "example": "<TeamManager team={t} selfId={id} … />",
+      "lastUpdated": "2026-11-14"
+    }
+  ]
+}

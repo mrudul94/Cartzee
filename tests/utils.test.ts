@@ -28,9 +28,11 @@ describe("money and formatting", () => {
     expect(calcDiscount(100, 120)).toBe(0);
   });
   it("applies the free-shipping threshold", () => {
-    expect(shippingFor(0)).toBe(0);
-    expect(shippingFor(498)).toBe(49);
-    expect(shippingFor(499)).toBe(0);
+    const rules = { freeAbove: 499, fee: 49 };
+    expect(shippingFor(0, rules)).toBe(0);
+    expect(shippingFor(498, rules)).toBe(49);
+    expect(shippingFor(499, rules)).toBe(0);
+    expect(shippingFor(800, { freeAbove: 999, fee: 79 })).toBe(79);
   });
   it("slugifies titles", () => {
     expect(slugify("Airtight Jar Set (6 pc)")).toBe("airtight-jar-set-6-pc");

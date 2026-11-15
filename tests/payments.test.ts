@@ -19,9 +19,9 @@ async function load() {
   const [{ repo }, rzp, webhook, verify, checkout] = await Promise.all([
     import("@/lib/data"),
     import("@/lib/payments/razorpay"),
-    import("@/app/api/razorpay/webhook/route"),
-    import("@/app/api/checkout/verify/route"),
-    import("@/app/api/checkout/route"),
+    import("@shop/app/api/razorpay/webhook/route"),
+    import("@shop/app/api/checkout/verify/route"),
+    import("@shop/app/api/checkout/route"),
   ]);
   return { repo, rzp, webhook: webhook.POST, verify: verify.POST, checkout: checkout.POST };
 }
@@ -45,7 +45,7 @@ afterEach(() => {
 });
 
 async function pendingOrder(m: Awaited<ReturnType<typeof load>>, rzpId: string) {
-  const order = await m.repo.createOrder({ address, items: [{ productId: seedProducts[0]!.id, quantity: 1 }] });
+  const order = await m.repo.createOrder({ address, items: [{ productId: seedProducts[0]!.id, quantity: 1 }], delivery: { freeAbove: 499, fee: 49 } });
   await m.repo.attachRazorpayOrder(order.id, rzpId);
   return order;
 }
@@ -175,7 +175,7 @@ describe("POST /api/checkout", () => {
   it("disables mock payments in production", async () => {
     vi.stubEnv("NODE_ENV", "production");
     vi.resetModules();
-    const { POST } = await import("@/app/api/checkout/mock-pay/route");
+    const { POST } = await import("@shop/app/api/checkout/mock-pay/route");
     const res = await POST(json("/api/checkout/mock-pay", { orderId: "anything" }));
     expect(res.status).toBe(404);
   });

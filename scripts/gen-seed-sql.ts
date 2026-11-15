@@ -4,10 +4,10 @@
  */
 import { writeFileSync } from "node:fs";
 import { join } from "node:path";
-import { seedCategories } from "../src/lib/seed/categories";
-import { seedPosts } from "../src/lib/seed/posts";
-import { seedProducts } from "../src/lib/seed/products";
-import { seedReviews } from "../src/lib/seed/reviews";
+import { seedCategories } from "../shared/src/lib/seed/categories";
+import { seedPosts } from "../shared/src/lib/seed/posts";
+import { seedProducts } from "../shared/src/lib/seed/products";
+import { seedReviews } from "../shared/src/lib/seed/reviews";
 
 const q = (v: string | null | undefined) => (v === null || v === undefined ? "null" : `'${v.replace(/'/g, "''")}'`);
 const j = (v: unknown) => `${q(JSON.stringify(v))}::jsonb`;
