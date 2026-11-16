@@ -1,61 +1,49 @@
 import Image from "next/image";
 import Link from "next/link";
-import { Button } from "@/components/ui/Button";
-import { Container, sectionVariants } from "@/components/layout/Container";
-import { cn } from "@/lib/utils/cn";
-import type { VariantProps } from "class-variance-authority";
 
 export type HeroBannerProps = {
-  eyebrow?: string;
-  title: string;
-  text: string;
+  /** Finished artwork (1792 × 768): headline and button are part of the picture. */
   image: { src: string; alt: string };
-  primaryCta: { label: string; href: string };
-  secondaryCta?: { label: string; href: string };
-  highlights?: string[];
-  background?: VariantProps<typeof sectionVariants>["background"];
-  /** Use h1 when the hero is the page's main heading (homepage). */
+  /** Use h1 when the hero is the page's main heading (homepage). Read by screen readers only. */
   as?: "h1" | "h2";
-  /** Load the image eagerly (LCP). Only the first visible hero should be priority. */
+  /** Load eagerly (LCP). Only the first slide is priority; the others lazy-load. */
   priority?: boolean;
-  /** When set, the whole slide is a link (e.g. to the category with this offer); buttons still work. */
+  /** When set, the whole slide links here (a category or custom link). */
   href?: string;
+  /** Visual copy used by the looping carousel: no heading, no link target for assistive tech. */
+  decorative?: boolean;
 };
 
-/** Offer hero: copy + CTAs on the left, art on the right; image is the LCP element (priority). */
-export function HeroBanner({ eyebrow, title, text, image, primaryCta, secondaryCta, highlights, background = "secondary", as: H = "h1", priority = true, href }: HeroBannerProps) {
+/**
+ * Homepage hero slide: a rounded card showing only the artwork, at its own 7:3 shape so nothing
+ * is ever cropped (it scales down on phones). No text, buttons or overlays are drawn on top.
+ */
+export function HeroBanner({ image, as: H = "h1", priority = false, href, decorative }: HeroBannerProps) {
+  const picture = (
+    <div className="relative aspect-hero w-full overflow-hidden rounded-xl bg-secondary">
+      <Image
+        src={image.src}
+        alt={href || decorative ? "" : image.alt}
+        fill
+        priority={priority}
+        loading={priority ? undefined : "lazy"}
+        sizes="(min-width: 768px) 64vw, 86vw"
+        draggable={false}
+        className="select-none object-contain"
+      />
+    </div>
+  );
   return (
-    <section className={cn(sectionVariants({ background, spacing: "none" }), "relative overflow-hidden")}>
-      {href && <Link href={href} aria-label={`${title}: view offer`} className="absolute inset-0 z-base focus-visible:outline-none focus-visible:shadow-focus" />}
-      <Container className={cn("grid items-center gap-6 py-8 md:grid-cols-2 md:py-12", href && "pointer-events-none relative z-raised [&_a]:pointer-events-auto")}>
-        <div className="flex flex-col gap-4">
-          {eyebrow && <p className="text-sm font-semibold uppercase tracking-wider text-primary">{eyebrow}</p>}
-          <H className="font-heading text-4xl font-semibold tracking-tight text-text md:text-5xl">{title}</H>
-          {text && <p className="max-w-prose text-lg text-text">{text}</p>}
-          {highlights && highlights.length > 0 && (
-            <ul className="flex flex-wrap gap-2">
-              {highlights.map((h) => (
-                <li key={h} className="rounded-full bg-surface px-3 py-1 text-sm font-medium text-text">
-                  {h}
-                </li>
-              ))}
-            </ul>
-          )}
-          <div className="mt-2 flex flex-wrap gap-3">
-            <Button href={primaryCta.href} variant="secondary" size="lg">
-              {primaryCta.label}
-            </Button>
-            {secondaryCta && (
-              <Button href={secondaryCta.href} variant="outline" size="lg">
-                {secondaryCta.label}
-              </Button>
-            )}
-          </div>
-        </div>
-        <div className="relative aspect-banner w-full overflow-hidden rounded-xl">
-          <Image src={image.src} alt={image.alt} fill priority={priority} sizes="(min-width: 768px) 50vw, 100vw" className="object-cover" />
-        </div>
-      </Container>
-    </section>
+    <div className="relative w-full">
+      {/* The picture carries the message; this heading keeps the page outline for screen readers and search engines. */}
+      {!decorative && <H className="sr-only">{image.alt}</H>}
+      {href ? (
+        <Link href={href} aria-label={decorative ? undefined : image.alt} draggable={false} className="block rounded-xl focus-visible:outline-none focus-visible:shadow-focus">
+          {picture}
+        </Link>
+      ) : (
+        picture
+      )}
+    </div>
   );
 }

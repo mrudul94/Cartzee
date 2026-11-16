@@ -50,15 +50,12 @@ import { Pagination, Separator, Skeleton, Table } from "@/components/ui/Misc";
 import { Drawer, Modal } from "@/components/ui/Modal";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { policies } from "@/lib/content/pages";
-import { seedCategories } from "@/lib/seed/categories";
-import { seedPosts } from "@/lib/seed/posts";
-import { seedProducts } from "@/lib/seed/products";
-import { seedReviews } from "@/lib/seed/reviews";
+import { demoCategories, demoPosts, demoProducts, demoReviews } from "./demo-data";
 import { toCardProduct } from "@/lib/utils/product";
 import { QuantityStepperDemo, ToastDemo } from "./ClientDemos";
 import { DEFAULT_SETTINGS } from "@/lib/content/defaults";
 import { DEFAULT_HOME } from "@/lib/content/schema";
-import { demoEnrollAction, demoFormAction, demoUploadAction } from "./demo-actions";
+import { demoFormAction, demoUploadAction } from "./demo-actions";
 import { ContentSaveForm } from "@/components/admin/EditorKit";
 import { HomeEditor } from "@/components/admin/HomeEditor";
 import { FaqEditor, PageEditor } from "@/components/admin/PageEditors";
@@ -70,7 +67,7 @@ import { SettingsProvider } from "@/components/layout/SettingsProvider";
 import { HeroCarousel } from "@/components/sections/HeroCarousel";
 import { HomeSections } from "@/components/sections/HomeSections";
 import { DEFAULT_PAGES } from "@/lib/content/schema";
-import { defaultStoreFaqs } from "@/lib/seed/faqs";
+import { defaultStoreFaqs } from "@/lib/content/store-faqs";
 import { BlockEditorDemo, ImageFieldDemo, ListEditorDemo, ProductPickerDemo, ScheduleFieldsDemo, SectionEditorDemo, TextFieldDemo } from "./ClientDemos";
 import { demoVoidAction } from "./demo-actions";
 
@@ -78,6 +75,7 @@ import { AdminShell } from "@/components/admin/AdminShell";
 import { CopyField, MarginText, OrderStatusBadge, OrderTimeline, StatCard } from "@/components/admin/AdminBits";
 import { ImageManagerDemo } from "./ClientDemos";
 import { LoginForm } from "@/components/admin/LoginForm";
+import { DeleteProductCard } from "@/components/admin/DeleteProductCard";
 import { MfaForm } from "@/components/admin/MfaForm";
 import { TeamManager } from "@/components/admin/TeamManager";
 import { CustomerAuthForm } from "@/components/commerce/CustomerAuthForm";
@@ -93,12 +91,12 @@ import { DataTable } from "@/components/ui/DataTable";
 import { ORDER_STATUSES } from "@/lib/types";
 import { formatINR } from "@/lib/utils/format";
 
-const tree = buildCategoryTree(seedCategories);
+const tree = buildCategoryTree(demoCategories);
 const DEMO_VALUE_PROPS = (() => {
   const s = DEFAULT_HOME.sections.find((x) => x.type === "valueProps");
   return s?.type === "valueProps" ? s.items : [];
 })();
-const products = seedProducts.map(toCardProduct);
+const products = demoProducts.map(toCardProduct);
 const product = products[0]!;
 const soldOut = products.find((p) => !p.inStock) ?? product;
 const row = "flex flex-wrap items-center gap-3";
@@ -228,7 +226,7 @@ export const demos: Record<string, ReactNode> = {
     </div>
   ),
   Pagination: <Pagination page={4} totalPages={9} hrefFor={(n) => `/design-system?page=${n}`} />,
-  Table: <Table caption="Example specs" rows={seedProducts[0]!.specs.slice(0, 3)} className="max-w-modal" />,
+  Table: <Table caption="Example specs" rows={demoProducts[0]!.specs.slice(0, 3)} className="max-w-modal" />,
   QuantityStepper: <QuantityStepperDemo />,
 
   /* ---------------- commerce */
@@ -267,8 +265,8 @@ export const demos: Record<string, ReactNode> = {
     </div>
   ),
   PincodeChecker: <PincodeChecker className="max-w-modal" />,
-  ProductGallery: <ProductGallery images={seedProducts[0]!.images} title={seedProducts[0]!.title} className="max-w-modal" />,
-  ReviewList: <ReviewList reviews={seedReviews.filter((r) => r.productId === "prd_001")} rating={4.4} reviewCount={318} productTitle="Jar set" />,
+  ProductGallery: <ProductGallery images={demoProducts[0]!.images} title={demoProducts[0]!.title} className="max-w-modal" />,
+  ReviewList: <ReviewList reviews={demoReviews} rating={4.2} reviewCount={12} productTitle="Example product 1" />,
   CartLineItem: <ul className="max-w-modal"><CartLineItem line={sampleLine} /></ul>,
   OrderSummary: <OrderSummary subtotal={898} shipping={0} total={898} savings={900} showFreeShippingHint className="max-w-modal" />,
   FreeShippingProgress: <FreeShippingProgress subtotal={320} className="max-w-modal" />,
@@ -296,16 +294,7 @@ export const demos: Record<string, ReactNode> = {
 
   /* ---------------- sections */
   HeroBanner: (
-    <HeroBanner
-      as="h2"
-      eyebrow="Eyebrow"
-      title="Hero title"
-      text="Supporting copy for the hero banner."
-      image={{ src: "/placeholders/banners/hero.svg", alt: "Example hero art" }}
-      primaryCta={{ label: "Primary", href: "#" }}
-      secondaryCta={{ label: "Secondary", href: "#" }}
-      highlights={["Chip one", "Chip two"]}
-    />
+<HeroBanner as="h2" priority={false} image={{ src: "/logo/logo-full.png", alt: "Example hero artwork" }} href="#" />
   ),
   ProductGrid: <ProductGrid title="Product grid demo" products={products.slice(0, 4)} viewAllHref="/bestsellers" spacing="sm" />,
   CategoryTiles: (
@@ -316,7 +305,7 @@ export const demos: Record<string, ReactNode> = {
   ),
   SaleBanner: (
     <div className="grid gap-4 md:grid-cols-3">
-      <SaleBanner tone="sand" title="Sand" cta={{ label: "Shop", href: "#" }} image="/placeholders/banners/kitchen.svg" />
+      <SaleBanner tone="sand" title="Sand" cta={{ label: "Shop", href: "#" }} image="/logo/mark.png" />
       <SaleBanner tone="soft" title="Soft" cta={{ label: "Shop", href: "#" }} />
       <SaleBanner tone="ink" title="Ink" eyebrow="Eyebrow" cta={{ label: "Shop", href: "#" }} />
     </div>
@@ -324,9 +313,9 @@ export const demos: Record<string, ReactNode> = {
   ValueProps: <ValueProps items={DEMO_VALUE_PROPS} />,
   CustomerCare: <CustomerCare care={DEFAULT_SETTINGS.care} />,
   BrandStory: <BrandStory title="Brand story" paragraphs={["Paragraph one."]} blurbs={tree.slice(0, 2).map((c) => ({ title: c.name, text: c.blurb, href: `/${c.slug}` }))} />,
-  FAQSection: <FAQSection title="FAQ demo" faqs={seedCategories[0]!.faqs} withJsonLd={false} spacing="sm" />,
+  FAQSection: <FAQSection title="FAQ demo" faqs={demoCategories[0]!.faqs} withJsonLd={false} spacing="sm" />,
   AnswerIntro: <AnswerIntro title="Answer intro" answer="One or two sentences that directly answer what this page is about." meta="Meta line" />,
-  GuideCards: <GuideCards posts={seedPosts} />,
+  GuideCards: <GuideCards posts={demoPosts} />,
   ListingTemplate: <p className="text-text-muted">Used by category, subcategory, budget, flash-sale, bestsellers and search pages; e.g. <Link className="underline" href="/kitchen">/kitchen</Link>.</p>,
   ContentPage: <ContentPage page={policies.shipping} crumbs={[{ label: "Demo" }]} />,
   NotFoundContent: <NotFoundContent />,
@@ -357,7 +346,7 @@ export const demos: Record<string, ReactNode> = {
   DataTable: (
     <DataTable
       caption="Demo table"
-      rows={seedProducts.slice(0, 3)}
+      rows={demoProducts.slice(0, 3)}
       rowKey={(p) => p.id}
       columns={[
         { header: "Product", cell: (p) => p.title },
@@ -381,10 +370,10 @@ export const demos: Record<string, ReactNode> = {
   OrderActions: (
     <OrderActions orderId="demo" next={["placed_on_meesho", "cancelled_refunded"]} defaults={{}} canRefund whatsappHref="https://wa.me/919876543210" action={demoFormAction} />
   ),
-  ImageManager: <ImageManagerDemo images={seedProducts[0]!.images.slice(0, 2)} />,
+  ImageManager: <ImageManagerDemo images={demoProducts[0]!.images.slice(0, 2)} />,
   ProductForm: (
     <ProductForm
-      values={{ ...seedProducts[0]!, meeshoUrl: seedProducts[0]!.meeshoUrl ?? "", meeshoPrice: seedProducts[0]!.meeshoPrice ?? 0, isActive: true, isNew: null, id: undefined }}
+      values={{ ...demoProducts[0]!, meeshoUrl: demoProducts[0]!.meeshoUrl ?? "", meeshoPrice: demoProducts[0]!.meeshoPrice ?? 0, isActive: true, isNew: null, id: undefined }}
       categories={tree.map((c) => ({ slug: c.slug, name: c.name, children: c.children.map((x) => ({ slug: x.slug, name: x.name })) }))}
       action={demoFormAction}
       upload={demoUploadAction}
@@ -442,12 +431,18 @@ export const demos: Record<string, ReactNode> = {
   ),
   CustomerAuthForm: <CustomerAuthForm next="/checkout" signIn={demoFormAction} signUp={demoFormAction} forgot={demoFormAction} />,
   SetPasswordForm: <SetPasswordForm action={demoFormAction} />,
-  MfaForm: <MfaForm factorId="demo" enroll={demoEnrollAction} verify={demoFormAction} />,
+  DeleteProductCard: (
+    <div className="flex flex-col gap-4">
+      <DeleteProductCard id="demo" title="Demo product" orderCount={0} action={demoFormAction} />
+      <DeleteProductCard id="demo-2" title="Ordered product" orderCount={3} action={demoFormAction} />
+    </div>
+  ),
+  MfaForm: <MfaForm email="owner@example.com" verify={demoFormAction} resend={demoFormAction} />,
   TeamManager: (
     <TeamManager
       members={[
-        { userId: "u1", email: "owner@example.com", role: "super_admin", permissions: [], mfa: true, isMe: true },
-        { userId: "u2", email: "packer@example.com", role: "admin", permissions: ["orders"], mfa: false, isMe: false },
+        { userId: "u1", email: "owner@example.com", role: "super_admin", permissions: [], isMe: true },
+        { userId: "u2", email: "packer@example.com", role: "admin", permissions: ["orders"], isMe: false },
       ]}
       add={demoFormAction}
       update={demoFormAction}
@@ -458,8 +453,8 @@ export const demos: Record<string, ReactNode> = {
   HomeEditor: (
     <HomeEditor
       initial={DEFAULT_HOME}
-      categories={seedCategories.map((c) => ({ slug: c.slug, name: c.name, parentSlug: c.parentSlug }))}
-      products={seedProducts.slice(0, 6).map((p) => ({ slug: p.slug, title: p.title, image: p.images[0]?.src ?? "" }))}
+      categories={demoCategories.map((c) => ({ slug: c.slug, name: c.name, parentSlug: c.parentSlug }))}
+      products={demoProducts.slice(0, 6).map((p) => ({ slug: p.slug, title: p.title, image: p.images[0]?.src ?? "" }))}
       shopUrl="/"
       action={demoFormAction}
       upload={demoUploadAction}
@@ -470,8 +465,8 @@ export const demos: Record<string, ReactNode> = {
   FaqEditor: <FaqEditor initial={defaultStoreFaqs.slice(0, 2)} action={demoFormAction} />,
   CategoryForm: (
     <CategoryForm
-      values={{ ...seedCategories[0]!, isActive: true, productCount: 4, childCount: 3 }}
-      parents={seedCategories.filter((c) => !c.parentSlug).map((c) => ({ slug: c.slug, name: c.name }))}
+      values={{ ...demoCategories[0]!, isActive: true, productCount: 4, childCount: 3 }}
+      parents={demoCategories.filter((c) => !c.parentSlug).map((c) => ({ slug: c.slug, name: c.name }))}
       action={demoFormAction}
       deleteAction={demoFormAction}
       upload={demoUploadAction}
@@ -479,8 +474,8 @@ export const demos: Record<string, ReactNode> = {
   ),
   PostForm: (
     <PostForm
-      values={{ ...seedPosts[0]!, originalSlug: seedPosts[0]!.slug, isPublished: true }}
-      products={seedProducts.slice(0, 6).map((p) => ({ slug: p.slug, title: p.title, image: p.images[0]?.src ?? "" }))}
+      values={{ ...demoPosts[0]!, originalSlug: demoPosts[0]!.slug, isPublished: true }}
+      products={demoProducts.slice(0, 6).map((p) => ({ slug: p.slug, title: p.title, image: p.images[0]?.src ?? "" }))}
       action={demoFormAction}
       upload={demoUploadAction}
     />
@@ -495,15 +490,15 @@ export const demos: Record<string, ReactNode> = {
   HeroCarousel: (
     <HeroCarousel
       slides={[
-        { id: "a", title: "Slide one", text: "First slide text.", image: { src: "/placeholders/banners/hero.svg", alt: "Demo hero" }, primaryCta: { label: "Shop", href: "#" } },
-        { id: "b", title: "Slide two", text: "Second slide text.", image: { src: "/placeholders/banners/flash-sale.svg", alt: "Demo banner" }, primaryCta: { label: "Flash sale", href: "#" } },
+        { id: "a", image: { src: "/logo/logo-full.png", alt: "Demo hero" }, href: "#" },
+        { id: "b", image: { src: "/logo/mark.png", alt: "Demo banner" } },
       ]}
     />
   ),
   HomeSections: (
     <HomeSections
       sections={DEFAULT_HOME.sections.filter((x) => x.type === "budgetTiles" || x.type === "valueProps")}
-      ctx={{ categories: seedCategories, posts: seedPosts, faqs: defaultStoreFaqs, settings: DEFAULT_SETTINGS }}
+      ctx={{ categories: demoCategories, posts: demoPosts, faqs: defaultStoreFaqs, settings: DEFAULT_SETTINGS }}
     />
   ),
 

@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { DEFAULT_SETTINGS } from "./defaults";
 import { aboutPage, policies } from "./pages";
-import { defaultStoreFaqs } from "@/lib/seed/faqs";
+import { defaultStoreFaqs } from "@/lib/content/store-faqs";
 
 /* ==================================================================== shared field rules */
 
@@ -12,8 +12,20 @@ export const linkSchema = z
   .max(300)
   .refine((v) => (v.startsWith("/") && !v.startsWith("//")) || /^https:\/\/[^\s]+$/i.test(v), "Use a site path like /kitchen or a full https:// link");
 const optionalLink = z.union([z.literal(""), linkSchema]).default("");
-/** Image sources: a site path (/placeholders/…) or an https URL (Supabase Storage). */
-export const imageSrcSchema = linkSchema;
+/** Image sources: a site path (/logo/…) or an https URL (Supabase Storage). */
+/** Picture hosts the websites can display (must match images.remotePatterns in both next.config.ts). */
+export const IMAGE_HOSTS = [/.supabase.co$/, /^images.meesho.com$/];
+export function isAllowedImageSrc(src: string): boolean {
+  if (src.startsWith("/") && !src.startsWith("//")) return true;
+  try {
+    const url = new URL(src);
+    return url.protocol === "https:" && IMAGE_HOSTS.some((h) => h.test(url.hostname));
+  } catch {
+    return false;
+  }
+}
+const IMAGE_HOST_MESSAGE = "Upload the picture, or use a Supabase or images.meesho.com link (other websites' pictures can't be shown)";
+export const imageSrcSchema = linkSchema.refine(isAllowedImageSrc, IMAGE_HOST_MESSAGE);
 const text = (max: number) => z.string().trim().max(max).default("");
 const reqText = (max: number, label: string) => z.string().trim().min(1, `${label} is required`).max(max);
 /** ISO date-time or "" (no limit). */
@@ -54,19 +66,29 @@ const base = { id: z.string().min(1).max(40), enabled: z.boolean().default(true)
 export const heroSlideSchema = z.object({
   id: z.string().min(1).max(40),
   eyebrow: text(60),
-  title: reqText(90, "Title"),
+  title: text(90),
   text: text(240),
   image: imageSchema,
-  primaryCta: ctaSchema,
+  /** Legacy text fields: the hero now shows the artwork only (text is part of the image). */
+  primaryCta: z.object({ label: text(40), href: z.union([z.literal(""), linkSchema]).default("") }),
   secondaryCta: ctaSchema.nullable().default(null),
   highlights: z.array(z.string().trim().min(1).max(50)).max(4).default([]),
   /** Slide on/off (independent of the schedule). */
   enabled: z.boolean().default(true),
+  /** "offer": shown first whenever it's on. "category": a normal slide in its list position. */
+  slideType: z.enum(["category", "offer"]).default("category"),
   /** When on, the whole slide links to `link` (e.g. a category with this offer). */
   clickable: z.boolean().default(false),
   link: optionalLink,
   ...scheduled,
-}).refine((sl) => !sl.clickable || sl.link, { message: "Choose where the slide opens", path: ["link"] });
+}).superRefine((sl, ctx) => {
+  if (sl.clickable && !sl.link) ctx.addIssue({ code: "custom", message: "Choose where the slide opens", path: ["link"] });
+});
+
+/** Display order: an offer slide that is on comes first; category slides keep their list order. */
+export function orderHeroSlides<T extends { slideType: "category" | "offer" }>(slides: T[]): T[] {
+  return [...slides.filter((sl) => sl.slideType === "offer"), ...slides.filter((sl) => sl.slideType !== "offer")];
+}
 
 export const bannerSchema = z.object({
   id: z.string().min(1).max(40),
@@ -189,45 +211,16 @@ export type PageSlug = (typeof PAGE_SLUGS)[number];
 export const DEFAULT_HOME: HomeContent = {
   sections: [
     {
-      id: "hero",
-      type: "hero",
-      enabled: true,
-      startsAt: "",
-      endsAt: "",
-      slides: [
-        {
-          id: "hero-1",
-          eyebrow: "New season essentials",
-          title: "Everyday home needs, honestly priced",
-          text: "Storage, kitchen, cleaning and décor picks that make small homes work harder, delivered anywhere in India.",
-          image: { src: "/placeholders/banners/hero.svg", alt: "Ceramic vases and airtight storage jars on a sand-coloured shelf" },
-          primaryCta: { label: "Shop bestsellers", href: "/bestsellers" },
-          secondaryCta: { label: "Flash sale", href: "/flash-sale" },
-          highlights: [DEFAULT_SETTINGS.promo.text, DEFAULT_SETTINGS.promo.secondary, "Prepaid, secure checkout"],
-          enabled: true,
-          clickable: false,
-          link: "",
-          startsAt: "",
-          endsAt: "",
-        },
-      ],
-    },
-    {
       id: "bestsellers", type: "productRow", enabled: true, startsAt: "", endsAt: "",
       title: "Bestsellers", subtitle: "What homes across India are buying this month.", eyebrow: "",
       source: "bestsellers", categorySlug: "", productSlugs: [], limit: 8, layout: "grid", viewAllHref: "/bestsellers", background: "background",
-    },
-    {
-      id: "featured-collections", type: "categoryTiles", enabled: true, startsAt: "", endsAt: "",
-      title: "Featured collections", subtitle: "", variant: "card", source: "manual",
-      categorySlugs: ["storage-containers", "wardrobe-organisers", "mops-brooms", "bath-storage"], background: "surface",
     },
     {
       id: "flash-banner", type: "offerBanner", enabled: true, startsAt: "", endsAt: "",
       heading: "Flash sale", headingEyebrow: "Limited stock", headingSubtitle: "Deep discounts on a few favourites while stock lasts.", viewAllHref: "/flash-sale",
       banner: {
         id: "flash-banner-1", eyebrow: "This week only", title: "Racks, mats and tawas at their lowest prices", text: "",
-        image: "/placeholders/banners/flash-sale.svg", cta: { label: "Shop the flash sale", href: "/flash-sale" }, tone: "soft", startsAt: "", endsAt: "",
+        image: "", cta: { label: "Shop the flash sale", href: "/flash-sale" }, tone: "soft", startsAt: "", endsAt: "",
       },
     },
     {
@@ -236,15 +229,6 @@ export const DEFAULT_HOME: HomeContent = {
     },
     { id: "categories", type: "categoryTiles", enabled: true, startsAt: "", endsAt: "", title: "Shop by category", subtitle: "", variant: "circle", source: "top", categorySlugs: [], background: "surface" },
     { id: "budget", type: "budgetTiles", enabled: true, startsAt: "", endsAt: "", title: "Shop by budget", subtitle: "" },
-    {
-      id: "category-offers", type: "bannerGrid", enabled: true, startsAt: "", endsAt: "", label: "Category offers",
-      banners: [
-        { id: "b-kitchen", eyebrow: "Kitchen sale", title: "Up to 50% off pantry storage", text: "Airtight jars and spice racks for a tidy kitchen.", image: "/placeholders/banners/kitchen.svg", cta: { label: "Shop Kitchen & Dining", href: "/kitchen" }, tone: "sand", startsAt: "", endsAt: "" },
-        { id: "b-cleaning", eyebrow: "Cleaning week", title: "Faster pocha, less effort", text: "Spin mops, brooms and microfibre from ₹199.", image: "/placeholders/banners/cleaning.svg", cta: { label: "Shop Cleaning", href: "/cleaning" }, tone: "sand", startsAt: "", endsAt: "" },
-        { id: "b-bathroom", eyebrow: "Bath refresh", title: "No-drill bathroom upgrades", text: "Shelves, hooks and dispensers that install in minutes.", image: "/placeholders/banners/bathroom.svg", cta: { label: "Shop Bathroom", href: "/bathroom" }, tone: "sand", startsAt: "", endsAt: "" },
-        { id: "b-decor", eyebrow: "Décor edit", title: "Warm up your walls", text: "Handmade macramé, vases and fairy lights.", image: "/placeholders/banners/home-decor.svg", cta: { label: "Shop Home Décor", href: "/home-decor" }, tone: "sand", startsAt: "", endsAt: "" },
-      ],
-    },
     {
       id: "value-props", type: "valueProps", enabled: true, startsAt: "", endsAt: "",
       items: [

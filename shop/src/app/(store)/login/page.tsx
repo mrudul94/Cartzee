@@ -8,7 +8,12 @@ import { forgotPasswordAction, signInCustomerAction, signUpCustomerAction } from
 export const dynamic = "force-dynamic";
 export const metadata = buildMetadata({ title: "Sign in or create an account", description: "Sign in to place orders and see your order history.", path: "/login", noindex: true });
 
-type Props = { searchParams: Promise<{ next?: string; mode?: string }> };
+type Props = { searchParams: Promise<{ next?: string; mode?: string; error?: string }> };
+
+const LINK_ERRORS: Record<string, string> = {
+  link: "That email link has expired or was already used. Request a new one below.",
+  admin: "This email belongs to a City Seller admin account, which can't be used for shopping. Please use a different email.",
+};
 
 /** Shopper sign-in. Browsing never needs an account; it's required only to place an order. */
 export default async function LoginPage({ searchParams }: Props) {
@@ -21,6 +26,11 @@ export default async function LoginPage({ searchParams }: Props) {
         <h1 className="font-heading text-3xl font-semibold">Your City Seller account</h1>
         <p className="text-text-muted">{next === "/checkout" ? "Sign in or create a free account to place your order." : "Sign in to see your orders."}</p>
       </div>
+      {sp.error && LINK_ERRORS[sp.error] && (
+        <p role="alert" className="rounded-md bg-error-soft p-3 text-sm text-error">
+          {LINK_ERRORS[sp.error]}
+        </p>
+      )}
       {customerAuthEnabled ? (
         <CustomerAuthForm next={next} signIn={signInCustomerAction} signUp={signUpCustomerAction} forgot={forgotPasswordAction} initialMode={sp.mode === "signup" ? "signup" : "signin"} />
       ) : (

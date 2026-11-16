@@ -30,15 +30,16 @@ export const revalidate = 3600;
 type Props = { params: Promise<{ category: string; sub: string; product: string }> };
 
 export async function generateStaticParams() {
-  return (await repo.listProducts()).map((p) => ({ category: p.categorySlug, sub: p.subcategorySlug, product: p.slug }));
+  // Products without a subcategory are served by the [sub] route (/<category>/<product>).
+  return (await repo.listProducts()).filter((p) => p.subcategorySlug).map((p) => ({ category: p.categorySlug, sub: p.subcategorySlug, product: p.slug }));
 }
 
-/** Loads the product and enforces the single canonical path. */
+/** Loads the product and enforces the single canonical path (sub is "" for products without a subcategory). */
 async function load({ category, sub, product }: Awaited<Props["params"]>) {
   const p = await repo.getProductBySlug(product);
   if (!p || p.categorySlug !== category || p.subcategorySlug !== sub) return null;
-  const [parent, subcategory] = await Promise.all([repo.getCategory(category), repo.getCategory(sub)]);
-  if (!parent || !subcategory) return null;
+  const [parent, subcategory] = await Promise.all([repo.getCategory(category), sub ? repo.getCategory(sub) : Promise.resolve(null)]);
+  if (!parent || (sub && !subcategory)) return null;
   return { p, parent, subcategory };
 }
 
@@ -62,7 +63,7 @@ export default async function ProductPage({ params }: Props) {
   const { p, parent, subcategory } = data;
   const [reviews, sameSub, sameCat, settings] = await Promise.all([
     repo.listReviews(p.id),
-    repo.listProducts({ subcategory: p.subcategorySlug }),
+    p.subcategorySlug ? repo.listProducts({ subcategory: p.subcategorySlug }) : Promise.resolve([]),
     repo.listProducts({ category: p.categorySlug }),
     getSettings(),
   ]);
@@ -79,7 +80,7 @@ export default async function ProductPage({ params }: Props) {
         <Breadcrumbs
           items={[
             { label: parent.name, href: paths.category(parent) },
-            { label: subcategory.name, href: paths.category(subcategory) },
+            ...(subcategory ? [{ label: subcategory.name, href: paths.category(subcategory) }] : []),
             { label: p.title },
           ]}
         />
@@ -154,9 +155,9 @@ export default async function ProductPage({ params }: Props) {
         <ReviewList reviews={reviews} rating={p.rating} reviewCount={p.reviewCount} productTitle={p.title} />
       </Section>
 
-      <ProductGrid title="You may also like" products={related.map(toCardProduct)} viewAllHref={paths.category(subcategory)} />
+      <ProductGrid title="You may also like" products={related.map(toCardProduct)} viewAllHref={paths.category(subcategory ?? parent)} />
 
-      <JsonLd data={buildProductJsonLd(p, `${parent.name} > ${subcategory.name}`, returnDays)} />
+      <JsonLd data={buildProductJsonLd(p, subcategory ? `${parent.name} > ${subcategory.name}` : parent.name, returnDays)} />
     </div>
   );
 }

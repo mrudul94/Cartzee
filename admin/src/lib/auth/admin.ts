@@ -5,6 +5,8 @@ import { redirect } from "next/navigation";
 import { createServerClient } from "@supabase/ssr";
 import { config, isSupabaseConfigured } from "@/lib/config";
 import { svc } from "@/lib/data/supabase-clients";
+import { ADMIN_AUTH_COOKIE } from "./cookie-name";
+import { isSessionVerified } from "./email-code";
 import { ALL_PERMISSIONS, hasPermission, type AdminRole, type Permission } from "./permissions";
 
 export { ALL_PERMISSIONS, hasPermission, PERMISSION_LABELS, type AdminRole, type Permission } from "./permissions";
@@ -28,6 +30,7 @@ export const adminAuthAvailable = isSupabaseConfigured || devAdminBypass;
 export async function supabaseAuthClient() {
   const jar = await cookies();
   return createServerClient(config.supabase.url!, config.supabase.anonKey!, {
+    cookieOptions: ADMIN_AUTH_COOKIE,
     cookies: {
       getAll: () => jar.getAll(),
       setAll: (list) => {
@@ -57,12 +60,12 @@ export async function isAdminUser(userId: string): Promise<boolean> {
 export type SessionState =
   | { state: "signed-out" }
   | { state: "not-admin"; userId: string }
-  | { state: "needs-mfa"; userId: string; email: string }
+  | { state: "needs-mfa"; userId: string; email: string; sessionId: string }
   | { state: "ok"; admin: AdminUser };
 
 /**
  * Verified session state. Uses getUser() (checked with Supabase, never the unverified cookie) and
- * requires MFA (assurance level aal2) before the admin is considered signed in.
+ * requires the emailed sign-in code to have been entered for this login session.
  */
 export const getSessionState = cache(async (): Promise<SessionState> => {
   if (devAdminBypass) return { state: "ok", admin: { id: "dev", email: "dev-admin@localhost", role: "super_admin", permissions: [...ALL_PERMISSIONS], mode: "dev" } };
@@ -72,8 +75,10 @@ export const getSessionState = cache(async (): Promise<SessionState> => {
   if (!data.user) return { state: "signed-out" };
   const row = await adminRow(data.user.id);
   if (!row) return { state: "not-admin", userId: data.user.id };
-  const aal = await supabase.auth.mfa.getAuthenticatorAssuranceLevel();
-  if (aal.data?.currentLevel !== "aal2") return { state: "needs-mfa", userId: data.user.id, email: data.user.email ?? "" };
+  const claims = await supabase.auth.getClaims();
+  const sessionId = claims.data?.claims.session_id;
+  if (typeof sessionId !== "string" || claims.data?.claims.sub !== data.user.id) return { state: "signed-out" };
+  if (!(await isSessionVerified(sessionId))) return { state: "needs-mfa", userId: data.user.id, email: data.user.email ?? "", sessionId };
   return { state: "ok", admin: { id: data.user.id, email: data.user.email ?? "", role: row.role, permissions: row.permissions ?? [], mode: "supabase" } };
 });
 
@@ -83,7 +88,7 @@ export async function getAdmin(): Promise<AdminUser | null> {
   return s.state === "ok" ? s.admin : null;
 }
 
-/** Guard for admin pages and server actions: signed in, an admin, and MFA-verified. */
+/** Guard for admin pages and server actions: signed in, an admin, and email-code verified. */
 export async function requireAdmin(): Promise<AdminUser> {
   const s = await getSessionState();
   if (s.state === "ok") return s.admin;

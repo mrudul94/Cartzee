@@ -1,7 +1,7 @@
 import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { PGlite } from "@electric-sql/pglite";
-import { buildSeedSql } from "../scripts/gen-seed-sql";
+import { buildCatalogueSql } from "./fixtures/catalogue-sql";
 
 const MIGRATIONS = join(process.cwd(), "supabase", "migrations");
 
@@ -29,7 +29,7 @@ export async function createTestDb() {
   for (const file of readdirSync(MIGRATIONS).filter((f) => f.endsWith(".sql")).sort()) {
     await db.exec(readFileSync(join(MIGRATIONS, file), "utf8"));
   }
-  await db.exec(buildSeedSql());
+  await db.exec(buildCatalogueSql());
   return db;
 }
 

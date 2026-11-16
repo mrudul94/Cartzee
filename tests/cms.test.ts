@@ -10,7 +10,8 @@ import {
   type HomeContent,
 } from "@/lib/content/schema";
 import { newSection } from "@/lib/content/new-section";
-import { seedProducts } from "@/lib/seed/products";
+import { testHero } from "./fixtures/hero";
+import { testProducts as seedProducts } from "./fixtures/catalogue";
 import { isProductNew } from "@/lib/utils/product";
 
 vi.mock("next/cache", () => ({ revalidatePath: vi.fn(), revalidateTag: vi.fn(), unstable_cache: (fn: unknown) => fn }));
@@ -42,7 +43,10 @@ describe("content schemas and defaults", () => {
   });
 
   it("every new section template is valid", () => {
-    const types = ["hero", "productRow", "offerBanner", "bannerGrid", "categoryTiles", "budgetTiles", "valueProps", "customerCare", "brandStory", "guides", "faq"] as const;
+    // A new hero slide has no picture yet, so it can't be saved until one is added.
+    expect(schemaFor("home").safeParse({ sections: [newSection("hero")] }).success).toBe(false);
+    expect(schemaFor("home").safeParse({ sections: [testHero()] }).success).toBe(true);
+    const types = ["productRow", "offerBanner", "bannerGrid", "categoryTiles", "budgetTiles", "valueProps", "customerCare", "brandStory", "guides", "faq"] as const;
     for (const t of types) expect(schemaFor("home").safeParse({ sections: [newSection(t)] }).success, t).toBe(true);
   });
 
@@ -93,9 +97,7 @@ describe("content repository (mock mode)", () => {
     expect((await getSettings()).care.phone).toBe("+91 98765 43210");
     expect((await listActivity(1))[0]).toMatchObject({ actor: "tester@example.com", target: "settings" });
 
-    const home = defaultFor("home") as HomeContent;
-    const hero = home.sections[0]!;
-    if (hero.type !== "hero") throw new Error("expected hero first");
+    const hero = testHero();
     const evil = { sections: [{ ...hero, slides: [{ ...hero.slides[0]!, primaryCta: { label: "Go", href: "javascript:alert(1)" } }] }] };
     await expect(saveContent("home", evil, "tester@example.com")).rejects.toBeInstanceOf(ContentError);
   });
@@ -191,7 +193,7 @@ describe("CMS actions (dev admin)", () => {
       fd({
         title: "How to organise a small kitchen",
         excerpt: "Five quick ways to free up counter space in a small Indian kitchen.",
-        cover: "/placeholders/guides/storage-containers.svg",
+        cover: "/logo/mark.png",
         isPublished: "on",
         body: JSON.stringify([{ type: "p", text: "Start with airtight jars." }, { type: "products", slugs: ["airtight-jar-set-6pc"] }]),
         faqs: "[]",

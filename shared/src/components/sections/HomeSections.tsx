@@ -1,7 +1,7 @@
 import { Section } from "@/components/layout/Container";
 import { buildCategoryTree } from "@/components/layout/MegaMenu";
 import { SectionHeader } from "@/components/ui/SectionHeader";
-import { isScheduledLive, type HomeSection, type Settings } from "@/lib/content/schema";
+import { isScheduledLive, type HomeSection, type Settings, orderHeroSlides } from "@/lib/content/schema";
 import { repo } from "@/lib/data";
 import type { Category, Faq, Post } from "@/lib/types";
 import { BUDGET_TIERS } from "@/lib/utils/budget";
@@ -9,7 +9,6 @@ import { paths } from "@/lib/utils/paths";
 import { toCardProduct } from "@/lib/utils/product";
 import { CategoryTiles } from "./CategoryTiles";
 import { GuideCards } from "./GuideCards";
-import { HeroBanner } from "./HeroBanner";
 import { HeroCarousel } from "./HeroCarousel";
 import { BrandStory, CustomerCare, FAQSection, ValueProps } from "./InfoSections";
 import { ProductGrid } from "./ProductGrid";
@@ -59,25 +58,11 @@ export async function HomeSections({ sections, ctx }: { sections: HomeSection[];
       const prev = live[i - 1];
       switch (s.type) {
         case "hero": {
-          const slides = s.slides.filter((sl) => sl.enabled && isScheduledLive(sl, now));
+          const live = s.slides.filter((sl) => sl.enabled && isScheduledLive(sl, now));
+          const slides = orderHeroSlides(live);
           if (slides.length === 0) return null;
-          const props = slides.map((sl) => ({
-            id: sl.id,
-            eyebrow: sl.eyebrow || undefined,
-            title: sl.title,
-            text: sl.text,
-            image: sl.image,
-            primaryCta: sl.primaryCta,
-            secondaryCta: sl.secondaryCta ?? undefined,
-            highlights: sl.highlights,
-            href: sl.clickable && sl.link ? sl.link : undefined,
-          }));
-          const isFirstHeading = !h1Used;
+          const props = slides.map((sl) => ({ id: sl.id, image: sl.image, href: sl.clickable && sl.link ? sl.link : undefined }));
           h1Used = true;
-          if (props.length === 1) {
-            const { id: _id, ...one } = props[0]!;
-            return <HeroBanner key={s.id} {...one} as={isFirstHeading ? "h1" : "h2"} priority={i === 0} />;
-          }
           return <HeroCarousel key={s.id} slides={props} />;
         }
         case "productRow": {
@@ -123,8 +108,8 @@ export async function HomeSections({ sections, ctx }: { sections: HomeSection[];
             <Section key={s.id} aria-label={s.label || "Offers"} spacing="sm">
               <ul className="grid gap-4 md:grid-cols-2">
                 {banners.map((b) => (
-                  <li key={b.id}>
-                    <SaleBanner tone={b.tone} eyebrow={b.eyebrow || undefined} title={b.title} text={b.text || undefined} image={b.image || undefined} cta={b.cta} />
+                  <li key={b.id} className="flex">
+                    <SaleBanner tone={b.tone} eyebrow={b.eyebrow || undefined} title={b.title} text={b.text || undefined} image={b.image || undefined} cta={b.cta} className="w-full" />
                   </li>
                 ))}
               </ul>

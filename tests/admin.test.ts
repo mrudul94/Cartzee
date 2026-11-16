@@ -2,7 +2,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { faqsToText, orderUpdateSchema, productFormSchema, specsToText, textToFaqs, textToSpecs } from "@/lib/admin/forms";
 import { whatsappMessage } from "@/lib/admin/whatsapp";
 import { adminTransitions } from "@/lib/orders/status";
-import { seedProducts } from "@/lib/seed/products";
+import { testProducts as seedProducts } from "./fixtures/catalogue";
 
 // Server actions call revalidatePath/redirect, which need a Next request context.
 vi.mock("next/cache", () => ({ revalidatePath: vi.fn(), revalidateTag: vi.fn(), unstable_cache: (fn: unknown) => fn }));
@@ -34,7 +34,7 @@ const validProduct = {
   priceChecked: "on",
   stock: "25",
   isActive: "on",
-  images: JSON.stringify([{ src: "/placeholders/products/airtight-jar-set-6pc-1.svg", alt: "Bamboo cutlery holder front view" }]),
+  images: JSON.stringify([{ src: "/logo/mark.png", alt: "Bamboo cutlery holder front view" }]),
 };
 
 describe("product form parsing", () => {
@@ -108,6 +108,58 @@ describe("admin repo + actions (mock mode)", () => {
     await expect(adminRepo.saveProduct(parsed)).rejects.toBeInstanceOf(AdminError);
     const wrongSub = productFormSchema.parse({ ...validProduct, title: "Another unique product title", subcategorySlug: "mops-brooms" });
     await expect(adminRepo.saveProduct(wrongSub)).rejects.toThrow(/Subcategory/);
+  });
+
+  it("removes a product that was never ordered, and refuses one that is in an order", async () => {
+    const { adminRepo } = await import("@/lib/data/admin-repo");
+    const { repo } = await import("@/lib/data");
+    const { deleteProductAction } = await import("@admin/app/actions");
+    const fd = (id: string) => {
+      const f = new FormData();
+      f.set("id", id);
+      return f;
+    };
+    const saved = await adminRepo.saveProduct(productFormSchema.parse({ ...validProduct, title: "Product made to be removed", slug: "made-to-be-removed" }));
+    await expect(deleteProductAction({}, fd(saved.id))).rejects.toMatchObject({ url: "/products?deleted=1" });
+    expect(await adminRepo.getProduct(saved.id)).toBeNull();
+    expect(await repo.getProductBySlug("made-to-be-removed")).toBeNull();
+
+    const ordered = seedProducts[2]!;
+    await repo.createOrder({
+      address: { name: "Ravi K", phone: "9876501111", email: "ravi@example.com", line1: "1 Hill Road", city: "Pune", state: "Maharashtra", pincode: "411001" },
+      items: [{ productId: ordered.id, quantity: 1 }],
+      delivery: { freeAbove: 499, fee: 49 },
+    });
+    expect(await adminRepo.productOrderCount(ordered.id)).toBeGreaterThan(0);
+    expect((await deleteProductAction({}, fd(ordered.id))).message).toMatch(/can't be deleted/);
+    expect(await adminRepo.getProduct(ordered.id)).not.toBeNull();
+    expect((await deleteProductAction({}, fd("no-such-product"))).message).toMatch(/not found/);
+
+    // Same rules from the product list's quick "Remove" button.
+    const { productQuickAction } = await import("@admin/app/cms-actions");
+    const quick = (id: string) => {
+      const f = fd(id);
+      f.set("op", "delete");
+      return f;
+    };
+    await expect(productQuickAction(quick(ordered.id))).rejects.toMatchObject({ url: "/products?notice=in-orders" });
+    const spare = await adminRepo.saveProduct(productFormSchema.parse({ ...validProduct, title: "Removed from the list", slug: "removed-from-list" }));
+    expect((await adminRepo.orderCountsByProduct()).get(ordered.id)).toBeGreaterThan(0);
+    await expect(productQuickAction(quick(spare.id))).rejects.toMatchObject({ url: "/products?deleted=1" });
+    expect(await adminRepo.getProduct(spare.id)).toBeNull();
+  });
+
+  it("saves a product without a subcategory at /<category>/<product>, and refuses a URL that clashes with a subcategory", async () => {
+    const { adminRepo, AdminError } = await import("@/lib/data/admin-repo");
+    const { repo } = await import("@/lib/data");
+    const { paths } = await import("@/lib/utils/paths");
+    const noSub = await adminRepo.saveProduct(productFormSchema.parse({ ...validProduct, title: "Product with no subcategory", slug: "no-sub-product", subcategorySlug: "" }));
+    const shown = await repo.getProductBySlug("no-sub-product");
+    expect(shown?.subcategorySlug).toBe("");
+    expect(paths.product(shown!)).toBe("/kitchen/no-sub-product");
+    expect((await repo.listProducts({ category: "kitchen" })).some((p) => p.id === noSub.id)).toBe(true);
+    const clash = productFormSchema.parse({ ...validProduct, title: "Clashing product", slug: "kitchen-tools", subcategorySlug: "" });
+    await expect(adminRepo.saveProduct(clash)).rejects.toBeInstanceOf(AdminError);
   });
 
   it("marks a Meesho price as checked", async () => {

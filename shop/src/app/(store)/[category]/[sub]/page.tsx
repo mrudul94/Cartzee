@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
 import { ListingTemplate } from "@/components/sections/ListingTemplate";
 import { repo } from "@/lib/data";
 import { buildMetadata } from "@/lib/seo/metadata";
 import { paths } from "@/lib/utils/paths";
 import { toCardProduct } from "@/lib/utils/product";
+import ProductPage, { generateMetadata as productMetadata } from "./[product]/page";
 
 export const revalidate = 3600;
 // New catalogue rows render on first request (ISR); unknown slugs 404 via notFound().
@@ -12,8 +12,16 @@ export const revalidate = 3600;
 type Props = { params: Promise<{ category: string; sub: string }> };
 
 export async function generateStaticParams() {
-  return (await repo.listCategories()).filter((c) => c.parentSlug).map((c) => ({ category: c.parentSlug!, sub: c.slug }));
+  const [cats, products] = await Promise.all([repo.listCategories(), repo.listProducts()]);
+  return [
+    ...cats.filter((c) => c.parentSlug).map((c) => ({ category: c.parentSlug!, sub: c.slug })),
+    // Products without a subcategory live at /<category>/<product>.
+    ...products.filter((p) => !p.subcategorySlug).map((p) => ({ category: p.categorySlug, sub: p.slug })),
+  ];
 }
+
+/** /<category>/<slug> is a product (without a subcategory) when <slug> isn't a subcategory. */
+const asProduct = (category: string, slug: string) => ({ params: Promise.resolve({ category, sub: "", product: slug }) });
 
 async function load(categorySlug: string, subSlug: string) {
   const [parent, sub] = await Promise.all([repo.getCategory(categorySlug), repo.getCategory(subSlug)]);
@@ -24,7 +32,7 @@ async function load(categorySlug: string, subSlug: string) {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { category, sub } = await params;
   const data = await load(category, sub);
-  if (!data) return {};
+  if (!data) return productMetadata(asProduct(category, sub));
   return buildMetadata({
     title: `${data.sub.name}: ${data.parent.name} Online`,
     description: `${data.sub.intro} Shop ${data.sub.name.toLowerCase()} at City Seller with prepaid checkout and delivery across India.`,
@@ -38,7 +46,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function SubcategoryPage({ params }: Props) {
   const { category, sub } = await params;
   const data = await load(category, sub);
-  if (!data) notFound();
+  if (!data) return <ProductPage {...asProduct(category, sub)} />;
   const { parent, sub: subcategory } = data;
   const [all, products] = await Promise.all([repo.listCategories(), repo.listProducts({ category: parent.slug, subcategory: subcategory.slug })]);
   const siblings = all.filter((c) => c.parentSlug === parent.slug);

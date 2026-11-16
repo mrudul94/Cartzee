@@ -41,7 +41,7 @@ export function toCardProduct(p: Product): CardProduct {
     title: p.title,
     price: p.price,
     mrp: p.mrp,
-    image: p.images[0] ?? { src: "/placeholders/og-default.svg", alt: p.title },
+    image: p.images[0] ?? { src: "/logo/mark.png", alt: p.title },
     hoverImage: p.images[1],
     rating: p.rating,
     reviewCount: p.reviewCount,

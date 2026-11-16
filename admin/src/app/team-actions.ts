@@ -43,7 +43,7 @@ export async function addAdminAction(_prev: ActionState, fd: FormData): Promise<
   }
   await logActivity(me.email, `Added admin ${parsed.data.email} (${parsed.data.role === "super_admin" ? "Super Admin" : permissions.join(", ")})`, "team");
   revalidatePath("/team");
-  return { ok: true, message: `Added ${parsed.data.email}. Share the temporary password privately; they'll set up two-step sign-in on first login.` };
+  return { ok: true, message: `Added ${parsed.data.email}. Share the temporary password privately. When they sign in, a 6-digit code is emailed to them.` };
 }
 
 export async function updateAdminAction(_prev: ActionState, fd: FormData): Promise<ActionState> {

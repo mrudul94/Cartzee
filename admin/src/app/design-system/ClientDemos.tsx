@@ -48,9 +48,9 @@ export function ImageManagerDemo({ images }: { images: { src: string; alt: strin
 /* ---------------- CMS editor demos (local state only; nothing is saved) */
 
 const demoProducts = [
-  { slug: "airtight-jar-set-6pc", title: "Airtight Storage Jar Set, 6 pc (1.2 L)", image: "/placeholders/products/airtight-jar-set-6pc-1.svg" },
-  { slug: "spin-mop-bucket-set", title: "Spin Mop with Bucket and 2 Microfibre Refills", image: "/placeholders/products/spin-mop-bucket-set-1.svg" },
-  { slug: "ceramic-vase-set-3pc", title: "Ceramic Vase Set, 3 pc (Terracotta and Beige)", image: "/placeholders/products/ceramic-vase-set-3pc-1.svg" },
+  { slug: "example-product-1", title: "Example product 1", image: "/logo/mark.png" },
+  { slug: "example-product-2", title: "Example product 2", image: "/logo/mark.png" },
+  { slug: "example-product-3", title: "Example product 3", image: "/logo/mark.png" },
 ];
 
 export function ListEditorDemo() {
@@ -68,7 +68,7 @@ export function ListEditorDemo() {
 }
 
 export function ImageFieldDemo() {
-  const [src, setSrc] = useState("/placeholders/banners/hero.svg");
+  const [src, setSrc] = useState("/logo/logo-full.png");
   return <ImageField id="demo-image" label="Banner image" value={src} onChange={setSrc} upload={demoUploadAction} folder="banners" slug="demo" />;
 }
 
@@ -83,7 +83,7 @@ export function TextFieldDemo() {
 }
 
 export function ProductPickerDemo() {
-  const [v, setV] = useState(["airtight-jar-set-6pc"]);
+  const [v, setV] = useState(["example-product-1"]);
   return <ProductPicker label="Products" options={demoProducts} value={v} onChange={setV} max={6} />;
 }
 

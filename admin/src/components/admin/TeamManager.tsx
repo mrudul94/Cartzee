@@ -1,7 +1,7 @@
 "use client";
 
-import { useActionState, useState } from "react";
-import { ShieldCheck, ShieldAlert, Trash2, UserPlus } from "lucide-react";
+import { startTransition, useActionState, useEffect, useRef, useState } from "react";
+import { Trash2, UserPlus } from "lucide-react";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
@@ -13,7 +13,7 @@ import type { ActionState } from "@/lib/admin/forms";
 import { ALL_PERMISSIONS, PERMISSION_LABELS, type AdminRole, type Permission } from "@/lib/auth/permissions";
 
 type Action = (prev: ActionState, fd: FormData) => Promise<ActionState>;
-export type TeamMemberView = { userId: string; email: string; role: AdminRole; permissions: Permission[]; mfa: boolean; isMe: boolean };
+export type TeamMemberView = { userId: string; email: string; role: AdminRole; permissions: Permission[]; isMe: boolean };
 
 const ROLE_OPTIONS = [
   { value: "admin", label: "Admin (chosen permissions)" },
@@ -53,15 +53,6 @@ function MemberRow({ m, update, remove }: { m: TeamMemberView; update: Action; r
         <span className="font-semibold">{m.email}</span>
         {m.isMe && <Badge>You</Badge>}
         {m.role === "super_admin" ? <Badge variant="dark">Super Admin</Badge> : <Badge variant="outline">Admin</Badge>}
-        {m.mfa ? (
-          <span className="inline-flex items-center gap-1 text-sm text-success">
-            <ShieldCheck aria-hidden className="h-4 w-4" /> Two-step on
-          </span>
-        ) : (
-          <span className="inline-flex items-center gap-1 text-sm text-warning">
-            <ShieldAlert aria-hidden className="h-4 w-4" /> Sets up two-step at next sign-in
-          </span>
-        )}
       </div>
       <form action={uAction} className="flex flex-col gap-3">
         <input type="hidden" name="userId" value={m.userId} />
@@ -99,13 +90,23 @@ function MemberRow({ m, update, remove }: { m: TeamMemberView; update: Action; r
 export function TeamManager({ members, add, update, remove }: { members: TeamMemberView[]; add: Action; update: Action; remove: Action }) {
   const [state, action, pending] = useActionState(add, {});
   const [role, setRole] = useState<AdminRole>("admin");
+  const formRef = useRef<HTMLFormElement>(null);
   const e = state.errors ?? {};
+  // Submit without React's automatic form reset, so a rejected entry stays on screen to fix; clear only on success.
+  const submit = (ev: React.FormEvent<HTMLFormElement>) => {
+    ev.preventDefault();
+    const fd = new FormData(ev.currentTarget);
+    startTransition(() => action(fd));
+  };
+  useEffect(() => {
+    if (state.ok) formRef.current?.reset();
+  }, [state]);
   return (
     <div className="flex flex-col gap-6">
       <Card padding="md">
         <h2 className="mb-1 font-heading text-xl font-semibold">Add an admin</h2>
         <p className="mb-4 text-sm text-text-muted">This creates a new, separate sign-in account. Existing accounts (like shop customer accounts) can&apos;t be made admins.</p>
-        <form action={action} className="flex flex-col gap-4" noValidate>
+        <form ref={formRef} onSubmit={submit} className="flex flex-col gap-4" noValidate>
           <div className="grid gap-4 md:grid-cols-2">
             <FormField id="team-email" label="Email" error={e.email} required>
               <Input id="team-email" name="email" type="email" autoComplete="off" invalid={Boolean(e.email)} />

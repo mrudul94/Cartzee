@@ -5,7 +5,7 @@ import { signOutAction } from "../actions";
 
 export const dynamic = "force-dynamic";
 
-/** Every admin page (except /login and /mfa) requires a signed-in, MFA-verified admin. */
+/** Every admin page (except /login and /mfa) requires a signed-in, email-code verified admin. */
 export default async function AdminPanelLayout({ children }: { children: React.ReactNode }) {
   const admin = await requireAdmin();
   const counts = hasPermission(admin, "orders") ? await adminRepo.orderCounts() : null;

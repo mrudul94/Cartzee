@@ -53,7 +53,7 @@ export default async function AdminOrderPage({ params }: Props) {
               {order.items.map((i) => (
                 <li key={i.productId} className="flex flex-wrap items-center gap-3 py-3">
                   <span className="relative h-14 w-14 shrink-0 overflow-hidden rounded-md bg-background">
-                    <Image src={i.image || "/placeholders/og-default.svg"} alt="" fill sizes="56px" className="object-cover" />
+                    <Image src={i.image || "/logo/mark.png"} alt="" fill sizes="56px" className="object-cover" />
                   </span>
                   <div className="min-w-0 flex-1">
                     <Link href={i.path} target="_blank" className="font-medium hover:underline">

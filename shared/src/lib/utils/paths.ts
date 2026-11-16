@@ -5,7 +5,8 @@ export const paths = {
   home: () => "/",
   category: (c: Pick<Category, "slug" | "parentSlug">) => (c.parentSlug ? `/${c.parentSlug}/${c.slug}` : `/${c.slug}`),
   product: (p: Pick<Product, "categorySlug" | "subcategorySlug" | "slug">) =>
-    `/${p.categorySlug}/${p.subcategorySlug}/${p.slug}`,
+    // Subcategory is optional: products without one live directly under the category.
+    p.subcategorySlug ? `/${p.categorySlug}/${p.subcategorySlug}/${p.slug}` : `/${p.categorySlug}/${p.slug}`,
   budget: (slug: string) => `/budget/${slug}`,
   flashSale: () => "/flash-sale",
   bestsellers: () => "/bestsellers",

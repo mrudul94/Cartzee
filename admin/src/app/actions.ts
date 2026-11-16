@@ -6,6 +6,7 @@ import { z } from "zod";
 import { fieldErrors, formObject, orderUpdateSchema, productFormSchema, type ActionState } from "@/lib/admin/forms";
 import { headers } from "next/headers";
 import { getAdmin, getSessionState, hasPermission, isAdminUser, requirePermission, supabaseAuthClient } from "@/lib/auth/admin";
+import { clearLoginCodes, sendLoginCode, verifyLoginCode, type SendResult } from "@/lib/auth/email-code";
 import { clientIpHash, isLocked, recordAttempt, WINDOW_MIN } from "@/lib/auth/rate-limit";
 import { isRazorpayConfigured, isSupabaseConfigured } from "@/lib/config";
 import { repo } from "@/lib/data";
@@ -23,7 +24,7 @@ const loginSchema = z.object({ email: z.string().trim().email("Enter your email"
 
 const LOCKED = `Too many failed attempts. Please wait ${WINDOW_MIN} minutes and try again.`;
 
-/** Step 1: email + password (rate limited). Non-admins are signed out again. Then MFA (step 2). */
+/** Step 1: email + password (rate limited). Non-admins are signed out again. Then a code is emailed (step 2). */
 export async function signInAction(_prev: ActionState, fd: FormData): Promise<ActionState> {
   if (!isSupabaseConfigured) return { message: "Sign-in needs Supabase. Add your Supabase keys to .env.local." };
   const parsed = loginSchema.safeParse(formObject(fd));
@@ -47,25 +48,38 @@ export async function signInAction(_prev: ActionState, fd: FormData): Promise<Ac
     return { message: "Email or password is incorrect, or this account is not an admin." };
   }
   await recordAttempt(key, ip, true);
-  redirect("/mfa");
+  const sessionId = sessionIdOf(data.session?.access_token);
+  if (!sessionId) return { message: "Sign-in failed. Please try again." };
+  const sent = await sendLoginCode(sessionId, data.user.id, email);
+  await logActivity(email, "Admin password accepted, sign-in code emailed", "auth");
+  redirect(sent.ok ? "/mfa" : "/mfa?send=failed");
 }
 
-/** Step 2a (first sign-in): start authenticator-app enrollment; returns the QR code to scan. */
-export async function mfaEnrollAction(): Promise<{ factorId?: string; qr?: string; secret?: string; error?: string }> {
+/** session_id claim of an access token Supabase has just issued to this server (not user input). */
+function sessionIdOf(token: string | undefined): string | null {
+  try {
+    const payload = JSON.parse(Buffer.from(token!.split(".")[1]!, "base64url").toString("utf8")) as { session_id?: unknown };
+    return typeof payload.session_id === "string" ? payload.session_id : null;
+  } catch {
+    return null;
+  }
+}
+
+const sendMessage = (r: SendResult) =>
+  r.ok ? "A new code has been sent." : r.reason === "cooldown" ? `Please wait ${r.waitSec} seconds before asking for another code.` : "We couldn't send the email. Please try again in a minute.";
+
+/** Step 2a: email a new code (max one per minute). */
+export async function resendCodeAction(_prev: ActionState, _fd: FormData): Promise<ActionState> {
   const s = await getSessionState();
-  if (s.state !== "needs-mfa") return { error: "Please sign in again." };
-  const supabase = await supabaseAuthClient();
-  // Remove unfinished enrollments so a fresh QR code is shown.
-  const factors = await supabase.auth.mfa.listFactors();
-  for (const f of factors.data?.all ?? []) if (f.status !== "verified") await supabase.auth.mfa.unenroll({ factorId: f.id });
-  const { data, error } = await supabase.auth.mfa.enroll({ factorType: "totp", friendlyName: `City Seller admin ${Date.now()}` });
-  if (error || !data) return { error: error?.message ?? "Could not start setup." };
-  return { factorId: data.id, qr: data.totp.qr_code, secret: data.totp.secret };
+  if (s.state === "ok") redirect("/");
+  if (s.state !== "needs-mfa") redirect("/login");
+  const r = await sendLoginCode(s.sessionId, s.userId, s.email);
+  return { ok: r.ok, message: sendMessage(r) };
 }
 
-const mfaSchema = z.object({ factorId: z.string().min(1), code: z.string().trim().regex(/^\d{6}$/, "Enter the 6-digit code") });
+const mfaSchema = z.object({ code: z.string().trim().regex(/^\d{6}$/, "Enter the 6-digit code") });
 
-/** Step 2b: verify the 6-digit code (rate limited). Upgrades the session to aal2. */
+/** Step 2b: check the emailed 6-digit code (rate limited). Marks this login session as verified. */
 export async function mfaVerifyAction(_prev: ActionState, fd: FormData): Promise<ActionState> {
   const s = await getSessionState();
   if (s.state === "ok") redirect("/");
@@ -76,21 +90,31 @@ export async function mfaVerifyAction(_prev: ActionState, fd: FormData): Promise
   const ip = await clientIpHash(await headers());
   if (await isLocked(key, ip)) return { message: LOCKED };
 
-  const supabase = await supabaseAuthClient();
-  const { error } = await supabase.auth.mfa.challengeAndVerify({ factorId: parsed.data.factorId, code: parsed.data.code });
-  if (error) {
+  const result = await verifyLoginCode(s.sessionId, parsed.data.code);
+  if (result !== "ok") {
     await recordAttempt(key, ip, false);
-    await logActivity(s.email, "Failed MFA code", "auth");
-    return { errors: { code: "That code is not correct or has expired." } };
+    await logActivity(s.email, "Wrong admin sign-in code", "auth");
+    const msg = {
+      wrong: "That code is not correct.",
+      expired: "That code has expired. Send a new one.",
+      "too-many": "Too many wrong codes. Send a new one.",
+      missing: "No code was sent yet. Send a new one.",
+    }[result];
+    return { errors: { code: msg } };
   }
   await recordAttempt(key, ip, true);
-  await logActivity(s.email, "Admin signed in (MFA verified)", "auth");
+  await logActivity(s.email, "Admin signed in (email code verified)", "auth");
   redirect("/");
 }
 
 export async function signOutAction() {
   // Global sign-out revokes every session of this account, not just this browser.
-  if (isSupabaseConfigured) await (await supabaseAuthClient()).auth.signOut({ scope: "global" });
+  if (isSupabaseConfigured) {
+    const supabase = await supabaseAuthClient();
+    const { data } = await supabase.auth.getUser();
+    if (data.user) await clearLoginCodes(data.user.id);
+    await supabase.auth.signOut({ scope: "global" });
+  }
   redirect("/login");
 }
 
@@ -158,6 +182,25 @@ export async function saveProductAction(_prev: ActionState, fd: FormData): Promi
   await refreshShop();
   if (!parsed.data.id) redirect(paths.admin(`/products/${id}?created=1`));
   return { ok: true, message: "Product saved. The storefront is updated." };
+}
+
+/** Permanently delete a product (refused when any order contains it: hide it instead). */
+export async function deleteProductAction(_prev: ActionState, fd: FormData): Promise<ActionState> {
+  const admin = await requirePermission("products");
+  const id = z.string().trim().min(1).max(64).safeParse(fd.get("id"));
+  if (!id.success) return { message: "Product not found." };
+  const product = await adminRepo.getProduct(id.data);
+  if (!product) return { message: "Product not found." };
+  try {
+    await adminRepo.deleteProduct(id.data);
+  } catch (e) {
+    if (e instanceof AdminError) return { message: e.message };
+    console.error("[admin] delete product failed", e);
+    return { message: "Could not delete the product. Please try again." };
+  }
+  await logActivity(admin.email, `Deleted product "${product.title}"`, product.slug);
+  await refreshShop();
+  redirect(paths.admin("/products?deleted=1"));
 }
 
 export async function markPriceCheckedAction(fd: FormData) {

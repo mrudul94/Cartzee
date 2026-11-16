@@ -1,9 +1,10 @@
 import { notFound } from "next/navigation";
+import { DeleteProductCard } from "@/components/admin/DeleteProductCard";
 import { ProductForm } from "@/components/admin/ProductForm";
 import { Breadcrumbs } from "@/components/layout/Breadcrumbs";
 import { categoryOptions, toFormValues } from "@/lib/admin/product-values";
 import { adminRepo } from "@/lib/data/admin-repo";
-import { saveProductAction, uploadImageAction } from "../../../actions";
+import { deleteProductAction, saveProductAction, uploadImageAction } from "../../../actions";
 import { paths } from "@/lib/utils/paths";
 import { requirePermission } from "@/lib/auth/admin";
 
@@ -30,6 +31,7 @@ export default async function EditProductPage({ params, searchParams }: Props) {
         upload={uploadImageAction}
         notice={created ? `Product created.${product.isActive ? " It is now live in the store." : " It is hidden until you tick “Visible in store”."}` : undefined}
       />
+      <DeleteProductCard id={product.id} title={product.title} orderCount={await adminRepo.productOrderCount(product.id)} action={deleteProductAction} />
     </div>
   );
 }

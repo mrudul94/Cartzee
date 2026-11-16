@@ -4,7 +4,7 @@ import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 import { clientIpHash, isLocked, recordAttempt, WINDOW_MIN } from "@/lib/auth/rate-limit";
-import { customerAuthEnabled, customerClient, safeNext } from "@/lib/customer";
+import { customerAuthEnabled, customerClient, getCustomer, isAdminAccount, safeNext } from "@/lib/customer";
 import { site } from "@/lib/site";
 
 export type AuthState = { ok?: boolean; message?: string; errors?: Record<string, string> };
@@ -28,7 +28,13 @@ export async function signInCustomerAction(_prev: AuthState, fd: FormData): Prom
   const ip = await clientIpHash(await headers());
   if (await isLocked(key, ip)) return { message: `Too many attempts. Please wait ${WINDOW_MIN} minutes and try again.` };
 
-  const { error } = await (await customerClient()).auth.signInWithPassword(parsed.data);
+  const supabase = await customerClient();
+  const { data, error } = await supabase.auth.signInWithPassword(parsed.data);
+  if (!error && data.user && (await isAdminAccount(data.user.id))) {
+    await supabase.auth.signOut({ scope: "local" });
+    await recordAttempt(key, ip, false);
+    return { message: "This is an admin account. Please use a separate email for shopping." };
+  }
   if (error) {
     await recordAttempt(key, ip, false);
     return { message: /confirm/i.test(error.message) ? "Please confirm your email first (check your inbox)." : "Email or password is incorrect." };
@@ -65,6 +71,8 @@ export async function setPasswordAction(_prev: AuthState, fd: FormData): Promise
   if (!customerAuthEnabled) return off;
   const pw = z.string().min(8, "Use at least 8 characters").max(72).safeParse(fd.get("password"));
   if (!pw.success) return { errors: { password: pw.error.issues[0]!.message } };
+  // Only shopper accounts can change a password here (getCustomer excludes admin accounts).
+  if (!(await getCustomer())) return { message: "Your reset link has expired. Request a new one from the sign-in page." };
   const { error } = await (await customerClient()).auth.updateUser({ password: pw.data });
   if (error) return { message: "Your reset link has expired. Request a new one from the sign-in page." };
   return { ok: true, message: "Password updated." };

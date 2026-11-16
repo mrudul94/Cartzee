@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { seedProducts } from "@/lib/seed/products";
+import { testProducts as seedProducts } from "./fixtures/catalogue";
 
 const WEBHOOK_SECRET = "whsec_test_123";
 const KEY_SECRET = "key_secret_test_456";

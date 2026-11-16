@@ -17,12 +17,12 @@ import { requirePermission } from "@/lib/auth/admin";
 
 export const metadata = { title: "Products" };
 
-type Props = { searchParams: Promise<{ q?: string; filter?: string }> };
+type Props = { searchParams: Promise<{ q?: string; filter?: string; deleted?: string; notice?: string }> };
 
 export default async function AdminProductsPage({ searchParams }: Props) {
   await requirePermission("products");
-  const { q = "", filter = "all" } = await searchParams;
-  const all = await adminRepo.listProducts();
+  const { q = "", filter = "all", deleted, notice } = await searchParams;
+  const [all, orderCounts] = await Promise.all([adminRepo.listProducts(), adminRepo.orderCountsByProduct()]);
   const needle = q.trim().toLowerCase();
   const filters = {
     all: () => true,
@@ -42,6 +42,16 @@ export default async function AdminProductsPage({ searchParams }: Props) {
           Add product
         </Button>
       </div>
+      {deleted && (
+        <p role="status" className="rounded-md bg-success-soft p-3 text-sm text-success">
+          Product removed. The shop is updated.
+        </p>
+      )}
+      {notice === "in-orders" && (
+        <p role="alert" className="rounded-md bg-error-soft p-3 text-sm text-error">
+          That product is in an order, so it can&apos;t be removed (the order history needs it). Use Hide to take it off the shop.
+        </p>
+      )}
       <form role="search" className="max-w-modal">
         <input type="hidden" name="filter" value={filter} />
         <label htmlFor="product-q" className="sr-only">
@@ -104,6 +114,7 @@ export default async function AdminProductsPage({ searchParams }: Props) {
               <ProductQuickActions
                 id={p.id}
                 title={p.title}
+                orderCount={orderCounts.get(p.id) ?? 0}
                 inStock={p.stock > 0}
                 isActive={p.isActive}
                 isNew={p.isNew ?? null}

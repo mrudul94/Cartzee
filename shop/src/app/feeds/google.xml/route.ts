@@ -35,7 +35,7 @@ export async function GET() {
       <g:condition>new</g:condition>
       <g:brand>${esc(site.name)}</g:brand>
       <g:identifier_exists>no</g:identifier_exists>
-      <g:product_type>${esc(`${name(p.categorySlug)} > ${name(p.subcategorySlug)}`)}</g:product_type>
+      <g:product_type>${esc(p.subcategorySlug ? `${name(p.categorySlug)} > ${name(p.subcategorySlug)}` : name(p.categorySlug))}</g:product_type>
       <g:material>${esc(p.material)}</g:material>
       <g:color>${esc(p.colour)}</g:color>
       <g:shipping>

@@ -54,7 +54,7 @@ export async function resetContentAction(fd: FormData) {
 
 /* ------------------------------------------------------------------ product quick actions */
 
-const QUICK = ["soldout", "instock", "show", "hide", "new-auto", "new-on", "new-off", "duplicate"] as const;
+const QUICK = ["soldout", "instock", "show", "hide", "new-auto", "new-on", "new-off", "duplicate", "delete"] as const;
 type Quick = (typeof QUICK)[number];
 
 export async function productQuickAction(fd: FormData) {
@@ -66,6 +66,17 @@ export async function productQuickAction(fd: FormData) {
   const product = await adminRepo.getProduct(id);
   if (!product) return;
 
+  if (op === "delete") {
+    try {
+      await adminRepo.deleteProduct(id);
+    } catch (e) {
+      if (e instanceof AdminError) redirect(paths.admin("/products?notice=in-orders"));
+      throw e;
+    }
+    await logActivity(admin.email, `Deleted product "${product.title}"`, product.slug);
+    await refreshShop();
+    redirect(paths.admin("/products?deleted=1"));
+  }
   if (op === "duplicate") {
     const copy = await adminRepo.duplicateProduct(id);
     await logActivity(admin.email, `Duplicated product "${product.title}"`, copy.slug);
@@ -81,7 +92,7 @@ export async function productQuickAction(fd: FormData) {
     : op === "new-off" ? { isNew: false }
     : { isNew: null };
   await adminRepo.patchProduct(id, patch);
-  const label: Record<Exclude<Quick, "duplicate">, string> = {
+  const label: Record<Exclude<Quick, "duplicate" | "delete">, string> = {
     soldout: "Marked sold out",
     instock: `Back in stock (${restock})`,
     show: "Shown in store",

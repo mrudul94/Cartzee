@@ -14,7 +14,3 @@ export async function demoUploadAction(_fd: FormData): Promise<{ src?: string; e
 export async function demoVoidAction(_fd: FormData): Promise<void> {
   /* style-guide preview: no-op */
 }
-
-export async function demoEnrollAction(): Promise<{ factorId?: string; qr?: string; secret?: string; error?: string }> {
-  return { error: "Style-guide preview: enrolment is disabled here." };
-}

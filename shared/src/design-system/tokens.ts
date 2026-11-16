@@ -43,7 +43,7 @@ export const color = {
 
 export const font = {
   family: {
-    heading: "var(--font-heading), Georgia, 'Times New Roman', serif",
+    heading: "var(--font-heading), system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif",
     body: "var(--font-body), system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif",
   },
   /** [font-size, line-height] — body text never below `base` (16px). */
@@ -140,13 +140,15 @@ export const breakpoint = {
   xl: "1280px",
 } as const;
 
-export const duration = { fast: "150ms", base: "200ms", slow: "300ms" } as const;
+export const duration = { fast: "150ms", base: "200ms", slow: "300ms", slide: "500ms" } as const;
 export const easing = { standard: "cubic-bezier(0.2, 0, 0, 1)" } as const;
 
 export const aspect = {
   square: "1 / 1",
   product: "1 / 1",
   banner: "16 / 9",
+  /** Homepage hero artwork (1792 × 768). */
+  hero: "7 / 3",
   wide: "3 / 1",
   tile: "4 / 5",
 } as const;

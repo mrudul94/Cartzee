@@ -1,8 +1,4 @@
 import "server-only";
-import { seedCategories } from "@/lib/seed/categories";
-import { seedPosts } from "@/lib/seed/posts";
-import { seedProducts } from "@/lib/seed/products";
-import { seedReviews } from "@/lib/seed/reviews";
 import type { Category, Order, Post, Product, Review } from "@/lib/types";
 
 /** Product/category/post/review as stored in mock mode, including admin-only flags. */
@@ -30,10 +26,10 @@ type Store = {
 const g = globalThis as unknown as { __citySellerStore?: Store };
 const existing = g.__citySellerStore;
 export const store: Store = (g.__citySellerStore = {
-  products: existing?.products ?? seedProducts.map((p) => ({ ...p, images: [...p.images], isActive: true })),
-  categories: existing?.categories ?? seedCategories.map((c) => ({ ...c, faqs: [...c.faqs], isActive: true })),
-  posts: existing?.posts ?? seedPosts.map((p) => ({ ...p, isPublished: true })),
-  reviews: existing?.reviews ?? seedReviews.map((r) => ({ ...r, isApproved: true })),
+  products: existing?.products ?? [],
+  categories: existing?.categories ?? [],
+  posts: existing?.posts ?? [],
+  reviews: existing?.reviews ?? [],
   orders: existing?.orders ?? new Map(),
   content: existing?.content ?? new Map(),
   activity: existing?.activity ?? [],

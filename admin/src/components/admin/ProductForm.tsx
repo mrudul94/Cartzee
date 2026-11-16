@@ -108,13 +108,12 @@ export function ProductForm({ values: v, categories, action, upload, notice }: P
           <FormField id="p-categorySlug" label="Category" error={e.categorySlug} required>
             <Select {...field("categorySlug")} value={category} onChange={(ev) => setCategory(ev.target.value)} placeholder="Choose category" options={categories.map((c) => ({ value: c.slug, label: c.name }))} />
           </FormField>
-          <FormField id="p-subcategorySlug" label="Subcategory" error={e.subcategorySlug} required>
+          <FormField id="p-subcategorySlug" label="Subcategory (optional)" error={e.subcategorySlug} hint={subs.length ? undefined : "This category has no subcategories."}>
             <Select
               key={category}
               {...field("subcategorySlug")}
               defaultValue={subs.some((s) => s.slug === v.subcategorySlug) ? v.subcategorySlug : ""}
-              placeholder="Choose subcategory"
-              options={subs.map((s) => ({ value: s.slug, label: s.name }))}
+              options={[{ value: "", label: "None" }, ...subs.map((s) => ({ value: s.slug, label: s.name }))]}
             />
           </FormField>
         </div>

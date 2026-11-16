@@ -6,7 +6,7 @@
 component with a new variant if it is close, and only create a new component (then register it) if nothing similar exists.
 Live previews: `/design-system`.
 
-Total entries: **145**
+Total entries: **146**
 
 | Name | Category | Path | Description | Variants | Used in |
 |---|---|---|---|---|---|
@@ -31,7 +31,7 @@ Total entries: **145**
 | [Textarea](#textarea) | ui/form | `shared/src/components/ui/Input.tsx` | Multi-line text field with the same look as Input. | default, invalid | 5 |
 | [Icon](#icon) | ui/icon | `shared/src/components/ui/Icon.tsx` | Token-sized wrapper for lucide icons. | – | 0 |
 | [SocialIcon](#socialicon) | ui/icon | `shared/src/components/ui/Icon.tsx` | Inline brand marks (Instagram, Facebook, YouTube, WhatsApp). | instagram, facebook, youtube, whatsapp | 4 |
-| [Card](#card) | ui/layout | `shared/src/components/ui/Card.tsx` | Surface container with padding/elevation variants; polymorphic `as`. | flat, raised, outline, interactive | 20 |
+| [Card](#card) | ui/layout | `shared/src/components/ui/Card.tsx` | Surface container with padding/elevation variants; polymorphic `as`. | flat, raised, outline, interactive | 21 |
 | [Separator](#separator) | ui/layout | `shared/src/components/ui/Misc.tsx` | Horizontal or vertical rule. | horizontal, vertical | 0 |
 | [ChipNav](#chipnav) | ui/navigation | `shared/src/components/ui/ChipNav.tsx` | Scrolling link chips with optional counts: listing refine chips, budget tiers, admin status filters. | default, active, with count | 4 |
 | [Pagination](#pagination) | ui/navigation | `shared/src/components/ui/Misc.tsx` | Crawlable page links with prev/next and ellipsis. | – | 1 |
@@ -70,7 +70,7 @@ Total entries: **145**
 | [CustomerCare](#customercare) | section | `shared/src/components/sections/InfoSections.tsx` | Care block: phone, WhatsApp, email, hours + Track order. | – | 3 |
 | [FAQSection](#faqsection) | section | `shared/src/components/sections/InfoSections.tsx` | FAQ accordion with FAQPage JSON-LD. | – | 6 |
 | [GuideCards](#guidecards) | section | `shared/src/components/sections/GuideCards.tsx` | Buying-guide card grid. | – | 2 |
-| [HeroBanner](#herobanner) | section | `shared/src/components/sections/HeroBanner.tsx` | Offer hero with copy, CTAs, highlight chips and priority image (LCP). | – | 2 |
+| [HeroBanner](#herobanner) | section | `shared/src/components/sections/HeroBanner.tsx` | Homepage hero slide: the finished artwork only (text is in the image), full width at 7:3, never cropped; optional whole-slide link. | – | 1 |
 | [HeroCarousel](#herocarousel) | section | `shared/src/components/sections/HeroCarousel.tsx` | Rotating hero for 2–5 slides: auto-advance (paused on hover, focus or the pause button; off for reduced motion), arrows and dots; first slide is the LCP image. | – | 1 |
 | [HomeSections](#homesections) | section | `shared/src/components/sections/HomeSections.tsx` | Renders the homepage from Admin → Homepage content: sections in order, skipping hidden or out-of-schedule items, each mapped to an existing section component. | – | 1 |
 | [ListingTemplate](#listingtemplate) | section | `shared/src/components/sections/ListingTemplate.tsx` | Shared listing body: breadcrumbs, AnswerIntro, chips, CategoryListing (static fallback grid), FAQs, ItemList JSON-LD. | – | 7 |
@@ -98,6 +98,7 @@ Total entries: **145**
 | [CategoryForm](#categoryform) | admin | `admin/src/components/admin/CategoryForm.tsx` | Add/edit a category or subcategory: name, slug, parent, intro answer, blurb, image, order, visibility, SEO, FAQs; guarded delete. | – | 1 |
 | [ContentSaveForm](#contentsaveform) | admin | `admin/src/components/admin/EditorKit.tsx` | Wraps a CMS editor: serialises the edited value to JSON, saves via server action, sticky save bar with result message. | – | 3 |
 | [CopyField](#copyfield) | admin | `admin/src/components/admin/AdminBits.tsx` | Label + value + copy button for pasting customer details into Meesho. | – | 1 |
+| [DeleteProductCard](#deleteproductcard) | admin | `admin/src/components/admin/DeleteProductCard.tsx` | Remove-product panel on the product editor; confirms first and is disabled when the product is in any order (hide it instead). | – | 1 |
 | [FaqEditor](#faqeditor) | admin | `admin/src/components/admin/PageEditors.tsx` | Edit the store-wide FAQs. | – | 1 |
 | [HomeEditor](#homeeditor) | admin | `admin/src/components/admin/HomeEditor.tsx` | Admin → Homepage: section list (reorder, show/hide, schedule badge, delete, add) with an edit panel; saves the whole layout. | – | 1 |
 | [ImageField](#imagefield) | admin | `admin/src/components/admin/EditorKit.tsx` | Single image picker: preview, upload to Supabase Storage, or paste a site path / https link. | – | 3 |
@@ -105,7 +106,7 @@ Total entries: **145**
 | [ListEditor](#listeditor) | admin | `admin/src/components/admin/EditorKit.tsx` | Generic reorderable list editor (slides, banners, FAQs, paragraphs, blocks) with add / move / remove. | – | 5 |
 | [LoginForm](#loginform) | admin | `admin/src/components/admin/LoginForm.tsx` | Email + password sign-in for partners in public.admins. | – | 1 |
 | [MarginText](#margintext) | admin | `admin/src/components/admin/AdminBits.tsx` | Margin in ₹ and % (green ≥ 25%, amber below, red if negative). | – | 4 |
-| [MfaForm](#mfaform) | admin | `admin/src/components/admin/MfaForm.tsx` | Admin two-step verification: enrol an authenticator app (QR + secret) or enter the 6-digit code. | – | 1 |
+| [MfaForm](#mfaform) | admin | `admin/src/components/admin/MfaForm.tsx` | Admin two-step sign-in: enter the 6-digit code emailed to the admin, or send a new one. | – | 1 |
 | [OrderActions](#orderactions) | admin | `admin/src/components/admin/OrderActions.tsx` | Order fulfilment form: Meesho order ID/cost, tracking link, note, refund toggle, one button per allowed status, WhatsApp link. | – | 1 |
 | [OrderStatusBadge](#orderstatusbadge) | admin | `admin/src/components/admin/AdminBits.tsx` | Admin status pill using internal labels; needs-action states in warning tone. | pending_payment, paid, placed_on_meesho, shipped, delivered, cancelled_refunded, return_requested, returned_refunded | 3 |
 | [OrderTimeline](#ordertimeline) | admin | `admin/src/components/admin/AdminBits.tsx` | Newest-first order event history with time and note. | – | 1 |
@@ -129,7 +130,7 @@ Total entries: **145**
 | [calcDiscount](#calcdiscount) | util | `shared/src/lib/utils/format.ts` | Whole-number discount % from MRP and price. | – | 3 |
 | [calcMargin](#calcmargin) | util | `shared/src/lib/utils/format.ts` | Margin amount and % of price between selling price and supplier cost. | – | 2 |
 | [cleanBlocks](#cleanblocks) | util | `admin/src/components/admin/BlockEditor.tsx` | Removes empty bullet lines from blocks before saving. | – | 1 |
-| [cn](#cn) | util | `shared/src/lib/utils/cn.ts` | clsx + tailwind-merge configured for token class names. | – | 43 |
+| [cn](#cn) | util | `shared/src/lib/utils/cn.ts` | clsx + tailwind-merge configured for token class names. | – | 42 |
 | [daysSince](#dayssince) | util | `shared/src/lib/utils/format.ts` | Whole days since an ISO date (stale Meesho price checks). | – | 3 |
 | [estimateDelivery](#estimatedelivery) | util | `shared/src/lib/utils/delivery.ts` | PIN-zone delivery window (dates + region); SHIPPING constant in the same file. | – | 2 |
 | [formatDate](#formatdate) | util | `shared/src/lib/utils/format.ts` | ISO date → '12 Nov 2026' (en-IN). | – | 13 |
@@ -187,7 +188,7 @@ Primary action button used for Add to Cart, Buy Now, forms and links styled as b
 
 **Accessibility:** Focus ring (shadow-focus); aria-busy while loading; md/lg/icon sizes meet 44px touch target; primary colour reserved for buy actions.
 
-**Used in:** AddToCartButton, CartDrawer, CartView, CategoryForm, CategoryListing, CheckoutForm, CustomerAuthForm, HeroBanner, HomeEditor, ImageManager, LoginForm, MfaForm, MobileNav, NotFoundContent, OrderActions, PincodeChecker, PostForm, ProductForm, ProductQuickActions, SaleBanner, SetPasswordForm, TeamManager, TrackOrderForm, admin/BlockEditor, admin/EditorKit, admin/PageEditors, admin:/, admin:/categories, admin:/content/home, admin:/guides, admin:/orders/[id], admin:/products, admin:/reviews, sections/InfoSections, shop:/account, shop:/order/[id]
+**Used in:** AddToCartButton, CartDrawer, CartView, CategoryForm, CategoryListing, CheckoutForm, CustomerAuthForm, DeleteProductCard, HomeEditor, ImageManager, LoginForm, MfaForm, MobileNav, NotFoundContent, OrderActions, PincodeChecker, PostForm, ProductForm, ProductQuickActions, SaleBanner, SetPasswordForm, TeamManager, TrackOrderForm, admin/BlockEditor, admin/EditorKit, admin/PageEditors, admin:/, admin:/categories, admin:/content/home, admin:/guides, admin:/orders/[id], admin:/products, admin:/reviews, sections/InfoSections, shop:/account, shop:/order/[id]
 
 ```tsx
 <Button variant="primary" size="lg" icon={<ShoppingBag/>}>Add to Cart</Button>
@@ -682,7 +683,7 @@ Surface container with padding/elevation variants; polymorphic `as`.
 
 **Accessibility:** Use as="fieldset"/"section" when grouping semantics are needed.
 
-**Used in:** CartView, CategoryForm, CheckoutForm, CustomerAuthForm, HomeEditor, PostForm, ProductForm, SetPasswordForm, SettingsForm, TeamManager, TrackOrderForm, admin/AdminBits, admin/PageEditors, admin:/content/pages, admin:/login, admin:/mfa, admin:/orders/[id], admin:/reviews, shop:/account, shop:/order/[id]
+**Used in:** CartView, CategoryForm, CheckoutForm, CustomerAuthForm, DeleteProductCard, HomeEditor, PostForm, ProductForm, SetPasswordForm, SettingsForm, TeamManager, TrackOrderForm, admin/AdminBits, admin/PageEditors, admin:/content/pages, admin:/login, admin:/mfa, admin:/orders/[id], admin:/reviews, shop:/account, shop:/order/[id]
 
 ```tsx
 <Card padding="md" elevation="raised">…</Card>
@@ -1540,36 +1541,30 @@ Buying-guide card grid.
 
 ## HeroBanner
 
-`shared/src/components/sections/HeroBanner.tsx` · section · updated 2026-11-14
+`shared/src/components/sections/HeroBanner.tsx` · section · updated 2026-11-15
 
-Offer hero with copy, CTAs, highlight chips and priority image (LCP).
+Homepage hero slide: the finished artwork only (text is in the image), full width at 7:3, never cropped; optional whole-slide link.
 
 **Props**
 
-- `eyebrow`: string
-- `title`: string
-- `text`: string
 - `image`: {src,alt}
-- `primaryCta`: {label,href}
-- `secondaryCta`: {label,href}
-- `highlights`: string[]
-- `background`: Section background token
-- `as`: h1|h2
-- `priority`: boolean (LCP; only the first hero)
+- `as`: h1|h2 (screen-reader heading)
+- `priority`: boolean (first slide only)
+- `href`: string (whole slide link)
 
-**Tokens:** `aspect.banner` `color.primary` `color.surface` `color.text` `font.family.heading` `font.size.4xl` `font.size.5xl` `font.size.lg` `font.size.sm` `font.tracking.tight` `font.tracking.wider` `font.weight.medium` `font.weight.semibold` `maxWidth.prose` `radius.full` `radius.xl` `shadow.focus` `space.0` `space.1` `space.12` `space.2` `space.3` `space.4` `space.6` `space.8` `zIndex.base` `zIndex.raised`
+**Tokens:** `aspect.hero` `color.secondary` `radius.xl` `shadow.focus`
 
 **Accessibility:** Use as=h1 only once per page.
 
-**Used in:** HeroCarousel, HomeSections
+**Used in:** HeroCarousel
 
 ```tsx
-<HeroBanner title="…" text="…" image={…} primaryCta={…} />
+<HeroBanner image={{ src, alt }} href="/kitchen" />
 ```
 
 ## HeroCarousel
 
-`shared/src/components/sections/HeroCarousel.tsx` · section · updated 2026-11-14
+`shared/src/components/sections/HeroCarousel.tsx` · section · updated 2026-11-15
 
 Rotating hero for 2–5 slides: auto-advance (paused on hover, focus or the pause button; off for reduced motion), arrows and dots; first slide is the LCP image.
 
@@ -1578,7 +1573,7 @@ Rotating hero for 2–5 slides: auto-advance (paused on hover, focus or the paus
 - `slides`: HeroSlide[]
 - `intervalMs`: number
 
-**Tokens:** `color.ink` `color.surface` `color.text` `duration.base` `radius.full` `shadow.focus` `shadow.md` `space.1` `space.11` `space.2` `space.3` `space.4` `space.5` `space.6`
+**Tokens:** `color.ink` `color.primary` `color.surface` `color.text` `duration.slide` `radius.full` `shadow.focus` `shadow.md` `space.1` `space.11` `space.2` `space.4` `space.5` `space.6` `space.8` `zIndex.raised`
 
 **Accessibility:** Region with aria-roledescription=carousel; slides labelled n of total; pause control; reduced-motion aware.
 
@@ -1590,7 +1585,7 @@ Rotating hero for 2–5 slides: auto-advance (paused on hover, focus or the paus
 
 ## HomeSections
 
-`shared/src/components/sections/HomeSections.tsx` · section · updated 2026-11-14
+`shared/src/components/sections/HomeSections.tsx` · section · updated 2026-11-15
 
 Renders the homepage from Admin → Homepage content: sections in order, skipping hidden or out-of-schedule items, each mapped to an existing section component.
 
@@ -1803,7 +1798,7 @@ Centred page-width wrapper with standard gutters.
 
 **Accessibility:** Neutral.
 
-**Used in:** ContentPage, Footer, Header, HeroBanner, ListingTemplate, PageSkeleton, Section, TopBar, layout/MegaMenu, shop:/[category]/[sub]/[product], shop:/account, shop:/account/password, shop:/cart, shop:/checkout, shop:/contact, shop:/faq, shop:/guides, shop:/guides/[slug], shop:/login, shop:/order/[id], shop:/track-order
+**Used in:** ContentPage, Footer, Header, HeroCarousel, ListingTemplate, PageSkeleton, Section, TopBar, layout/MegaMenu, shop:/[category]/[sub]/[product], shop:/account, shop:/account/password, shop:/cart, shop:/checkout, shop:/contact, shop:/faq, shop:/guides, shop:/guides/[slug], shop:/login, shop:/order/[id], shop:/track-order
 
 ```tsx
 <Container>…</Container>
@@ -1853,7 +1848,7 @@ Sticky header: logo, search, account, cart, desktop nav row.
 
 ## Logo
 
-`shared/src/components/layout/Logo.tsx` · layout · updated 2026-11-12
+`shared/src/components/layout/Logo.tsx` · layout · updated 2026-11-15
 
 City Seller wordmark link to home.
 
@@ -1863,7 +1858,7 @@ City Seller wordmark link to home.
 
 **Variants:** default, inverse
 
-**Tokens:** `color.primary` `color.surface` `color.text` `color.textInverse` `font.family.heading` `font.size.xl` `font.tracking.tight` `font.weight.bold` `space.11` `space.2` `space.8`
+**Tokens:** `space.11` `space.2` `space.6` `space.9`
 
 **Accessibility:** Link aria-label 'City Seller home'.
 
@@ -2116,7 +2111,7 @@ Add/edit a category or subcategory: name, slug, parent, intro answer, blurb, ima
 
 ## ContentSaveForm
 
-`admin/src/components/admin/EditorKit.tsx` · admin · updated 2026-11-12
+`admin/src/components/admin/EditorKit.tsx` · admin · updated 2026-11-15
 
 Wraps a CMS editor: serialises the edited value to JSON, saves via server action, sticky save bar with result message.
 
@@ -2156,6 +2151,29 @@ Label + value + copy button for pasting customer details into Meesho.
 
 ```tsx
 <CopyField label="Phone" value={a.phone} />
+```
+
+## DeleteProductCard
+
+`admin/src/components/admin/DeleteProductCard.tsx` · admin · updated 2026-11-15
+
+Remove-product panel on the product editor; confirms first and is disabled when the product is in any order (hide it instead).
+
+**Props**
+
+- `id`: string
+- `title`: string
+- `orderCount`: number
+- `action`: server action
+
+**Tokens:** `color.error` `color.textMuted` `font.family.heading` `font.size.lg` `font.size.sm` `font.weight.semibold` `space.3` `space.4`
+
+**Accessibility:** Confirmation dialog before deleting; result announced via role=alert.
+
+**Used in:** admin:/products/[id]
+
+```tsx
+<DeleteProductCard id={p.id} title={p.title} orderCount={n} action={deleteProductAction} />
 ```
 
 ## FaqEditor
@@ -2204,7 +2222,7 @@ Admin → Homepage: section list (reorder, show/hide, schedule badge, delete, ad
 
 ## ImageField
 
-`admin/src/components/admin/EditorKit.tsx` · admin · updated 2026-11-12
+`admin/src/components/admin/EditorKit.tsx` · admin · updated 2026-11-15
 
 Single image picker: preview, upload to Supabase Storage, or paste a site path / https link.
 
@@ -2256,7 +2274,7 @@ Product photo list: upload to Supabase Storage or add by path, alt text, reorder
 
 ## ListEditor
 
-`admin/src/components/admin/EditorKit.tsx` · admin · updated 2026-11-12
+`admin/src/components/admin/EditorKit.tsx` · admin · updated 2026-11-15
 
 Generic reorderable list editor (slides, banners, FAQs, paragraphs, blocks) with add / move / remove.
 
@@ -2325,24 +2343,25 @@ Margin in ₹ and % (green ≥ 25%, amber below, red if negative).
 
 ## MfaForm
 
-`admin/src/components/admin/MfaForm.tsx` · admin · updated 2026-11-14
+`admin/src/components/admin/MfaForm.tsx` · admin · updated 2026-11-15
 
-Admin two-step verification: enrol an authenticator app (QR + secret) or enter the 6-digit code.
+Admin two-step sign-in: enter the 6-digit code emailed to the admin, or send a new one.
 
 **Props**
 
-- `enrolled`: boolean
-- `enroll`: server action
+- `email`: string
 - `verify`: server action
+- `resend`: server action
+- `sendFailed`: boolean
 
-**Tokens:** `color.error` `color.errorSoft` `color.surface` `color.textMuted` `font.size.sm` `font.size.xs` `radius.md` `space.2` `space.3` `space.4` `space.48`
+**Tokens:** `color.error` `color.errorSoft` `color.success` `color.text` `color.textMuted` `font.size.sm` `font.weight.semibold` `radius.md` `space.2` `space.3` `space.4`
 
 **Accessibility:** Code input uses inputMode=numeric and autocomplete=one-time-code.
 
 **Used in:** admin:/mfa
 
 ```tsx
-<MfaForm enrolled enroll={a} verify={b} />
+<MfaForm email={email} verify={verifyCode} resend={resendCode} />
 ```
 
 ## OrderActions
@@ -2504,7 +2523,7 @@ Search and pick products by title, keeping order (hand-picked rows, product bloc
 
 ## ProductQuickActions
 
-`admin/src/components/admin/ProductQuickActions.tsx` · admin · updated 2026-11-12
+`admin/src/components/admin/ProductQuickActions.tsx` · admin · updated 2026-11-15
 
 One-click product changes in the product list: sold out / in stock, hide / show, New badge (auto/on/off), duplicate.
 
@@ -2518,7 +2537,7 @@ One-click product changes in the product list: sold out / in stock, hide / show,
 - `showsNew`: boolean
 - `action`: server action
 
-**Tokens:** `space.1` `space.4`
+**Tokens:** `color.error` `space.1` `space.4`
 
 **Accessibility:** Each button label includes the product title.
 
@@ -2530,7 +2549,7 @@ One-click product changes in the product list: sold out / in stock, hide / show,
 
 ## ScheduleFields
 
-`admin/src/components/admin/EditorKit.tsx` · admin · updated 2026-11-12
+`admin/src/components/admin/EditorKit.tsx` · admin · updated 2026-11-15
 
 Optional show-from / hide-after date-times in IST for offers, slides and sections.
 
@@ -2552,7 +2571,7 @@ Optional show-from / hide-after date-times in IST for offers, slides and section
 
 ## SectionEditor
 
-`admin/src/components/admin/SectionEditor.tsx` · admin · updated 2026-11-14
+`admin/src/components/admin/SectionEditor.tsx` · admin · updated 2026-11-15
 
 Edit form for one homepage section; fields depend on the type (hero slides, product row, banners, tiles, value props, story, guides, FAQ).
 
@@ -2616,7 +2635,7 @@ Dashboard KPI card.
 
 ## TeamManager
 
-`admin/src/components/admin/TeamManager.tsx` · admin · updated 2026-11-14
+`admin/src/components/admin/TeamManager.tsx` · admin · updated 2026-11-15
 
 Super Admin team page: add admins, set role and permissions, remove access.
 
@@ -2628,7 +2647,7 @@ Super Admin team page: add admins, set role and permissions, remove access.
 - `update`: server action
 - `remove`: server action
 
-**Tokens:** `color.error` `color.success` `color.textMuted` `color.warning` `font.family.heading` `font.size.sm` `font.size.xl` `font.weight.medium` `font.weight.semibold` `space.1` `space.2` `space.3` `space.4` `space.6`
+**Tokens:** `color.error` `color.success` `color.textMuted` `font.family.heading` `font.size.sm` `font.size.xl` `font.weight.medium` `font.weight.semibold` `space.1` `space.2` `space.3` `space.4` `space.6`
 
 **Accessibility:** Permission checkboxes are labelled; destructive remove asks for confirmation.
 
@@ -2640,7 +2659,7 @@ Super Admin team page: add admins, set role and permissions, remove access.
 
 ## TextField
 
-`admin/src/components/admin/EditorKit.tsx` · admin · updated 2026-11-12
+`admin/src/components/admin/EditorKit.tsx` · admin · updated 2026-11-15
 
 Compact controlled text input / textarea with label, hint and character counter for CMS forms.
 
@@ -2826,7 +2845,7 @@ clsx + tailwind-merge configured for token class names.
 
 - `inputs`: ClassValue[]
 
-**Used in:** AdminShell, Badge, Breadcrumbs, Button, Card, CartLineItem, CategoryListing, CategoryTiles, ChipNav, CopyButton, CustomerAuthForm, DataTable, FormField, Heading, HeroBanner, HeroCarousel, HomeEditor, Logo, NavDropdown, PasswordInput, PrepaidNotice, PriceBlock, ProductCard, ProductGallery, ProductGrid, RatingStars, SaleBanner, SearchBox, SectionHeader, TrackOrderForm, admin/AdminBits, admin/EditorKit, commerce/OrderSummary, commerce/ProductBuyBox, layout/Container, sections/InfoSections, ui/Checkbox, ui/Disclosure, ui/Icon, ui/Input, ui/Misc, ui/Modal, ui/Toast
+**Used in:** AdminShell, Badge, Breadcrumbs, Button, Card, CartLineItem, CategoryListing, CategoryTiles, ChipNav, CopyButton, CustomerAuthForm, DataTable, FormField, Heading, HeroCarousel, HomeEditor, Logo, NavDropdown, PasswordInput, PrepaidNotice, PriceBlock, ProductCard, ProductGallery, ProductGrid, RatingStars, SaleBanner, SearchBox, SectionHeader, TrackOrderForm, admin/AdminBits, admin/EditorKit, commerce/OrderSummary, commerce/ProductBuyBox, layout/Container, sections/InfoSections, ui/Checkbox, ui/Disclosure, ui/Icon, ui/Input, ui/Misc, ui/Modal, ui/Toast
 
 ```tsx
 cn("p-4", active && "bg-ink")
@@ -2931,7 +2950,7 @@ inBudget(449, tier)
 
 ## isProductNew
 
-`shared/src/lib/utils/product.ts` · util · updated 2026-11-12
+`shared/src/lib/utils/product.ts` · util · updated 2026-11-15
 
 New badge rule: manual override wins; otherwise automatic for 30 days after the product is added.
 
@@ -3016,7 +3035,7 @@ telHref("+91 90000 00000") // tel:+919000000000
 
 ## toCardProduct
 
-`shared/src/lib/utils/product.ts` · util · updated 2026-11-12
+`shared/src/lib/utils/product.ts` · util · updated 2026-11-15
 
 Product → serializable CardProduct for client components.
 
@@ -3095,7 +3114,7 @@ whatsappHref("919876543210", "Hi")
 
 ## buildArticleJsonLd
 
-`shared/src/lib/seo/jsonld.ts` · seo · updated 2026-11-12
+`shared/src/lib/seo/jsonld.ts` · seo · updated 2026-11-15
 
 Article JSON-LD for guides.
 
@@ -3111,7 +3130,7 @@ buildArticleJsonLd(post)
 
 ## buildBreadcrumbJsonLd
 
-`shared/src/lib/seo/jsonld.ts` · seo · updated 2026-11-12
+`shared/src/lib/seo/jsonld.ts` · seo · updated 2026-11-15
 
 BreadcrumbList JSON-LD.
 
@@ -3127,7 +3146,7 @@ buildBreadcrumbJsonLd(crumbs)
 
 ## buildFaqJsonLd
 
-`shared/src/lib/seo/jsonld.ts` · seo · updated 2026-11-12
+`shared/src/lib/seo/jsonld.ts` · seo · updated 2026-11-15
 
 FAQPage JSON-LD.
 
@@ -3143,7 +3162,7 @@ buildFaqJsonLd(faqs)
 
 ## buildItemListJsonLd
 
-`shared/src/lib/seo/jsonld.ts` · seo · updated 2026-11-12
+`shared/src/lib/seo/jsonld.ts` · seo · updated 2026-11-15
 
 ItemList JSON-LD for listing pages.
 
@@ -3183,7 +3202,7 @@ export const metadata = buildMetadata({ title, description, path: "/" })
 
 ## buildOrganizationJsonLd
 
-`shared/src/lib/seo/jsonld.ts` · seo · updated 2026-11-12
+`shared/src/lib/seo/jsonld.ts` · seo · updated 2026-11-15
 
 OnlineStore/Organization JSON-LD.
 
@@ -3195,7 +3214,7 @@ buildOrganizationJsonLd()
 
 ## buildProductJsonLd
 
-`shared/src/lib/seo/jsonld.ts` · seo · updated 2026-11-12
+`shared/src/lib/seo/jsonld.ts` · seo · updated 2026-11-15
 
 Product + Offer (shipping, returns) + AggregateRating JSON-LD.
 
@@ -3212,7 +3231,7 @@ buildProductJsonLd(p, 'Kitchen > Jars')
 
 ## buildWebSiteJsonLd
 
-`shared/src/lib/seo/jsonld.ts` · seo · updated 2026-11-12
+`shared/src/lib/seo/jsonld.ts` · seo · updated 2026-11-15
 
 WebSite JSON-LD with SearchAction.
 

@@ -1,11 +1,11 @@
 import type { Metadata, Viewport } from "next";
-import { Fraunces, Inter } from "next/font/google";
+import { Gabarito, Onest } from "next/font/google";
 import { Toaster } from "@/components/ui/Toast";
 import { color } from "@/design-system/tokens";
 import "@/styles/globals.css";
 
-const heading = Fraunces({ subsets: ["latin"], variable: "--font-heading", display: "swap", weight: ["600", "700"] });
-const body = Inter({ subsets: ["latin"], variable: "--font-body", display: "swap" });
+const heading = Gabarito({ subsets: ["latin", "latin-ext"], variable: "--font-heading", display: "swap", weight: ["600", "700"] });
+const body = Onest({ subsets: ["latin", "latin-ext"], variable: "--font-body", display: "swap" });
 
 /** Admin website root layout. Never indexed. */
 export const metadata: Metadata = {

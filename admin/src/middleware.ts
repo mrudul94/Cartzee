@@ -1,5 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { createServerClient } from "@supabase/ssr";
+import { ADMIN_AUTH_COOKIE } from "./lib/auth/cookie-name";
 import { isAccessConfigured, verifyAccessToken } from "@/lib/auth/cf-access";
 
 /**
@@ -7,7 +8,7 @@ import { isAccessConfigured, verifyAccessToken } from "@/lib/auth/cf-access";
  *  • Cloudflare Access: when configured, every request must carry a valid Access token, so requests
  *    that bypass Cloudflare are refused.
  *  • Refreshes the Supabase session cookie (Server Components can't set cookies).
- * Authorisation itself (admin, MFA, permissions) is enforced server-side in lib/auth/admin.ts.
+ * Authorisation itself (admin, email code, permissions) is enforced server-side in lib/auth/admin.ts.
  * Security headers (noindex, no-store, no framing) are set for every route in next.config.ts.
  */
 export async function middleware(req: NextRequest) {
@@ -24,6 +25,7 @@ export async function middleware(req: NextRequest) {
   let res = NextResponse.next({ request: req });
   if (!url || !anon) return res;
   const supabase = createServerClient(url, anon, {
+    cookieOptions: ADMIN_AUTH_COOKIE,
     cookies: {
       getAll: () => req.cookies.getAll(),
       setAll: (list) => {
@@ -37,4 +39,4 @@ export async function middleware(req: NextRequest) {
   return res;
 }
 
-export const config = { matcher: ["/((?!_next/static|_next/image|placeholders/|icon.svg|favicon.ico).*)"] };
+export const config = { matcher: ["/((?!_next/static|_next/image|logo/|icon.png|apple-icon.png|favicon.ico).*)"] };

@@ -19,7 +19,7 @@ shared/   design system, components and data code used by both (compiled by each
 |---|---|---|
 | Address | `cityseller.in` (`www` redirects here) | `admin.cityseller.in` |
 | For | Customers | You and your team |
-| Access | Browse freely; sign in (email + password) to place an order | Optional Cloudflare Access → password → authenticator code (MFA) → role permissions |
+| Access | Browse freely; sign in (email + password) to place an order | Optional Cloudflare Access → password → 6-digit code by email → role permissions |
 | Search engines | Indexed (sitemap, robots, llms.txt, feed) | Blocked (`Disallow: /`, `noindex`) |
 
 Both use the same Supabase database and deploy independently. Admin-only code is never bundled into the shop.
@@ -37,7 +37,7 @@ Each integration switches on when its variables are set and is mocked otherwise:
 
 | Integration | Variables | Without them |
 |---|---|---|
-| Supabase (catalogue, orders) | `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY` | Seed data; orders kept in memory |
+| Supabase (catalogue, orders) | `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY` | Empty shop (no demo data); orders kept in memory |
 | Razorpay | `RAZORPAY_KEY_ID`, `RAZORPAY_KEY_SECRET`, `RAZORPAY_WEBHOOK_SECRET` | Simulated payment (development only) |
 | Resend email | `RESEND_API_KEY`, `EMAIL_FROM` | Emails printed to the server console |
 | Telegram admin alert | `TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID` | Alert printed to the server console |
@@ -54,14 +54,13 @@ unless `ALLOW_MOCK_PAYMENTS=true` is set for a staging demo.
 ## Set up Supabase
 
 1. Create a project at supabase.com (region: Mumbai `ap-south-1`).
-2. In the SQL editor, run the files in `supabase/migrations/` in order (`0001` … `0005`), then
-   `supabase/seed.sql`. If you use the Supabase CLI instead, run `supabase link` then `supabase db push`.
+2. In the SQL editor, run the files in `supabase/migrations/` in order (`0001` … `0006`). If you use the Supabase CLI instead, run `supabase link` then `supabase db push`.
+   The database starts empty: add your categories and products in the admin.
 3. Copy the project URL, the anon key and the service-role key into `.env.local`.
 4. **Customer accounts.** In Authentication → Providers keep *Email* on with "Confirm email" enabled.
    In Authentication → URL Configuration set *Site URL* to `https://cityseller.in` and add `https://cityseller.in/auth/callback`
    and `http://localhost:3000/auth/callback` to *Redirect URLs* (used by sign-up confirmation and password reset).
 
-To regenerate `seed.sql` after editing `shared/src/lib/seed/*`, run `pnpm db:seed-sql`.
 
 The security model is in `0003_security.sql`:
 
@@ -137,13 +136,15 @@ Content is stored in the `site_content` table (`supabase/migrations/0004_cms.sql
 
 **Admin sign-in and team**
 
-- There is no public sign-up. Sign-in needs the password **and** a 6-digit code from an authenticator app (Google Authenticator, Authy, 1Password…).
-  The first sign-in shows a QR code to set it up.
+- There is no public sign-up. Sign-in needs the password **and** a 6-digit code emailed to the admin (expires in 10 minutes,
+  5 tries, one new code per minute). A verified sign-in lasts 12 hours, then a new code is needed. The code works only in the browser that signed in.
+- Codes are sent with Resend, so set `RESEND_API_KEY` and `EMAIL_FROM` on the admin site (the sending domain must be verified in Resend).
+  In local development the code is also printed in the terminal running `pnpm dev`. Run `supabase/migrations/0006_admin_email_otp.sql`.
 - 5 wrong passwords for an account (or 20 from one network) lock sign-in for 15 minutes. Attempts are logged.
 - Sessions are HttpOnly, Secure cookies; signing out ends the session on every device.
 - **Roles:** *Super Admin* can do everything, including managing the team. *Admin* can only use the areas ticked for them
   (Orders, Products, Content, Reviews, Settings). Every page and action checks this on the server.
-- Sign-ins, failed or locked attempts, MFA setup, team changes and all edits are recorded in **Recent changes** (Super Admins).
+- Sign-ins, failed or locked attempts, sign-in codes, team changes and all edits are recorded in **Recent changes** (Super Admins).
 
 **First Super Admin** (once): in Supabase, Authentication → Users → Add user (tick "Auto confirm"), then in the SQL editor:
 `insert into public.admins (user_id, role) select id, 'super_admin' from auth.users where email = 'you@example.com';`
@@ -163,8 +164,7 @@ A production build without Supabase locks the panel completely. The style guide 
 | `pnpm check:tokens` | Fails on raw hex/rgb/px or arbitrary Tailwind values in `shared/src/components` and `admin/src/components` |
 | `pnpm registry:sync` | Recomputes `usedIn` / `tokensUsed` and regenerates `COMPONENTS.md` |
 | `pnpm check:registry` | Fails if an export is unregistered or lacks a `/design-system` demo |
-| `pnpm db:seed-sql` | Regenerates `supabase/seed.sql` from the TypeScript seed data |
-| `pnpm placeholders` | Regenerates the SVG placeholder images |
+| `pnpm logo` | Rebuilds the logo files and favicons from `shop/public/logo/CitySellerLogo.png` |
 | `pnpm build` | Token and registry checks, then production builds of both apps |
 | `pnpm deploy:shop` / `pnpm deploy:admin` | Lint + tests, then builds and deploys that one website to Cloudflare |
 
@@ -227,8 +227,8 @@ The project uses pnpm's hoisted `node_modules` layout (`pnpm-workspace.yaml`), b
 
 ## Before launch
 
-- Replace the seed products, **sample ratings and reviews**, the placeholder phone, WhatsApp number (+91 90000 00000, in Admin → Settings) and email, and the SVG placeholders with real data and photos.
+- Add your categories and products with real photos (the site ships with no demo data), and replace the placeholder phone, WhatsApp number (+91 90000 00000, in Admin → Settings) and email.
 - The 5% UPI discount is advertised in the top bar. Configure it as a Razorpay offer, or remove the text.
 - Switch from Razorpay test keys to live keys, and update the webhook secret to match.
-- Replace the SVG placeholder photos. Google Merchant Center and social apps do not accept SVG images.
+- Use JPG, PNG or WebP product photos: Google Merchant Center and social apps do not accept SVG images.
 - After the first deploy, submit `https://cityseller.in/sitemap.xml` in Search Console, then run the Rich Results Test and a Lighthouse mobile check on the home, a category and a product page.

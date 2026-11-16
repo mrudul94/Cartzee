@@ -19,12 +19,12 @@ beforeAll(async () => {
   db = await createTestDb();
 }, 60_000);
 
-describe("schema + seed", () => {
-  it("loads the seed catalogue", async () => {
-    expect((await one<{ n: number }>("select count(*)::int n from categories")).n).toBe(20);
-    expect((await one<{ n: number }>("select count(*)::int n from products")).n).toBe(20);
-    expect((await one<{ n: number }>("select count(*)::int n from product_images")).n).toBe(100);
-    expect((await one<{ n: number }>("select count(*)::int n from blog_posts where is_published")).n).toBe(3);
+describe("schema + test catalogue", () => {
+  it("loads the test catalogue", async () => {
+    expect((await one<{ n: number }>("select count(*)::int n from categories")).n).toBe(11);
+    expect((await one<{ n: number }>("select count(*)::int n from products")).n).toBe(7);
+    expect((await one<{ n: number }>("select count(*)::int n from product_images")).n).toBe(7);
+    expect((await one<{ n: number }>("select count(*)::int n from blog_posts where is_published")).n).toBe(1);
   });
 });
 
@@ -81,6 +81,17 @@ describe("create_order", () => {
     await expect(createOrder([{ product_id: await pid("prd_008"), quantity: 1 }])).rejects.toThrow(/out of stock/);
     await expect(createOrder([{ product_id: "00000000-0000-0000-0000-000000000000", quantity: 1 }])).rejects.toThrow(/no longer available/);
     await expect(createOrder([])).rejects.toThrow(/empty/);
+  });
+});
+
+describe("products without a subcategory (migration 0007)", () => {
+  it("are searchable and orderable, with a /<category>/<product> path", async () => {
+    await db.query("update products set subcategory_id = null where legacy_id = 'prd_002'");
+    const found = (await db.query<{ slug: string }>("select p.slug from search_products('spin mop') s join products p on p.id = s.id")).rows.map((r) => r.slug);
+    expect(found).toContain("spin-mop-bucket-set");
+    const id = await createOrder([{ product_id: await pid("prd_002"), quantity: 1 }]);
+    const item = await one<{ path: string }>("select path from order_items where order_id = $1", [id]);
+    expect(item.path).toBe("/cleaning/spin-mop-bucket-set");
   });
 });
 
@@ -180,10 +191,21 @@ describe("customer accounts and admin roles (migration 0005)", () => {
   });
 });
 
+describe("admin sign-in codes (migration 0006)", () => {
+  it("keeps codes out of reach of browser keys", async () => {
+    for (const role of ["anon", "authenticated"] as const) {
+      await asRole(db, role, async () => {
+        await expect(db.query("select * from admin_login_codes")).rejects.toThrow(/permission denied/);
+        await expect(db.query("delete from admin_login_codes")).rejects.toThrow(/permission denied/);
+      });
+    }
+  });
+});
+
 describe("row-level security", () => {
   it("lets anon read the public catalogue but not supplier columns", async () => {
     await asRole(db, "anon", async () => {
-      expect((await db.query("select id, title, price from products")).rows).toHaveLength(20);
+      expect((await db.query("select id, title, price from products")).rows).toHaveLength(7);
       expect((await db.query("select id from reviews")).rows.length).toBeGreaterThan(0);
       expect((await db.query("select id from search_products('jar')")).rows.length).toBeGreaterThan(0);
       await expect(db.query("select meesho_price from products")).rejects.toThrow(/permission denied/);

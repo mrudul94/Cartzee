@@ -76,7 +76,7 @@
         "CategoryListing",
         "CheckoutForm",
         "CustomerAuthForm",
-        "HeroBanner",
+        "DeleteProductCard",
         "HomeEditor",
         "ImageManager",
         "LoginForm",
@@ -514,6 +514,7 @@
         "CategoryForm",
         "CheckoutForm",
         "CustomerAuthForm",
+        "DeleteProductCard",
         "HomeEditor",
         "PostForm",
         "ProductForm",
@@ -1903,56 +1904,26 @@
       "name": "HeroBanner",
       "path": "shared/src/components/sections/HeroBanner.tsx",
       "category": "section",
-      "description": "Offer hero with copy, CTAs, highlight chips and priority image (LCP).",
+      "description": "Homepage hero slide: the finished artwork only (text is in the image), full width at 7:3, never cropped; optional whole-slide link.",
       "variants": [],
       "props": {
-        "eyebrow": "string",
-        "title": "string",
-        "text": "string",
         "image": "{src,alt}",
-        "primaryCta": "{label,href}",
-        "secondaryCta": "{label,href}",
-        "highlights": "string[]",
-        "background": "Section background token",
-        "as": "h1|h2",
-        "priority": "boolean (LCP; only the first hero)"
+        "as": "h1|h2 (screen-reader heading)",
+        "priority": "boolean (first slide only)",
+        "href": "string (whole slide link)"
       },
       "tokensUsed": [
-        "aspect.banner",
-        "color.primary",
-        "color.surface",
-        "color.text",
-        "font.family.heading",
-        "font.size.4xl",
-        "font.size.5xl",
-        "font.size.lg",
-        "font.size.sm",
-        "font.tracking.tight",
-        "font.tracking.wider",
-        "font.weight.medium",
-        "font.weight.semibold",
-        "maxWidth.prose",
-        "radius.full",
+        "aspect.hero",
+        "color.secondary",
         "radius.xl",
-        "shadow.focus",
-        "space.0",
-        "space.1",
-        "space.12",
-        "space.2",
-        "space.3",
-        "space.4",
-        "space.6",
-        "space.8",
-        "zIndex.base",
-        "zIndex.raised"
+        "shadow.focus"
       ],
       "usedIn": [
-        "HeroCarousel",
-        "HomeSections"
+        "HeroCarousel"
       ],
       "accessibility": "Use as=h1 only once per page.",
-      "example": "<HeroBanner title=\"…\" text=\"…\" image={…} primaryCta={…} />",
-      "lastUpdated": "2026-11-14"
+      "example": "<HeroBanner image={{ src, alt }} href=\"/kitchen\" />",
+      "lastUpdated": "2026-11-15"
     },
     {
       "name": "ProductGrid",
@@ -2487,7 +2458,7 @@
         "ContentPage",
         "Footer",
         "Header",
-        "HeroBanner",
+        "HeroCarousel",
         "ListingTemplate",
         "PageSkeleton",
         "Section",
@@ -2620,17 +2591,10 @@
         "inverse": "boolean"
       },
       "tokensUsed": [
-        "color.primary",
-        "color.surface",
-        "color.text",
-        "color.textInverse",
-        "font.family.heading",
-        "font.size.xl",
-        "font.tracking.tight",
-        "font.weight.bold",
         "space.11",
         "space.2",
-        "space.8"
+        "space.6",
+        "space.9"
       ],
       "usedIn": [
         "AdminShell",
@@ -2641,7 +2605,7 @@
       ],
       "accessibility": "Link aria-label 'City Seller home'.",
       "example": "<Logo />",
-      "lastUpdated": "2026-11-12"
+      "lastUpdated": "2026-11-15"
     },
     {
       "name": "TopBar",
@@ -3032,7 +2996,6 @@
         "DataTable",
         "FormField",
         "Heading",
-        "HeroBanner",
         "HeroCarousel",
         "HomeEditor",
         "Logo",
@@ -3368,7 +3331,7 @@
       ],
       "accessibility": "",
       "example": "products.map(toCardProduct)",
-      "lastUpdated": "2026-11-12"
+      "lastUpdated": "2026-11-15"
     },
     {
       "name": "validators",
@@ -3441,7 +3404,7 @@
       ],
       "accessibility": "",
       "example": "buildOrganizationJsonLd()",
-      "lastUpdated": "2026-11-12"
+      "lastUpdated": "2026-11-15"
     },
     {
       "name": "buildWebSiteJsonLd",
@@ -3456,7 +3419,7 @@
       ],
       "accessibility": "",
       "example": "buildWebSiteJsonLd()",
-      "lastUpdated": "2026-11-12"
+      "lastUpdated": "2026-11-15"
     },
     {
       "name": "buildBreadcrumbJsonLd",
@@ -3473,7 +3436,7 @@
       ],
       "accessibility": "",
       "example": "buildBreadcrumbJsonLd(crumbs)",
-      "lastUpdated": "2026-11-12"
+      "lastUpdated": "2026-11-15"
     },
     {
       "name": "buildFaqJsonLd",
@@ -3490,7 +3453,7 @@
       ],
       "accessibility": "",
       "example": "buildFaqJsonLd(faqs)",
-      "lastUpdated": "2026-11-12"
+      "lastUpdated": "2026-11-15"
     },
     {
       "name": "buildProductJsonLd",
@@ -3508,7 +3471,7 @@
       ],
       "accessibility": "",
       "example": "buildProductJsonLd(p, 'Kitchen > Jars')",
-      "lastUpdated": "2026-11-12"
+      "lastUpdated": "2026-11-15"
     },
     {
       "name": "buildItemListJsonLd",
@@ -3526,7 +3489,7 @@
       ],
       "accessibility": "",
       "example": "buildItemListJsonLd(title, items)",
-      "lastUpdated": "2026-11-12"
+      "lastUpdated": "2026-11-15"
     },
     {
       "name": "buildArticleJsonLd",
@@ -3543,7 +3506,7 @@
       ],
       "accessibility": "",
       "example": "buildArticleJsonLd(post)",
-      "lastUpdated": "2026-11-12"
+      "lastUpdated": "2026-11-15"
     },
     {
       "name": "JsonLd",
@@ -4248,7 +4211,7 @@
         "admin/BlockEditor",
         "admin/PageEditors"
       ],
-      "lastUpdated": "2026-11-12",
+      "lastUpdated": "2026-11-15",
       "accessibility": "Each item is a fieldset with a legend; move/remove buttons are labelled with the item name.",
       "props": {
         "items": "T[]",
@@ -4296,7 +4259,7 @@
         "PostForm",
         "SectionEditor"
       ],
-      "lastUpdated": "2026-11-12",
+      "lastUpdated": "2026-11-15",
       "accessibility": "Labelled input; hidden file input triggered by a labelled button.",
       "props": {
         "id": "string",
@@ -4342,7 +4305,7 @@
       "usedIn": [
         "SectionEditor"
       ],
-      "lastUpdated": "2026-11-12",
+      "lastUpdated": "2026-11-15",
       "accessibility": "Native datetime-local inputs with labels and hints.",
       "props": {
         "value": "{startsAt, endsAt} ISO",
@@ -4385,7 +4348,7 @@
         "SettingsForm",
         "admin/PageEditors"
       ],
-      "lastUpdated": "2026-11-12",
+      "lastUpdated": "2026-11-15",
       "accessibility": "Result announced (status/alert).",
       "props": {
         "contentKey": "settings|home|faqs|page:*",
@@ -4433,7 +4396,7 @@
         "admin/BlockEditor",
         "admin/PageEditors"
       ],
-      "lastUpdated": "2026-11-12",
+      "lastUpdated": "2026-11-15",
       "accessibility": "Uses FormField (label + hint).",
       "props": {
         "id": "string",
@@ -4512,7 +4475,7 @@
       "usedIn": [
         "HomeEditor"
       ],
-      "lastUpdated": "2026-11-14",
+      "lastUpdated": "2026-11-15",
       "accessibility": "",
       "props": {
         "section": "HomeSection",
@@ -4756,13 +4719,14 @@
     {
       "variants": [],
       "tokensUsed": [
+        "color.error",
         "space.1",
         "space.4"
       ],
       "usedIn": [
         "admin:/products"
       ],
-      "lastUpdated": "2026-11-12",
+      "lastUpdated": "2026-11-15",
       "accessibility": "Each button label includes the product title.",
       "props": {
         "id": "string",
@@ -4853,24 +4817,26 @@
       "variants": [],
       "tokensUsed": [
         "color.ink",
+        "color.primary",
         "color.surface",
         "color.text",
-        "duration.base",
+        "duration.slide",
         "radius.full",
         "shadow.focus",
         "shadow.md",
         "space.1",
         "space.11",
         "space.2",
-        "space.3",
         "space.4",
         "space.5",
-        "space.6"
+        "space.6",
+        "space.8",
+        "zIndex.raised"
       ],
       "usedIn": [
         "HomeSections"
       ],
-      "lastUpdated": "2026-11-14",
+      "lastUpdated": "2026-11-15",
       "accessibility": "Region with aria-roledescription=carousel; slides labelled n of total; pause control; reduced-motion aware.",
       "props": {
         "slides": "HeroSlide[]",
@@ -4891,7 +4857,7 @@
       "usedIn": [
         "shop:/"
       ],
-      "lastUpdated": "2026-11-14",
+      "lastUpdated": "2026-11-15",
       "accessibility": "Guarantees one H1 (screen-reader-only fallback when no hero is live).",
       "props": {
         "sections": "HomeSection[]",
@@ -4951,7 +4917,7 @@
         "lib/data/supabase-repo",
         "toCardProduct"
       ],
-      "lastUpdated": "2026-11-12",
+      "lastUpdated": "2026-11-15",
       "accessibility": "",
       "props": {
         "p": "{isNew, createdAt}",
@@ -5143,32 +5109,33 @@
       "name": "MfaForm",
       "path": "admin/src/components/admin/MfaForm.tsx",
       "category": "admin",
-      "description": "Admin two-step verification: enrol an authenticator app (QR + secret) or enter the 6-digit code.",
+      "description": "Admin two-step sign-in: enter the 6-digit code emailed to the admin, or send a new one.",
       "variants": [],
       "props": {
-        "enrolled": "boolean",
-        "enroll": "server action",
-        "verify": "server action"
+        "email": "string",
+        "verify": "server action",
+        "resend": "server action",
+        "sendFailed": "boolean"
       },
       "tokensUsed": [
         "color.error",
         "color.errorSoft",
-        "color.surface",
+        "color.success",
+        "color.text",
         "color.textMuted",
         "font.size.sm",
-        "font.size.xs",
+        "font.weight.semibold",
         "radius.md",
         "space.2",
         "space.3",
-        "space.4",
-        "space.48"
+        "space.4"
       ],
       "usedIn": [
         "admin:/mfa"
       ],
       "accessibility": "Code input uses inputMode=numeric and autocomplete=one-time-code.",
-      "example": "<MfaForm enrolled enroll={a} verify={b} />",
-      "lastUpdated": "2026-11-14"
+      "example": "<MfaForm email={email} verify={verifyCode} resend={resendCode} />",
+      "lastUpdated": "2026-11-15"
     },
     {
       "name": "TeamManager",
@@ -5187,7 +5154,6 @@
         "color.error",
         "color.success",
         "color.textMuted",
-        "color.warning",
         "font.family.heading",
         "font.size.sm",
         "font.size.xl",
@@ -5204,7 +5170,36 @@
       ],
       "accessibility": "Permission checkboxes are labelled; destructive remove asks for confirmation.",
       "example": "<TeamManager team={t} selfId={id} … />",
-      "lastUpdated": "2026-11-14"
+      "lastUpdated": "2026-11-15"
+    },
+    {
+      "name": "DeleteProductCard",
+      "path": "admin/src/components/admin/DeleteProductCard.tsx",
+      "category": "admin",
+      "description": "Remove-product panel on the product editor; confirms first and is disabled when the product is in any order (hide it instead).",
+      "variants": [],
+      "props": {
+        "id": "string",
+        "title": "string",
+        "orderCount": "number",
+        "action": "server action"
+      },
+      "tokensUsed": [
+        "color.error",
+        "color.textMuted",
+        "font.family.heading",
+        "font.size.lg",
+        "font.size.sm",
+        "font.weight.semibold",
+        "space.3",
+        "space.4"
+      ],
+      "usedIn": [
+        "admin:/products/[id]"
+      ],
+      "accessibility": "Confirmation dialog before deleting; result announced via role=alert.",
+      "example": "<DeleteProductCard id={p.id} title={p.title} orderCount={n} action={deleteProductAction} />",
+      "lastUpdated": "2026-11-15"
     }
   ]
 }

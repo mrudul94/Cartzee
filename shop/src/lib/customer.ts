@@ -2,6 +2,7 @@ import "server-only";
 import { cookies } from "next/headers";
 import { createServerClient } from "@supabase/ssr";
 import { config, isSupabaseConfigured } from "@/lib/config";
+import { svc } from "@/lib/data/supabase-clients";
 
 /**
  * Shopper accounts (Supabase Auth, email + password). Browsing never needs an account;
@@ -33,9 +34,16 @@ export async function customerClient() {
 export async function getCustomer(): Promise<Customer | null> {
   if (!customerAuthEnabled) return null;
   const { data } = await (await customerClient()).auth.getUser();
-  if (!data.user) return null;
+  if (!data.user || (await isAdminAccount(data.user.id))) return null;
   const name = typeof data.user.user_metadata?.name === "string" ? data.user.user_metadata.name : "";
   return { id: data.user.id, email: data.user.email ?? "", name };
+}
+
+/** Admin accounts are kept out of the shop: they can't sign in or order as customers. */
+export async function isAdminAccount(userId: string): Promise<boolean> {
+  const { data, error } = await svc().from("admins").select("user_id").eq("user_id", userId).maybeSingle();
+  if (error) throw new Error(`Account check failed: ${error.message}`);
+  return Boolean(data);
 }
 
 /** Only allow same-site relative redirects after sign-in (prevents open redirects). */

@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { faqItemSchema, linkSchema } from "@/lib/content/schema";
+import { faqItemSchema, imageSrcSchema } from "@/lib/content/schema";
 import type { Faq, Spec } from "@/lib/types";
 import { ORDER_STATUSES } from "@/lib/types";
 import { slugify } from "@/lib/utils/format";
@@ -46,7 +46,7 @@ export const productFormSchema = z
     title: z.string().trim().min(5, "Title is too short").max(120),
     slug: z.string().trim().max(80).optional().default(""),
     categorySlug: z.string().min(1, "Choose a category"),
-    subcategorySlug: z.string().min(1, "Choose a subcategory"),
+    subcategorySlug: z.string().trim().default(""),
     summary: z.string().trim().min(20, "Write a one-line summary (at least 20 characters)").max(240),
     description: z.string().trim().min(40, "Description is too short").max(5000),
     howToUse: z.string().optional().default("").transform(linesToList),
@@ -75,9 +75,9 @@ export const productFormSchema = z
       .default("[]")
       .transform((s, ctx) => {
         try {
-          return z.array(z.object({ src: z.string().min(1), alt: z.string().trim().min(3, "Every image needs alt text") })).parse(JSON.parse(s));
+          return z.array(z.object({ src: imageSrcSchema, alt: z.string().trim().min(3, "Every image needs alt text") })).parse(JSON.parse(s));
         } catch {
-          ctx.addIssue({ code: "custom", message: "Every image needs a source and alt text (at least 3 characters)" });
+          ctx.addIssue({ code: "custom", message: "Every image needs alt text (at least 3 characters), and pictures must be uploaded or come from Supabase or images.meesho.com" });
           return z.NEVER;
         }
       }),
@@ -157,7 +157,7 @@ export const categoryFormSchema = z.object({
   parentSlug: z.string().optional().transform((v) => v || null),
   intro: z.string().trim().min(20, "Write a 1–2 sentence answer (at least 20 characters)").max(400),
   blurb: z.string().trim().max(200).default(""),
-  image: z.union([z.literal(""), linkSchema]).default(""),
+  image: z.union([z.literal(""), imageSrcSchema]).default(""),
   sortOrder: z.coerce.number().int().min(0).max(999).default(0),
   isActive: checkbox,
   seoTitle: z.string().trim().max(70).optional().transform((v) => v || undefined),
@@ -182,7 +182,7 @@ export const postFormSchema = z.object({
   title: z.string().trim().min(10, "Title is too short").max(110),
   slug: z.string().trim().max(90).optional().default(""),
   excerpt: z.string().trim().min(20, "Write a short summary (at least 20 characters)").max(240),
-  cover: linkSchema,
+  cover: imageSrcSchema,
   author: z.string().trim().min(2).max(60).default("City Seller Team"),
   isPublished: checkbox,
   body: jsonList(postBlockSchema, 80).refine((b) => b.length > 0, "Add at least one paragraph"),

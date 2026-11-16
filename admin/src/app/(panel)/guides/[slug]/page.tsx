@@ -14,7 +14,7 @@ const EMPTY: PostFormValues = {
   title: "",
   slug: "",
   excerpt: "",
-  cover: "/placeholders/guides/storage-containers.svg",
+  cover: "",
   author: "City Seller Team",
   isPublished: false,
   body: [{ type: "p", text: "" }],

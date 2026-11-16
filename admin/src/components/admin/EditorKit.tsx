@@ -106,13 +106,13 @@ export function ImageField({ id, label, value, onChange, upload, folder, slug, h
     });
   };
   return (
-    <FormField id={id} label={label} hint={hint ?? "Upload, or paste a path like /placeholders/… or an https:// link"} error={uploadError ?? error} required={!optional}>
+    <FormField id={id} label={label} hint={hint ?? "Upload a picture, or paste an https:// link"} error={uploadError ?? error} required={!optional}>
       <div className="flex flex-wrap items-center gap-3">
         <span className="relative h-16 w-24 shrink-0 overflow-hidden rounded-md border border-border bg-background">
-          {value && <Image src={value} alt="" fill sizes="96px" className="object-cover" />}
+          {value && <Image src={value} alt="" fill sizes="96px" unoptimized className="object-cover" />}
         </span>
         <div className="flex min-w-0 flex-1 flex-col gap-2">
-          <Input id={id} size="sm" value={value} onChange={(e) => onChange(e.target.value)} placeholder="/placeholders/banners/hero.svg" invalid={Boolean(error)} />
+          <Input id={id} size="sm" value={value} onChange={(e) => onChange(e.target.value)} placeholder="https://…" invalid={Boolean(error)} />
           <div className="flex gap-2">
             <input ref={fileRef} type="file" accept="image/jpeg,image/png,image/webp,image/avif" className="sr-only" tabIndex={-1} aria-label={`Upload ${label}`} onChange={(e) => onFile(e.target.files?.[0])} />
             <Button size="sm" variant="outline" loading={pending} icon={<ImagePlus aria-hidden className="h-4 w-4" />} onClick={() => fileRef.current?.click()}>

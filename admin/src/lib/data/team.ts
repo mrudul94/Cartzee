@@ -4,7 +4,7 @@ import { svc } from "@/lib/data/supabase-clients";
 import { AdminError } from "./admin-repo";
 import type { AdminRole, Permission } from "@/lib/auth/permissions";
 
-export type TeamMember = { userId: string; email: string; role: AdminRole; permissions: Permission[]; createdAt: string; mfa: boolean };
+export type TeamMember = { userId: string; email: string; role: AdminRole; permissions: Permission[]; createdAt: string };
 
 async function allUsers() {
   const { data, error } = await svc().auth.admin.listUsers({ page: 1, perPage: 1000 });
@@ -18,7 +18,7 @@ export async function listTeam(): Promise<TeamMember[]> {
   if (error) throw new Error(`List admins failed: ${error.message}`);
   return (data as { user_id: string; role: AdminRole; permissions: Permission[]; created_at: string }[]).map((r) => {
     const u = users.find((x) => x.id === r.user_id);
-    return { userId: r.user_id, email: u?.email ?? "(deleted user)", role: r.role, permissions: r.permissions ?? [], createdAt: r.created_at, mfa: Boolean(u?.factors?.some((f) => f.status === "verified")) };
+    return { userId: r.user_id, email: u?.email ?? "(deleted user)", role: r.role, permissions: r.permissions ?? [], createdAt: r.created_at };
   });
 }
 

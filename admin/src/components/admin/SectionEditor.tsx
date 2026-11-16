@@ -86,11 +86,23 @@ export function SectionEditor({ section: s, onChange, categories, products, uplo
             max={5}
             addLabel="Add slide"
             newItem={newHeroSlide}
-            itemLabel={(sl, i) => `Slide ${i + 1}: ${sl.title}${sl.enabled ? "" : " (hidden)"}`}
+            itemLabel={(sl, i) => `Slide ${i + 1}${sl.slideType === "offer" ? " (offer)" : ""}: ${sl.image.alt || sl.title}${sl.enabled ? "" : " (off)"}`}
             renderItem={(sl, update, i) => (
               <>
-                <div className="grid gap-1 rounded-md bg-surface p-3 md:grid-cols-2">
-                  <Checkbox id={id(`s${i}-on`)} label="Show this slide" checked={sl.enabled} onCheckedChange={(enabled) => update({ enabled })} />
+                <div className="grid gap-3 rounded-md bg-surface p-3 md:grid-cols-2">
+                  <SelectField
+                    id={id(`s${i}-type`)}
+                    label="Slide type"
+                    value={sl.slideType}
+                    onChange={(v) => update({ slideType: v as typeof sl.slideType })}
+                    options={[
+                      { value: "category", label: "Category slide" },
+                      { value: "offer", label: "Offer slide (always first when on)" },
+                    ]}
+                  />
+                  <div className="flex items-end">
+                    <Checkbox id={id(`s${i}-on`)} label={sl.slideType === "offer" ? "Offer on" : "Show this slide"} checked={sl.enabled} onCheckedChange={(enabled) => update({ enabled })} />
+                  </div>
                   <Checkbox id={id(`s${i}-click`)} label="Whole slide is clickable" checked={sl.clickable} onCheckedChange={(clickable) => update({ clickable })} />
                   {sl.clickable && (
                     <div className="grid gap-3 md:col-span-2 md:grid-cols-2">
@@ -105,21 +117,17 @@ export function SectionEditor({ section: s, onChange, categories, products, uplo
                     </div>
                   )}
                 </div>
-                <TextField id={id(`s${i}-eyebrow`)} label="Small label above title" value={sl.eyebrow} onChange={(v) => update({ eyebrow: v })} maxLength={60} />
-                <TextField id={id(`s${i}-title`)} label="Title" value={sl.title} onChange={(v) => update({ title: v })} maxLength={90} required />
-                <TextField id={id(`s${i}-text`)} label="Text" value={sl.text} onChange={(v) => update({ text: v })} multiline maxLength={240} />
-                <ImageField id={id(`s${i}-img`)} label="Image" value={sl.image.src} onChange={(src) => update({ image: { ...sl.image, src } })} upload={upload} folder="banners" slug={s.id} hint="Wide image (16:9), plain background works best" />
-                <TextField id={id(`s${i}-alt`)} label="Image description (alt text)" value={sl.image.alt} onChange={(alt) => update({ image: { ...sl.image, alt } })} maxLength={160} required />
-                <LinkPair idPrefix={id(`s${i}-cta1`)} label="Main button" value={sl.primaryCta} onChange={(primaryCta) => update({ primaryCta })} />
-                <Checkbox id={id(`s${i}-cta2-on`)} label="Second button" checked={Boolean(sl.secondaryCta)} onCheckedChange={(on) => update({ secondaryCta: on ? { label: "Learn more", href: "/" } : null })} />
-                {sl.secondaryCta && <LinkPair idPrefix={id(`s${i}-cta2`)} label="Second button" value={sl.secondaryCta} onChange={(secondaryCta) => update({ secondaryCta })} />}
-                <TextField
-                  id={id(`s${i}-chips`)}
-                  label="Highlight chips"
-                  hint="Up to 4, separated by |"
-                  value={sl.highlights.join(" | ")}
-                  onChange={(v) => update({ highlights: v.split("|").map((x) => x.trim()).filter(Boolean).slice(0, 4) })}
+                <ImageField
+                  id={id(`s${i}-img`)}
+                  label="Image"
+                  value={sl.image.src}
+                  onChange={(src) => update({ image: { ...sl.image, src } })}
+                  upload={upload}
+                  folder="banners"
+                  slug={s.id}
+                  hint="Finished artwork with its text and button in the picture: 1792 × 768 px (7:3). Shown whole, never cropped."
                 />
+                <TextField id={id(`s${i}-alt`)} label="Image description (alt text)" hint="Describe the offer: read by screen readers and Google" value={sl.image.alt} onChange={(alt) => update({ image: { ...sl.image, alt } })} maxLength={160} required />
                 <ScheduleFields idPrefix={id(`s${i}`)} value={sl} onChange={(v) => update(v)} />
               </>
             )}

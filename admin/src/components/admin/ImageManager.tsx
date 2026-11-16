@@ -65,7 +65,7 @@ export function ImageManager({ images, onChange, upload, slug, defaultAlt, error
           {images.map((img, i) => (
             <li key={`${img.src}-${i}`} className="flex flex-wrap items-center gap-3 rounded-md border border-border p-2">
               <span className="relative h-16 w-16 shrink-0 overflow-hidden rounded-md bg-background">
-                <Image src={img.src} alt="" fill sizes="64px" className="object-cover" />
+                <Image src={img.src} alt="" fill sizes="64px" unoptimized className="object-cover" />
               </span>
               <div className="min-w-0 flex-1">
                 <label htmlFor={`alt-${i}`} className="text-sm text-text-muted">

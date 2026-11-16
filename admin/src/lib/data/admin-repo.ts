@@ -56,8 +56,16 @@ export interface AdminRepo {
   patchProduct(id: string, patch: ProductPatch): Promise<void>;
   /** Copies a product (hidden, slug + "-copy") so a similar item can be added quickly. */
   duplicateProduct(id: string): Promise<AdminProduct>;
+  /** How many orders contain this product (such products can't be deleted, only hidden). */
+  productOrderCount(id: string): Promise<number>;
+  /** Order counts for every product that has been ordered (product id → number of orders). */
+  orderCountsByProduct(): Promise<Map<string, number>>;
+  /** Permanently delete a product with its photos and reviews. Refused if any order contains it. */
+  deleteProduct(id: string): Promise<void>;
   uploadImage(file: File, slug: string, folder?: UploadFolder): Promise<string>;
 }
+
+const IN_ORDERS = (n: number) => `This product is in ${n} order(s), so it can't be deleted (the order history needs it). Hide it instead.`;
 
 const uniqueSlug = (base: string, taken: (s: string) => boolean) => {
   let slug = `${base}-copy`.slice(0, 80);
@@ -75,9 +83,14 @@ function checkImage(file: File) {
 }
 
 function checkCategories(input: ProductInput, cats: { slug: string; parentSlug: string | null }[]) {
-  const sub = cats.find((c) => c.slug === input.subcategorySlug);
   if (!cats.some((c) => c.slug === input.categorySlug && !c.parentSlug)) throw new AdminError("Choose a valid category");
-  if (!sub || sub.parentSlug !== input.categorySlug) throw new AdminError("Subcategory must belong to the chosen category");
+  if (input.subcategorySlug) {
+    const sub = cats.find((c) => c.slug === input.subcategorySlug);
+    if (!sub || sub.parentSlug !== input.categorySlug) throw new AdminError("Subcategory must belong to the chosen category");
+  } else if (cats.some((c) => c.slug === input.slug && c.parentSlug === input.categorySlug)) {
+    // Without a subcategory the product URL is /<category>/<slug>, which would clash with that subcategory's page.
+    throw new AdminError(`The URL "${input.slug}" is already used by a subcategory of this category. Choose a subcategory or change the product URL.`);
+  }
 }
 
 /* ================================================================== seed (mock mode) */
@@ -148,6 +161,21 @@ const seedAdmin: AdminRepo = {
     if (patch.isActive !== undefined) p.isActive = patch.isActive;
     if (patch.isNew !== undefined) p.isNew = patch.isNew;
   },
+  async orderCountsByProduct() {
+    const counts = new Map<string, number>();
+    for (const o of store.orders.values()) for (const id of new Set(o.items.map((it) => it.productId))) counts.set(id, (counts.get(id) ?? 0) + 1);
+    return counts;
+  },
+  async productOrderCount(id) {
+    return [...store.orders.values()].filter((o) => o.items.some((it) => it.productId === id)).length;
+  },
+  async deleteProduct(id) {
+    const i = store.products.findIndex((x) => x.id === id);
+    if (i < 0) throw new AdminError("Product not found");
+    const n = await this.productOrderCount(id);
+    if (n > 0) throw new AdminError(IN_ORDERS(n));
+    store.products.splice(i, 1);
+  },
   async duplicateProduct(id) {
     const p = store.products.find((x) => x.id === id);
     if (!p) throw new AdminError("Product not found");
@@ -170,7 +198,7 @@ const seedAdmin: AdminRepo = {
     return toAdmin(copy);
   },
   async uploadImage() {
-    throw new AdminError("Image upload needs Supabase Storage. Connect Supabase, or enter an image path such as /placeholders/… for now.");
+    throw new AdminError("Image upload needs Supabase Storage. Connect Supabase, or paste an https:// image link for now.");
   },
 };
 
@@ -230,7 +258,7 @@ const supabaseAdmin: AdminRepo = {
     const row = {
       slug: input.slug,
       category_id: idOf(input.categorySlug),
-      subcategory_id: idOf(input.subcategorySlug),
+      subcategory_id: input.subcategorySlug ? idOf(input.subcategorySlug) : null,
       title: input.title,
       summary: input.summary,
       description: input.description,
@@ -258,6 +286,8 @@ const supabaseAdmin: AdminRepo = {
     if (res.error) {
       if (res.error.code === "23505") throw new AdminError(`The URL slug "${input.slug}" is already used`);
       if (res.error.code === "23514") throw new AdminError("Check prices: MRP must be at least the selling price, and prices must be positive");
+      if (res.error.code === "23502" && res.error.message.includes("subcategory_id"))
+        throw new AdminError("Products without a subcategory need a database update: run supabase/migrations/0007_optional_subcategory.sql in the Supabase SQL Editor, or choose a subcategory.");
       fail("save product", res.error);
     }
     const id = (res.data as { id: string }).id;
@@ -283,6 +313,29 @@ const supabaseAdmin: AdminRepo = {
     if (patch.isNew !== undefined) row.is_new = patch.isNew;
     const { error } = await svc().from("products").update(row).eq("id", id);
     if (error) fail("patch product", error);
+  },
+  async orderCountsByProduct() {
+    const { data, error } = await svc().from("order_items").select("product_id, order_id").limit(100000);
+    if (error) fail("order counts by product", error);
+    const orders = new Map<string, Set<string>>();
+    for (const row of (data ?? []) as { product_id: string; order_id: string }[]) {
+      if (!orders.has(row.product_id)) orders.set(row.product_id, new Set());
+      orders.get(row.product_id)!.add(row.order_id);
+    }
+    return new Map([...orders].map(([id, set]) => [id, set.size]));
+  },
+  async productOrderCount(id) {
+    const { data, error } = await svc().from("order_items").select("order_id").eq("product_id", id).limit(10000);
+    if (error) fail("product order count", error);
+    return new Set((data ?? []).map((r) => r.order_id)).size;
+  },
+  async deleteProduct(id) {
+    const n = await this.productOrderCount(id);
+    if (n > 0) throw new AdminError(IN_ORDERS(n));
+    // Photos and reviews are removed with the product (on delete cascade).
+    const { error, count } = await svc().from("products").delete({ count: "exact" }).eq("id", id);
+    if (error) fail("delete product", error);
+    if (!count) throw new AdminError("Product not found");
   },
   async duplicateProduct(id) {
     const p = await supabaseAdmin.getProduct(id);

@@ -13,7 +13,7 @@ export default async function TeamPage() {
     <div className="flex flex-col gap-6">
       <div>
         <h1 className="font-heading text-3xl font-semibold">Team</h1>
-        <p className="text-text-muted">Admins sign in with a password and an authenticator-app code. Admins only see the areas you allow.</p>
+        <p className="text-text-muted">Admins sign in with a password and a 6-digit code sent to their email. Admins only see the areas you allow.</p>
       </div>
       {me.mode === "dev" ? (
         <p className="rounded-md bg-warning-soft p-4 text-warning">Team management needs Supabase (local development uses a built-in Super Admin).</p>
