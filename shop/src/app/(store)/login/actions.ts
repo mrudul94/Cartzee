@@ -78,7 +78,3 @@ export async function setPasswordAction(_prev: AuthState, fd: FormData): Promise
   return { ok: true, message: "Password updated." };
 }
 
-export async function signOutCustomerAction() {
-  if (customerAuthEnabled) await (await customerClient()).auth.signOut();
-  redirect("/");
-}

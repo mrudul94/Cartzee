@@ -11,6 +11,7 @@ const SITE_HOST = (() => {
 })();
 
 /** Only these paths read the shopper session, so the rest of the shop stays fast and cacheable. */
+// (/api/account/me refreshes the session itself: route handlers can set cookies.)
 const AUTH_PATHS = ["/login", "/account", "/checkout", "/api/checkout", "/auth/"];
 
 export async function middleware(req: NextRequest) {

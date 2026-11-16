@@ -8,6 +8,8 @@ import type { Order, OrderStatus } from "@/lib/types";
 
 type Care = Settings["care"];
 import { formatINR } from "@/lib/utils/format";
+import { isRazorpayConfigured } from "@/lib/config";
+import { refundPayment, toPaise } from "@/lib/payments/razorpay";
 import { canTransition, STATUS_LABEL } from "./status";
 
 /** Escapes text for safe interpolation into email HTML. */
@@ -75,4 +77,19 @@ export async function changeOrderStatus(orderId: string, to: OrderStatus, patch:
   const updated = await repo.updateOrderStatus(orderId, to, patch, note);
   if (updated && to !== "placed_on_meesho") await sendEmail(statusEmail(updated, (await getSettings()).care));
   return updated;
+}
+
+/**
+ * Full refund of an order's payment through Razorpay (simulated when Razorpay isn't configured).
+ * Returns a note for the order history, or a message explaining why it couldn't refund.
+ */
+export async function refundOrder(order: Order): Promise<{ ok: true; note: string } | { ok: false; message: string }> {
+  if (!order.razorpayPaymentId) return { ok: false, message: "No payment ID on this order, so it can't be refunded automatically." };
+  if (!isRazorpayConfigured) return { ok: true, note: "Refund simulated (Razorpay not configured)" };
+  try {
+    const r = await refundPayment(order.razorpayPaymentId, toPaise(order.total), { orderNumber: order.number });
+    return { ok: true, note: `Refund ${r.id} (${r.status})` };
+  } catch (e) {
+    return { ok: false, message: e instanceof Error ? e.message : "Refund failed." };
+  }
 }

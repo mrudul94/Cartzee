@@ -2,8 +2,12 @@ import { Container } from "@/components/layout/Container";
 import { Skeleton } from "./Misc";
 
 export type PageSkeletonProps = {
-  /** listing: heading + product grid · product: gallery + details · table: admin list · home: hero + grid */
-  variant?: "home" | "listing" | "product" | "table";
+  /**
+   * listing: heading + product grid · product: gallery + details · table: admin list · home: hero + grid ·
+   * account: sidebar + content · accountContent: content only (inside the account sidebar) · order: order confirmation ·
+   * checkout: address form + summary
+   */
+  variant?: "home" | "listing" | "product" | "table" | "account" | "accountContent" | "order" | "checkout";
   /** Admin pages render inside their own layout container. */
   bare?: boolean;
 };
@@ -26,6 +30,15 @@ const grid = (n: number) => (
   <div className="grid grid-cols-2 gap-3 md:grid-cols-3 md:gap-6 lg:grid-cols-4">
     {Array.from({ length: n }, (_, i) => (
       <CardSkeleton key={i} />
+    ))}
+  </div>
+);
+
+const accountRows = (
+  <div className="flex flex-col gap-3">
+    <Skeleton className="h-8 w-48" />
+    {Array.from({ length: 3 }, (_, i) => (
+      <Skeleton key={i} className="h-20 w-full rounded-lg" />
     ))}
   </div>
 );
@@ -61,6 +74,43 @@ export function PageSkeleton({ variant = "listing", bare = false }: PageSkeleton
               <Skeleton className="h-10 w-48" />
               <Skeleton className="h-12 w-full" />
               <Skeleton className="h-24 w-full" />
+            </div>
+          </div>
+        );
+      case "account":
+        return (
+          <div className="grid gap-6 py-6 md:grid-cols-4">
+            <div className="flex flex-col gap-3 md:col-span-1">
+              <Skeleton className="h-24 w-full rounded-lg" />
+              <Skeleton className="h-80 w-full rounded-lg" />
+            </div>
+            <div className="md:col-span-3">{accountRows}</div>
+          </div>
+        );
+      case "accountContent":
+        return accountRows;
+      case "order":
+        return (
+          <div className="mx-auto flex max-w-narrow flex-col gap-6 py-10">
+            <div className="flex flex-col items-center gap-3">
+              <Skeleton className="h-16 w-16 rounded-full" />
+              <Skeleton className="h-9 w-3/4" />
+              <Skeleton className="h-5 w-1/2" />
+            </div>
+            <Skeleton className="h-48 w-full rounded-lg" />
+            <Skeleton className="h-28 w-full rounded-lg" />
+          </div>
+        );
+      case "checkout":
+        return (
+          <div className="flex flex-col gap-4 py-6">
+            <Skeleton className="h-9 w-64" />
+            <div className="grid gap-6 lg:grid-cols-3">
+              <div className="flex flex-col gap-4 lg:col-span-2">
+                <Skeleton className="h-40 w-full rounded-lg" />
+                <Skeleton className="h-72 w-full rounded-lg" />
+              </div>
+              <Skeleton className="h-72 w-full rounded-lg" />
             </div>
           </div>
         );

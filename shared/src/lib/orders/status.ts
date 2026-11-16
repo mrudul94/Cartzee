@@ -58,3 +58,30 @@ export const adminTransitions = (from: OrderStatus): OrderStatus[] => TRANSITION
 
 /** Happy-path steps shown as a progress timeline on the tracking page. */
 export const TRACKING_STEPS: OrderStatus[] = ["paid", "placed_on_meesho", "shipped", "delivered"];
+
+/* ------------------------------------------------------------------ shopper self-service */
+
+/** Order-event note prefix used when a shopper asks to cancel an order already placed with the supplier. */
+export const CANCEL_REQUEST_NOTE = "Customer requested cancellation";
+
+export const CANCEL_REASONS = ["Ordered by mistake", "Found a better price elsewhere", "Delivery is taking too long", "Changed my mind", "Other"] as const;
+/** Returns are accepted for damaged, wrong or defective items (see the returns policy). */
+export const RETURN_REASONS = ["Item arrived damaged", "Received the wrong item", "Item is defective or not working", "Parts missing from the package", "Other"] as const;
+
+type SelfServiceOrder = { status: OrderStatus; events: { status: OrderStatus; note?: string | null; at: string }[] };
+
+/** What a shopper may do with their own order right now. */
+export function customerOrderOptions(order: SelfServiceOrder, returnWindowDays: number, now = Date.now()) {
+  const cancelRequested = order.status === "placed_on_meesho" && order.events.some((e) => e.note?.startsWith(CANCEL_REQUEST_NOTE));
+  const deliveredAt = [...order.events].reverse().find((e) => e.status === "delivered")?.at;
+  const returnUntil = deliveredAt ? Date.parse(deliveredAt) + returnWindowDays * 86_400_000 : 0;
+  return {
+    /** Not yet placed with the supplier: cancels at once with a full refund. */
+    cancel: order.status === "paid",
+    /** Already placed with the supplier: the team has to cancel it there first. */
+    requestCancel: order.status === "placed_on_meesho" && !cancelRequested,
+    cancelRequested,
+    requestReturn: order.status === "delivered" && now <= returnUntil,
+    returnUntil: returnUntil ? new Date(returnUntil).toISOString() : null,
+  };
+}

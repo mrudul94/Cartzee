@@ -76,6 +76,11 @@ import { CopyField, MarginText, OrderStatusBadge, OrderTimeline, StatCard } from
 import { ImageManagerDemo } from "./ClientDemos";
 import { LoginForm } from "@/components/admin/LoginForm";
 import { DeleteProductCard } from "@/components/admin/DeleteProductCard";
+import { OrderSelfService } from "@/components/commerce/OrderSelfService";
+import { AccountMenu } from "@/components/account/AccountMenu";
+import { AccountNav } from "@/components/account/AccountNav";
+import { AddressBook } from "@/components/account/AddressBook";
+import { ProfileForm } from "@/components/account/ProfileForm";
 import { MfaForm } from "@/components/admin/MfaForm";
 import { TeamManager } from "@/components/admin/TeamManager";
 import { CustomerAuthForm } from "@/components/commerce/CustomerAuthForm";
@@ -431,6 +436,29 @@ export const demos: Record<string, ReactNode> = {
   ),
   CustomerAuthForm: <CustomerAuthForm next="/checkout" signIn={demoFormAction} signUp={demoFormAction} forgot={demoFormAction} />,
   SetPasswordForm: <SetPasswordForm action={demoFormAction} />,
+  AccountMenu: <AccountMenu />,
+  AccountNav: (
+    <div className="max-w-80">
+      <AccountNav name="Example Shopper" email="shopper@example.com" />
+    </div>
+  ),
+  ProfileForm: <ProfileForm name="Example Shopper" phone="9876543210" email="shopper@example.com" action={demoFormAction} />,
+  AddressBook: (
+    <AddressBook
+      addresses={[
+        { id: "00000000-0000-4000-8000-000000000001", label: "Home", name: "Example Shopper", phone: "9876543210", line1: "12 Example Road", line2: "", landmark: "", city: "Pune", state: "Maharashtra", pincode: "411001", isDefault: true },
+      ]}
+      save={demoFormAction}
+      remove={demoFormAction}
+      makeDefault={demoFormAction}
+    />
+  ),
+  OrderSelfService: (
+    <div className="flex flex-col gap-4">
+      <OrderSelfService orderId="demo" options={{ cancel: true, requestCancel: false, cancelRequested: false, requestReturn: false, returnUntil: null }} cancel={demoFormAction} requestCancel={demoFormAction} requestReturn={demoFormAction} />
+      <OrderSelfService orderId="demo-2" options={{ cancel: false, requestCancel: false, cancelRequested: false, requestReturn: true, returnUntil: new Date().toISOString() }} cancel={demoFormAction} requestCancel={demoFormAction} requestReturn={demoFormAction} />
+    </div>
+  ),
   DeleteProductCard: (
     <div className="flex flex-col gap-4">
       <DeleteProductCard id="demo" title="Demo product" orderCount={0} action={demoFormAction} />

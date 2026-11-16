@@ -93,3 +93,19 @@ describe("picture links", () => {
     expect(isAllowedImageSrc("//images.meesho.com/a.jpg")).toBe(false);
   });
 });
+
+describe("account forms", () => {
+  it("validates saved addresses and profile details", async () => {
+    const { savedAddressSchema, profileSchema } = await import("@/lib/account");
+    const ok = { name: "Asha Rao", phone: "+91 98765 43210", line1: "4 Lake View Road", city: "Bengaluru", state: "Karnataka", pincode: "560001", isDefault: "on" };
+    const parsed = savedAddressSchema.parse(ok);
+    expect(parsed.phone).toBe("9876543210");
+    expect(parsed.isDefault).toBe(true);
+    expect(savedAddressSchema.parse({ ...ok, isDefault: undefined }).isDefault).toBe(false);
+    expect(savedAddressSchema.safeParse({ ...ok, pincode: "012345" }).success).toBe(false);
+    expect(savedAddressSchema.safeParse({ ...ok, state: "Atlantis" }).success).toBe(false);
+    expect(savedAddressSchema.safeParse({ ...ok, id: "not-a-uuid" }).success).toBe(false);
+    expect(profileSchema.parse({ name: "Asha", phone: "" }).phone).toBe("");
+    expect(profileSchema.safeParse({ name: "Asha", phone: "12345" }).success).toBe(false);
+  });
+});

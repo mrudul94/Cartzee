@@ -70,6 +70,7 @@
       ],
       "usedIn": [
         "AddToCartButton",
+        "AddressBook",
         "CartDrawer",
         "CartView",
         "CategoryForm",
@@ -84,10 +85,12 @@
         "MobileNav",
         "NotFoundContent",
         "OrderActions",
+        "OrderSelfService",
         "PincodeChecker",
         "PostForm",
         "ProductForm",
         "ProductQuickActions",
+        "ProfileForm",
         "SaleBanner",
         "SetPasswordForm",
         "TeamManager",
@@ -104,6 +107,7 @@
         "admin:/reviews",
         "sections/InfoSections",
         "shop:/account",
+        "shop:/account (layout)",
         "shop:/order/[id]"
       ],
       "accessibility": "Focus ring (shadow-focus); aria-busy while loading; md/lg/icon sizes meet 44px touch target; primary colour reserved for buy actions.",
@@ -155,6 +159,7 @@
         "space.9"
       ],
       "usedIn": [
+        "AddressBook",
         "CategoryForm",
         "CheckoutForm",
         "CustomerAuthForm",
@@ -167,6 +172,7 @@
         "PostForm",
         "ProductForm",
         "ProductPicker",
+        "ProfileForm",
         "SearchBox",
         "TeamManager",
         "TrackOrderForm",
@@ -217,6 +223,7 @@
       "usedIn": [
         "CategoryForm",
         "OrderActions",
+        "OrderSelfService",
         "PostForm",
         "ProductForm",
         "admin/EditorKit"
@@ -270,10 +277,12 @@
         "space.9"
       ],
       "usedIn": [
+        "AddressBook",
         "CategoryForm",
         "CategoryListing",
         "CheckoutForm",
         "HomeEditor",
+        "OrderSelfService",
         "ProductForm",
         "SectionEditor",
         "TeamManager"
@@ -306,14 +315,17 @@
         "space.1.5"
       ],
       "usedIn": [
+        "AddressBook",
         "CategoryForm",
         "CheckoutForm",
         "CustomerAuthForm",
         "LoginForm",
         "MfaForm",
         "OrderActions",
+        "OrderSelfService",
         "PostForm",
         "ProductForm",
+        "ProfileForm",
         "SectionEditor",
         "SetPasswordForm",
         "TeamManager",
@@ -357,6 +369,7 @@
         "space.5"
       ],
       "usedIn": [
+        "AddressBook",
         "CategoryForm",
         "CategoryListing",
         "HomeEditor",
@@ -455,12 +468,14 @@
         "space.3"
       ],
       "usedIn": [
+        "AddressBook",
         "HomeEditor",
         "ProductCard",
         "TeamManager",
         "admin/AdminBits",
         "admin:/categories",
         "admin:/guides",
+        "admin:/orders",
         "admin:/products",
         "admin:/reviews",
         "shop:/[category]/[sub]/[product]",
@@ -510,14 +525,17 @@
         "space.8"
       ],
       "usedIn": [
+        "AddressBook",
         "CartView",
         "CategoryForm",
         "CheckoutForm",
         "CustomerAuthForm",
         "DeleteProductCard",
         "HomeEditor",
+        "OrderSelfService",
         "PostForm",
         "ProductForm",
+        "ProfileForm",
         "SetPasswordForm",
         "SettingsForm",
         "TeamManager",
@@ -1843,13 +1861,17 @@
       "props": {},
       "tokensUsed": [
         "color.background",
+        "color.primary",
+        "color.success",
         "color.textMuted",
         "font.family.heading",
         "font.size.lg",
         "font.size.sm",
         "font.size.xl",
+        "font.weight.medium",
         "font.weight.semibold",
         "radius.md",
+        "space.10",
         "space.14",
         "space.16",
         "space.24",
@@ -1863,7 +1885,7 @@
       ],
       "accessibility": "Labels, autocomplete tokens, inline errors, fieldset legends.",
       "example": "<CheckoutForm />",
-      "lastUpdated": "2026-11-14"
+      "lastUpdated": "2026-11-16"
     },
     {
       "name": "TrackOrderForm",
@@ -2295,7 +2317,7 @@
       "usedIn": [
         "ContentPage",
         "ListingTemplate",
-        "shop:/account",
+        "shop:/account (layout)",
         "shop:/contact",
         "shop:/faq",
         "shop:/track-order"
@@ -2465,8 +2487,7 @@
         "TopBar",
         "layout/MegaMenu",
         "shop:/[category]/[sub]/[product]",
-        "shop:/account",
-        "shop:/account/password",
+        "shop:/account (layout)",
         "shop:/cart",
         "shop:/checkout",
         "shop:/contact",
@@ -2565,7 +2586,7 @@
         "admin:/products/[id]",
         "admin:/products/new",
         "shop:/[category]/[sub]/[product]",
-        "shop:/account",
+        "shop:/account (layout)",
         "shop:/cart",
         "shop:/checkout",
         "shop:/contact",
@@ -2633,7 +2654,7 @@
       ],
       "accessibility": "Social links labelled.",
       "example": "<TopBar />",
-      "lastUpdated": "2026-11-14"
+      "lastUpdated": "2026-11-16"
     },
     {
       "name": "NavDropdown",
@@ -2809,7 +2830,7 @@
       ],
       "accessibility": "Drawer semantics; nav aria-label=Mobile.",
       "example": "<MobileNav tree={tree} />",
-      "lastUpdated": "2026-11-12"
+      "lastUpdated": "2026-11-16"
     },
     {
       "name": "Header",
@@ -2838,7 +2859,6 @@
         "space.2",
         "space.3",
         "space.4",
-        "space.6",
         "zIndex.sticky"
       ],
       "usedIn": [
@@ -2846,7 +2866,7 @@
       ],
       "accessibility": "Main nav landmark; mobile search row.",
       "example": "<Header tree={tree} />",
-      "lastUpdated": "2026-11-12"
+      "lastUpdated": "2026-11-16"
     },
     {
       "name": "Footer",
@@ -2982,6 +3002,8 @@
       },
       "tokensUsed": [],
       "usedIn": [
+        "AccountMenu",
+        "AccountNav",
         "AdminShell",
         "Badge",
         "Breadcrumbs",
@@ -3098,6 +3120,7 @@
       "usedIn": [
         "ContentPage",
         "GuideCards",
+        "OrderSelfService",
         "ReviewList",
         "TrackOrderForm",
         "admin/AdminBits",
@@ -3223,6 +3246,8 @@
       },
       "tokensUsed": [],
       "usedIn": [
+        "AccountMenu",
+        "AccountNav",
         "AddToCartButton",
         "AdminShell",
         "CartDrawer",
@@ -3264,6 +3289,7 @@
         "shop:/[category]/[sub]/[product]",
         "shop:/about",
         "shop:/account",
+        "shop:/account (layout)",
         "shop:/bestsellers",
         "shop:/budget/[tier]",
         "shop:/cart",
@@ -3284,7 +3310,7 @@
       ],
       "accessibility": "",
       "example": "paths.product(p)",
-      "lastUpdated": "2026-11-14"
+      "lastUpdated": "2026-11-15"
     },
     {
       "name": "tokenStyle",
@@ -3370,7 +3396,9 @@
         "shop:/[category]/[sub]/[product]",
         "shop:/about",
         "shop:/account",
+        "shop:/account/addresses",
         "shop:/account/password",
+        "shop:/account/profile",
         "shop:/bestsellers",
         "shop:/budget/[tier]",
         "shop:/cart",
@@ -3816,7 +3844,7 @@
       "usedIn": [
         "ProductForm"
       ],
-      "lastUpdated": "2026-11-12",
+      "lastUpdated": "2026-11-15",
       "accessibility": "Alt text required per image; labelled reorder/remove buttons.",
       "name": "ImageManager",
       "path": "admin/src/components/admin/ImageManager.tsx",
@@ -3860,7 +3888,7 @@
         "admin:/products/[id]",
         "admin:/products/new"
       ],
-      "lastUpdated": "2026-11-12",
+      "lastUpdated": "2026-11-15",
       "accessibility": "Fieldsets with legends, inline errors, live margin region, sticky save bar.",
       "name": "ProductForm",
       "path": "admin/src/components/admin/ProductForm.tsx",
@@ -4968,10 +4996,14 @@
         "home",
         "listing",
         "product",
-        "table"
+        "table",
+        "account",
+        "accountContent",
+        "order",
+        "checkout"
       ],
       "props": {
-        "variant": "home|listing|product|table",
+        "variant": "home|listing|product|table|account|accountContent|order|checkout",
         "bare": "boolean (no Container)"
       },
       "tokensUsed": [
@@ -4980,14 +5012,19 @@
         "color.border",
         "color.surface",
         "maxWidth.modal",
+        "maxWidth.narrow",
         "maxWidth.prose",
+        "radius.full",
         "radius.lg",
         "radius.none",
         "radius.xl",
+        "space.1",
         "space.10",
         "space.11",
         "space.12",
+        "space.16",
         "space.2",
+        "space.20",
         "space.24",
         "space.3",
         "space.32",
@@ -4996,17 +5033,23 @@
         "space.48",
         "space.5",
         "space.6",
+        "space.64",
         "space.8",
+        "space.80",
         "space.9"
       ],
       "usedIn": [
         "admin:/loading.tsx",
         "shop:/[category]/[sub]/[product]/loading.tsx",
-        "shop:/loading.tsx"
+        "shop:/account (layout)",
+        "shop:/account/loading.tsx",
+        "shop:/checkout/loading.tsx",
+        "shop:/loading.tsx",
+        "shop:/order/[id]/loading.tsx"
       ],
       "accessibility": "role=status with a visually hidden Loading label.",
       "example": "<PageSkeleton variant=\"listing\" />",
-      "lastUpdated": "2026-11-14"
+      "lastUpdated": "2026-11-16"
     },
     {
       "name": "WhatsAppButton",
@@ -5200,6 +5243,178 @@
       "accessibility": "Confirmation dialog before deleting; result announced via role=alert.",
       "example": "<DeleteProductCard id={p.id} title={p.title} orderCount={n} action={deleteProductAction} />",
       "lastUpdated": "2026-11-15"
+    },
+    {
+      "name": "AccountMenu",
+      "path": "shared/src/components/account/AccountMenu.tsx",
+      "category": "commerce/account",
+      "description": "Header account control: Login when signed out; 'Hi, name ▾' menu (orders, profile, addresses, track order, sign out) when signed in. Reads the session in the browser so pages stay cached.",
+      "variants": [],
+      "props": {
+        "className": "string"
+      },
+      "tokensUsed": [
+        "color.border",
+        "color.secondary",
+        "color.surface",
+        "color.text",
+        "color.textMuted",
+        "duration.fast",
+        "font.size.base",
+        "font.size.sm",
+        "font.weight.medium",
+        "radius.md",
+        "shadow.focus",
+        "shadow.lg",
+        "space.0",
+        "space.1",
+        "space.11",
+        "space.2",
+        "space.3",
+        "space.4",
+        "space.5",
+        "space.6",
+        "space.64",
+        "zIndex.dropdown"
+      ],
+      "usedIn": [
+        "Header"
+      ],
+      "accessibility": "Disclosure button with aria-expanded/aria-controls; closes on Escape, outside click, focus leaving and navigation.",
+      "example": "<AccountMenu />",
+      "lastUpdated": "2026-11-16"
+    },
+    {
+      "name": "AccountNav",
+      "path": "shared/src/components/account/AccountNav.tsx",
+      "category": "commerce/account",
+      "description": "My account sidebar: greeting, orders, profile, saved addresses, track order, change password, help and sign out.",
+      "variants": [],
+      "props": {
+        "name": "string",
+        "email": "string"
+      },
+      "tokensUsed": [
+        "color.border",
+        "color.secondary",
+        "color.surface",
+        "color.text",
+        "color.textMuted",
+        "font.family.heading",
+        "font.size.base",
+        "font.size.lg",
+        "font.size.sm",
+        "font.weight.semibold",
+        "radius.lg",
+        "radius.md",
+        "shadow.focus",
+        "space.1",
+        "space.11",
+        "space.2",
+        "space.3",
+        "space.4",
+        "space.5"
+      ],
+      "usedIn": [
+        "shop:/account (layout)"
+      ],
+      "accessibility": "nav landmark labelled 'My account'; current page marked with aria-current.",
+      "example": "<AccountNav name=\"Asha\" email=\"asha@example.com\" />",
+      "lastUpdated": "2026-11-16"
+    },
+    {
+      "name": "ProfileForm",
+      "path": "shared/src/components/account/ProfileForm.tsx",
+      "category": "commerce/account",
+      "description": "My account → Profile: edit name and mobile; email shown read-only.",
+      "variants": [],
+      "props": {
+        "name": "string",
+        "phone": "string",
+        "email": "string",
+        "action": "server action"
+      },
+      "tokensUsed": [
+        "color.error",
+        "color.success",
+        "font.size.sm",
+        "space.4"
+      ],
+      "usedIn": [
+        "shop:/account/profile"
+      ],
+      "accessibility": "Labelled fields; result announced via role=status/alert.",
+      "example": "<ProfileForm name={n} phone={p} email={e} action={saveProfile} />",
+      "lastUpdated": "2026-11-16"
+    },
+    {
+      "name": "AddressBook",
+      "path": "shared/src/components/account/AddressBook.tsx",
+      "category": "commerce/account",
+      "description": "Saved delivery addresses: add, edit, delete (with confirm), choose default; up to 10.",
+      "variants": [],
+      "props": {
+        "addresses": "SavedAddress[]",
+        "save": "server action",
+        "remove": "server action",
+        "makeDefault": "server action"
+      },
+      "tokensUsed": [
+        "color.error",
+        "color.success",
+        "color.text",
+        "color.textMuted",
+        "font.family.heading",
+        "font.size.lg",
+        "font.size.sm",
+        "font.weight.semibold",
+        "space.1",
+        "space.2",
+        "space.3",
+        "space.4",
+        "space.5"
+      ],
+      "usedIn": [
+        "shop:/account/addresses"
+      ],
+      "accessibility": "Each card has labelled actions; delete asks for confirmation; form errors per field.",
+      "example": "<AddressBook addresses={a} save={s} remove={r} makeDefault={d} />",
+      "lastUpdated": "2026-11-16"
+    },
+    {
+      "name": "OrderSelfService",
+      "path": "shared/src/components/commerce/OrderSelfService.tsx",
+      "category": "commerce",
+      "description": "Shopper's own order page: Cancel order (before packing, instant refund), Request cancellation (while packing) or Request a return (after delivery, within the return window), each with a reason.",
+      "variants": [],
+      "props": {
+        "orderId": "string",
+        "options": "customerOrderOptions()",
+        "cancel": "server action",
+        "requestCancel": "server action",
+        "requestReturn": "server action"
+      },
+      "tokensUsed": [
+        "color.error",
+        "color.success",
+        "color.successSoft",
+        "color.text",
+        "color.textMuted",
+        "font.family.heading",
+        "font.size.lg",
+        "font.size.sm",
+        "font.weight.semibold",
+        "radius.md",
+        "space.2",
+        "space.3",
+        "space.4"
+      ],
+      "usedIn": [
+        "shop:/order/[id]"
+      ],
+      "accessibility": "Reason select is labelled and required; results announced via role=status/alert; instant cancel asks for confirmation.",
+      "example": "<OrderSelfService orderId={id} options={opts} cancel={a} requestCancel={b} requestReturn={c} />",
+      "lastUpdated": "2026-11-16"
     }
   ]
 }

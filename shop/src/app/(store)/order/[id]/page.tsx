@@ -3,12 +3,15 @@ import { notFound } from "next/navigation";
 import { CheckCircle2 } from "lucide-react";
 import { OrderStatusPoller } from "@/components/commerce/OrderStatusPoller";
 import { PurchaseTracker } from "@/components/commerce/PurchaseTracker";
+import { OrderSelfService } from "@/components/commerce/OrderSelfService";
 import { OrderSummary } from "@/components/commerce/OrderSummary";
 import { Container } from "@/components/layout/Container";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { repo } from "@/lib/data";
-import { STATUS_LABEL } from "@/lib/orders/status";
+import { getCustomer } from "@/lib/customer";
+import { customerOrderOptions, STATUS_LABEL } from "@/lib/orders/status";
+import { cancelOrderAction, requestCancellationAction, requestReturnAction } from "./actions";
 import { buildMetadata } from "@/lib/seo/metadata";
 import { getSettings } from "@/lib/data/content-repo";
 import { estimateDelivery } from "@/lib/utils/delivery";
@@ -24,15 +27,20 @@ type Props = { params: Promise<{ id: string }> };
 export default async function OrderPage({ params }: Props) {
   const order = await repo.getOrder((await params).id);
   if (!order) notFound();
-  const { care } = await getSettings();
+  const [{ care, delivery }, customer] = await Promise.all([getSettings(), getCustomer().catch(() => null)]);
   const paid = order.status !== "pending_payment";
+  const closed = order.status === "cancelled_refunded" || order.status === "returned_refunded";
+  // Cancel/return buttons only for the signed-in shopper who placed this order.
+  const options = customer && order.customerUserId === customer.id ? customerOrderOptions(order, delivery.returnWindowDays) : null;
   const eta = estimateDelivery(order.address.pincode, new Date(order.createdAt));
 
   return (
     <Container width="narrow" className="flex flex-col gap-6 py-10">
       <div className="flex flex-col items-center gap-3 text-center">
-        <CheckCircle2 aria-hidden className={paid ? "h-16 w-16 text-success" : "h-16 w-16 text-warning"} />
-        <h1 className="font-heading text-3xl font-semibold">{paid ? "Thank you, your order is confirmed!" : "Waiting for payment confirmation"}</h1>
+        <CheckCircle2 aria-hidden className={closed ? "h-16 w-16 text-text-muted" : paid ? "h-16 w-16 text-success" : "h-16 w-16 text-warning"} />
+        <h1 className="font-heading text-3xl font-semibold">
+          {!paid ? "Waiting for payment confirmation" : order.status === "paid" ? "Thank you, your order is confirmed!" : `Order ${order.number}: ${STATUS_LABEL[order.status]}`}
+        </h1>
         <p className="text-text-muted">
           Order <strong className="text-text">{order.number}</strong> · {STATUS_LABEL[order.status]}
         </p>
@@ -64,7 +72,7 @@ export default async function OrderPage({ params }: Props) {
           {order.items.map((i) => (
             <li key={i.productId} className="flex items-center gap-3">
               <span className="relative h-14 w-14 shrink-0 overflow-hidden rounded-md bg-background">
-                <Image src={i.image} alt="" fill sizes="56px" className="object-cover" />
+                <Image src={i.image || "/logo/mark.png"} alt="" fill sizes="56px" className="object-cover" />
               </span>
               <span className="flex-1">
                 {i.title} <span className="text-text-muted">× {i.quantity}</span>
@@ -75,6 +83,16 @@ export default async function OrderPage({ params }: Props) {
         </ul>
         <OrderSummary subtotal={order.subtotal} shipping={order.shipping} total={order.total} />
       </Card>
+
+      {options && (
+        <OrderSelfService
+          orderId={order.id}
+          options={options}
+          cancel={cancelOrderAction}
+          requestCancel={requestCancellationAction}
+          requestReturn={requestReturnAction}
+        />
+      )}
 
       <Card padding="md">
         <h2 className="mb-2 font-heading text-xl font-semibold">Delivering to</h2>

@@ -67,7 +67,7 @@ export function MobileNav({ tree, social }: { tree: NavCategory[]; social: Setti
           <li><Link className={link} href={paths.guides()}>Buying guides</Link></li>
           <li><Link className={link} href={paths.track()}>Track order</Link></li>
           <li><Link className={link} href={paths.contact()}>Contact us</Link></li>
-          <li><Link className={link} href={paths.login()}>Login</Link></li>
+          <li><Link className={link} href={paths.login()}>My account</Link></li>
         </ul>
         <ul className="mt-4 flex gap-2" aria-label="Social media">
           {(["instagram", "facebook", "youtube"] as const).filter((b) => social[b]).map((b) => (

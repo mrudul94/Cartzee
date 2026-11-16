@@ -1,4 +1,5 @@
 import "server-only";
+import { cache } from "react";
 import { cookies } from "next/headers";
 import { createServerClient } from "@supabase/ssr";
 import { config, isSupabaseConfigured } from "@/lib/config";
@@ -12,7 +13,7 @@ import { svc } from "@/lib/data/supabase-clients";
  */
 export const customerAuthEnabled = isSupabaseConfigured;
 
-export type Customer = { id: string; email: string; name: string };
+export type Customer = { id: string; email: string; name: string; phone: string };
 
 export async function customerClient() {
   const jar = await cookies();
@@ -30,21 +31,25 @@ export async function customerClient() {
   });
 }
 
-/** Signed-in shopper (verified with Supabase), or null. */
-export async function getCustomer(): Promise<Customer | null> {
+/**
+ * Signed-in shopper (verified with Supabase), or null. Cached per request, so a layout and its page
+ * (and server actions) share one lookup instead of each calling Supabase again.
+ */
+export const getCustomer = cache(async function getCustomer(): Promise<Customer | null> {
   if (!customerAuthEnabled) return null;
   const { data } = await (await customerClient()).auth.getUser();
   if (!data.user || (await isAdminAccount(data.user.id))) return null;
-  const name = typeof data.user.user_metadata?.name === "string" ? data.user.user_metadata.name : "";
-  return { id: data.user.id, email: data.user.email ?? "", name };
-}
+  const meta = data.user.user_metadata ?? {};
+  const str = (v: unknown) => (typeof v === "string" ? v : "");
+  return { id: data.user.id, email: data.user.email ?? "", name: str(meta.name), phone: str(meta.phone) };
+});
 
 /** Admin accounts are kept out of the shop: they can't sign in or order as customers. */
-export async function isAdminAccount(userId: string): Promise<boolean> {
+export const isAdminAccount = cache(async function isAdminAccount(userId: string): Promise<boolean> {
   const { data, error } = await svc().from("admins").select("user_id").eq("user_id", userId).maybeSingle();
   if (error) throw new Error(`Account check failed: ${error.message}`);
   return Boolean(data);
-}
+});
 
 /** Only allow same-site relative redirects after sign-in (prevents open redirects). */
 export function safeNext(next: unknown, fallback = "/account"): string {

@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { whatsappLink } from "@/lib/admin/whatsapp";
 import { repo } from "@/lib/data";
-import { adminTransitions } from "@/lib/orders/status";
+import { adminTransitions, customerOrderOptions } from "@/lib/orders/status";
 import { formatDate, formatINR } from "@/lib/utils/format";
 import { updateOrderAction } from "../../../actions";
 import { paths } from "@/lib/utils/paths";
@@ -43,6 +43,11 @@ export default async function AdminOrderPage({ params }: Props) {
         <OrderStatusBadge status={order.status} />
         <span className="text-text-muted">Placed {formatDate(order.createdAt)}</span>
       </div>
+      {customerOrderOptions(order, 0).cancelRequested && (
+        <p role="alert" className="rounded-md bg-error-soft p-4 text-error">
+          <strong>The customer asked to cancel this order.</strong> Cancel it on Meesho if it hasn&apos;t shipped, then use <strong>Cancel order</strong> below (the full refund box is ticked by default). The reason is in the order history.
+        </p>
+      )}
 
       <div className="grid gap-6 lg:grid-cols-5">
         <div className="flex flex-col gap-6 lg:col-span-3">

@@ -1,9 +1,10 @@
 import Link from "next/link";
 import { MarginText, OrderStatusBadge } from "@/components/admin/AdminBits";
+import { Badge } from "@/components/ui/Badge";
 import { ChipNav } from "@/components/ui/ChipNav";
 import { DataTable } from "@/components/ui/DataTable";
 import { adminRepo } from "@/lib/data/admin-repo";
-import { ADMIN_STATUS_LABEL } from "@/lib/orders/status";
+import { ADMIN_STATUS_LABEL, customerOrderOptions } from "@/lib/orders/status";
 import { ORDER_STATUSES, type Order, type OrderStatus } from "@/lib/types";
 import { formatDate, formatINR } from "@/lib/utils/format";
 import { paths } from "@/lib/utils/paths";
@@ -43,7 +44,7 @@ export default async function AdminOrdersPage({ searchParams }: Props) {
           {
             header: "Order",
             cell: (o) => (
-              <Link href={paths.admin(`/orders/${o.id}`)} className="font-semibold underline-offset-4 hover:underline">
+              <Link href={paths.admin(`/orders/${o.id}`)} className="font-semibold text-primary underline underline-offset-4 hover:no-underline" title="Open order: copy address, Meesho links, update status">
                 {o.number}
               </Link>
             ),
@@ -68,7 +69,15 @@ export default async function AdminOrdersPage({ searchParams }: Props) {
             align: "right",
             hideOnMobile: true,
           },
-          { header: "Status", cell: (o) => <OrderStatusBadge status={o.status} /> },
+          {
+            header: "Status",
+            cell: (o) => (
+              <span className="flex flex-wrap items-center gap-1">
+                <OrderStatusBadge status={o.status} />
+                {customerOrderOptions(o, 0).cancelRequested && <Badge variant="error">Cancel requested</Badge>}
+              </span>
+            ),
+          },
         ]}
       />
     </div>

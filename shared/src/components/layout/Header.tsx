@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { UserRound } from "lucide-react";
+import { AccountMenu } from "@/components/account/AccountMenu";
 import { CartButton } from "@/components/commerce/CartButton";
 import { SearchBox } from "@/components/commerce/SearchBox";
 import type { Settings } from "@/lib/content/schema";
@@ -21,13 +21,7 @@ export function Header({ tree, settings }: { tree: NavCategory[]; settings: Sett
         <Logo />
         <SearchBox className="mx-auto hidden max-w-narrow md:block" />
         <div className="ml-auto flex items-center gap-1 md:ml-0">
-          <Link
-            href={paths.login()}
-            className="inline-flex h-11 w-11 items-center justify-center rounded-md text-text hover:bg-secondary/60 focus-visible:outline-none focus-visible:shadow-focus"
-            aria-label="Account"
-          >
-            <UserRound aria-hidden className="h-6 w-6" />
-          </Link>
+          <AccountMenu />
           <CartButton />
         </div>
       </Container>

@@ -8,13 +8,12 @@ import { headers } from "next/headers";
 import { getAdmin, getSessionState, hasPermission, isAdminUser, requirePermission, supabaseAuthClient } from "@/lib/auth/admin";
 import { clearLoginCodes, sendLoginCode, verifyLoginCode, type SendResult } from "@/lib/auth/email-code";
 import { clientIpHash, isLocked, recordAttempt, WINDOW_MIN } from "@/lib/auth/rate-limit";
-import { isRazorpayConfigured, isSupabaseConfigured } from "@/lib/config";
+import { isSupabaseConfigured } from "@/lib/config";
 import { repo } from "@/lib/data";
 import { adminRepo, AdminError, type UploadFolder } from "@/lib/data/admin-repo";
 import { logActivity } from "@/lib/data/content-repo";
-import { changeOrderStatus } from "@/lib/orders/service";
+import { changeOrderStatus, refundOrder } from "@/lib/orders/service";
 import { canTransition } from "@/lib/orders/status";
-import { refundPayment, toPaise } from "@/lib/payments/razorpay";
 import { paths } from "@/lib/utils/paths";
 import { refreshShop } from "@/lib/refresh";
 
@@ -133,17 +132,9 @@ export async function updateOrderAction(_prev: ActionState, fd: FormData): Promi
   const refunding = (v.to === "cancelled_refunded" || v.to === "returned_refunded") && v.refund;
   let note = v.note;
   if (refunding) {
-    if (!order.razorpayPaymentId) return { message: "No payment ID on this order, so it can't be refunded automatically. Refund it from the Razorpay dashboard and untick 'Refund via Razorpay'." };
-    if (isRazorpayConfigured) {
-      try {
-        const r = await refundPayment(order.razorpayPaymentId, toPaise(order.total), { orderNumber: order.number });
-        note = [note, `Refund ${r.id} (${r.status})`].filter(Boolean).join(" · ");
-      } catch (e) {
-        return { message: e instanceof Error ? e.message : "Refund failed; status not changed." };
-      }
-    } else {
-      note = [note, "Refund simulated (Razorpay not configured)"].filter(Boolean).join(" · ");
-    }
+    const r = await refundOrder(order);
+    if (!r.ok) return { message: `${r.message} Refund it from the Razorpay dashboard and untick 'Refund via Razorpay'. Status not changed.` };
+    note = [note, r.note].filter(Boolean).join(" · ");
   }
 
   try {

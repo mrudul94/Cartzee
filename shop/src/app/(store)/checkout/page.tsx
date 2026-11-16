@@ -5,6 +5,7 @@ import { allowMockPayments, config } from "@/lib/config";
 import { buildMetadata } from "@/lib/seo/metadata";
 import { paths } from "@/lib/utils/paths";
 import { redirect } from "next/navigation";
+import { listSavedAddresses } from "@/lib/addresses";
 import { customerAuthEnabled, getCustomer } from "@/lib/customer";
 
 export const dynamic = "force-dynamic";
@@ -28,7 +29,7 @@ export default async function CheckoutPage() {
             : "Razorpay test mode: use Razorpay test cards or UPI success@razorpay. No real money is charged."}
         </p>
       )}
-      <CheckoutForm defaultName={customer?.name} defaultEmail={customer?.email} />
+      <CheckoutForm defaultName={customer?.name} defaultEmail={customer?.email} defaultPhone={customer?.phone} savedAddresses={customer ? await listSavedAddresses() : []} />
     </Container>
   );
 }

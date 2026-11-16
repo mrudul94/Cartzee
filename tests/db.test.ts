@@ -95,6 +95,30 @@ describe("products without a subcategory (migration 0007)", () => {
   });
 });
 
+describe("saved addresses (migration 0008)", () => {
+  it("lets each shopper see and change only their own addresses", async () => {
+    const carol = "66666666-6666-6666-6666-666666666666";
+    const dave = "77777777-7777-7777-7777-777777777777";
+    await db.query("insert into auth.users (id) values ($1), ($2)", [carol, dave]);
+    const addr = "('Home', 'Carol R', '9876501234', '12 MG Road, Flat 4B', '', '', 'Pune', 'Maharashtra', '411001', true)";
+    const cols = "(label, name, phone, line1, line2, landmark, city, state, pincode, is_default)";
+    await asRole(db, "authenticated", () => db.query(`insert into customer_addresses ${cols} values ${addr}`), carol);
+
+    expect((await asRole(db, "authenticated", () => db.query("select id from customer_addresses"), carol)).rows).toHaveLength(1);
+    expect((await asRole(db, "authenticated", () => db.query("select id from customer_addresses"), dave)).rows).toHaveLength(0);
+    // Dave can't change or delete Carol's address, nor create one in her name.
+    expect((await asRole(db, "authenticated", () => db.query("update customer_addresses set city = 'X' returning id"), dave)).rows).toHaveLength(0);
+    expect((await asRole(db, "authenticated", () => db.query("delete from customer_addresses returning id"), dave)).rows).toHaveLength(0);
+    await expect(asRole(db, "authenticated", () => db.query(`insert into customer_addresses (user_id, ${cols.slice(1)} values ($1, ${addr.slice(1)}`, [carol]), dave)).rejects.toThrow(/row-level security/);
+    await asRole(db, "anon", async () => {
+      await expect(db.query("select * from customer_addresses")).rejects.toThrow(/permission denied/);
+    });
+    // Bad data is refused by the database too, and only one default per shopper.
+    await expect(asRole(db, "authenticated", () => db.query(`insert into customer_addresses ${cols} values ('', 'Carol R', '12345', '12 MG Road', '', '', 'Pune', 'Maharashtra', '411001', false)`), carol)).rejects.toThrow(/check/);
+    await expect(asRole(db, "authenticated", () => db.query(`insert into customer_addresses ${cols} values ${addr}`), carol)).rejects.toThrow(/duplicate key|unique/);
+  });
+});
+
 describe("mark_order_paid", () => {
   it("is idempotent, checks amount and Razorpay order, and decrements stock", async () => {
     const product = await pid("prd_004");

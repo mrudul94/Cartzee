@@ -5,7 +5,7 @@ import { site } from "@/lib/site";
 import { paths } from "@/lib/utils/paths";
 import { Container } from "./Container";
 
-/** Promo strip (editable in Admin → Settings), social links, Track order and Login. */
+/** Promo strip (editable in Admin → Settings), social links and Track order (account is in the header). */
 export function TopBar({ settings }: { settings: Settings }) {
   const { promo, social } = settings;
   const socials = (["instagram", "facebook", "youtube"] as const).filter((b) => social[b]);
@@ -41,9 +41,6 @@ export function TopBar({ settings }: { settings: Settings }) {
           )}
           <Link href={paths.track()} className="hover:underline">
             Track order
-          </Link>
-          <Link href={paths.signIn()} className="hover:underline">
-            Login
           </Link>
         </div>
       </Container>

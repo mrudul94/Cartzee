@@ -6,7 +6,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { z } from "zod";
-import { Lock } from "lucide-react";
+import { Lock, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { FormField } from "@/components/ui/FormField";
@@ -20,6 +20,7 @@ import { color } from "@/design-system/tokens";
 import { formatINR } from "@/lib/utils/format";
 import { track } from "@/lib/utils/analytics";
 import { paths } from "@/lib/utils/paths";
+import type { SavedAddress } from "@/lib/account";
 import { addressSchema, INDIAN_STATES } from "@/lib/utils/validators";
 import { OrderSummary } from "./OrderSummary";
 import { PrepaidNotice } from "./PrepaidNotice";
@@ -30,7 +31,28 @@ type Out = z.output<typeof addressSchema>;
 const stateOptions = INDIAN_STATES.map((s) => ({ value: s, label: s }));
 
 /** Delivery address (RHF + Zod: Indian PIN and mobile validation) and prepaid payment. */
-export function CheckoutForm({ defaultName = "", defaultEmail = "" }: { defaultName?: string; defaultEmail?: string } = {}) {
+export type CheckoutFormProps = {
+  defaultName?: string;
+  defaultEmail?: string;
+  defaultPhone?: string;
+  /** Signed-in shopper's saved addresses; the default one is filled in, and they can pick another. */
+  savedAddresses?: SavedAddress[];
+};
+
+const fromSaved = (a: SavedAddress) => ({
+  name: a.name,
+  phone: a.phone,
+  line1: a.line1,
+  line2: a.line2,
+  landmark: a.landmark,
+  city: a.city,
+  state: a.state as In["state"],
+  pincode: a.pincode,
+});
+
+export function CheckoutForm({ defaultName = "", defaultEmail = "", defaultPhone = "", savedAddresses = [] }: CheckoutFormProps = {}) {
+  const initial = savedAddresses.find((a) => a.isDefault) ?? savedAddresses[0];
+  const [chosen, setChosen] = useState(initial?.id ?? "");
   const hydrated = useHydrated();
   const { delivery } = useSettings();
   const items = useCart((s) => s.items);
@@ -38,13 +60,26 @@ export function CheckoutForm({ defaultName = "", defaultEmail = "" }: { defaultN
   const router = useRouter();
   const openRazorpay = useRazorpay();
   const [submitting, setSubmitting] = useState(false);
+  /** Set once payment succeeds: keeps a "payment received" message up while the order page loads (instead of an empty cart). */
+  const [placedOrderId, setPlacedOrderId] = useState<string | null>(null);
   const totals = cartTotals(items, delivery);
 
   const {
     register,
     handleSubmit,
+    reset,
+    getValues,
     formState: { errors },
-  } = useForm<In, unknown, Out>({ resolver: zodResolver(addressSchema), mode: "onBlur", defaultValues: { state: "" as In["state"], name: defaultName, email: defaultEmail } });
+  } = useForm<In, unknown, Out>({
+    resolver: zodResolver(addressSchema),
+    mode: "onBlur",
+    defaultValues: initial ? { ...fromSaved(initial), email: defaultEmail } : { state: "" as In["state"], name: defaultName, email: defaultEmail, phone: defaultPhone },
+  });
+  const pickSaved = (id: string) => {
+    setChosen(id);
+    const a = savedAddresses.find((x) => x.id === id);
+    reset(a ? { ...fromSaved(a), email: getValues("email") } : { state: "" as In["state"], name: defaultName, email: getValues("email"), phone: defaultPhone });
+  };
 
   const onSubmit = async (address: Out) => {
     setSubmitting(true);
@@ -79,8 +114,9 @@ export function CheckoutForm({ defaultName = "", defaultEmail = "" }: { defaultN
           body: JSON.stringify({ orderId: data.orderId, ...result }),
         }).catch(() => undefined);
       }
-      clear();
+      setPlacedOrderId(data.orderId);
       router.push(paths.orderSuccess(data.orderId));
+      clear();
     } catch (e) {
       const dismissed = e instanceof PaymentDismissedError;
       toast({
@@ -92,6 +128,20 @@ export function CheckoutForm({ defaultName = "", defaultEmail = "" }: { defaultN
     }
   };
 
+  if (placedOrderId) {
+    return (
+      <div role="status" aria-live="polite" className="flex flex-col items-center gap-3 py-16 text-center">
+        <Loader2 aria-hidden className="h-10 w-10 animate-spin text-success" />
+        <p className="text-lg font-semibold">Payment received. Opening your order…</p>
+        <p className="text-text-muted">
+          Not moving?{" "}
+          <a href={paths.orderSuccess(placedOrderId)} className="font-medium text-primary underline">
+            View your order
+          </a>
+        </p>
+      </div>
+    );
+  }
   if (!hydrated) return <p className="py-16 text-center text-text-muted">Loading your cart…</p>;
   if (items.length === 0) {
     return (
@@ -129,6 +179,19 @@ export function CheckoutForm({ defaultName = "", defaultEmail = "" }: { defaultN
         <Card as="fieldset" padding="md">
           <legend className="sr-only">Delivery address</legend>
           <h2 className="mb-4 font-heading text-xl font-semibold">Delivery address</h2>
+          {savedAddresses.length > 0 && (
+            <FormField id="saved-address" label="Deliver to" hint="Saved in My account → Saved addresses" className="mb-4">
+              <Select
+                id="saved-address"
+                value={chosen}
+                onChange={(ev) => pickSaved(ev.target.value)}
+                options={[
+                  ...savedAddresses.map((a) => ({ value: a.id, label: `${a.label ? a.label + ": " : ""}${a.name}, ${a.line1}, ${a.city} ${a.pincode}${a.isDefault ? " (default)" : ""}` })),
+                  { value: "", label: "A new address" },
+                ]}
+              />
+            </FormField>
+          )}
           <div className="grid gap-4 md:grid-cols-2">
             <div className="md:col-span-2">{field("line1", "House no., building, street", { autoComplete: "address-line1" })}</div>
             <div className="md:col-span-2">{field("line2", "Area, locality (optional)", { autoComplete: "address-line2" }, false)}</div>
