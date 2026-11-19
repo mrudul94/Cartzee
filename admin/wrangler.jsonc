@@ -1,7 +1,7 @@
 {
   "$schema": "../node_modules/wrangler/config-schema.json",
-  // Admin website (admin.cityseller.in), protected by Cloudflare Access. The shop is a separate Worker in ../shop.
-  "name": "city-seller-admin",
+  // Admin website (admin.cartzee.in), protected by Cloudflare Access. The shop is a separate Worker in ../shop.
+  "name": "cartzee-admin",
   "main": ".open-next/worker.js",
   "compatibility_date": "2026-11-01",
   "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
@@ -11,10 +11,10 @@
   },
   "services": [
     // Self-reference used by OpenNext for caching; must match "name".
-    { "binding": "WORKER_SELF_REFERENCE", "service": "city-seller-admin" }
+    { "binding": "WORKER_SELF_REFERENCE", "service": "cartzee-admin" }
   ],
   // Page cache (ISR) and cache tags (instant refresh after admin saves) in Workers KV: free plan, no card needed.
-  // (Created with: pnpm wrangler kv namespace create city-seller-admin-cache / city-seller-admin-tags)
+  // (KV namespaces made with: pnpm wrangler kv namespace create <name>; only the ids below matter)
   "kv_namespaces": [
     { "binding": "NEXT_INC_CACHE_KV", "id": "68eb64ff55ba412a8c2c5c8c33a1a9dc" },
     { "binding": "NEXT_TAG_CACHE_KV", "id": "896a789881dc45e196065b00a20e11e5" }
@@ -23,19 +23,19 @@
     // next/image optimisation via Cloudflare Images.
     "binding": "IMAGES"
   },
-  // TEST PHASE: served on the free *.workers.dev address (cityseller.in isn't on Cloudflare yet).
+  // TEST PHASE: served on the free *.workers.dev address (cartzee.in isn't on Cloudflare yet).
   // AT LAUNCH: set "workers_dev": false and restore the "routes" below (see README → Deploy).
   "workers_dev": true,
   "preview_urls": false,
   // "routes": [
-  //   { "pattern": "admin.cityseller.in", "custom_domain": true }
+  //   { "pattern": "admin.cartzee.in", "custom_domain": true }
   // ],
   // Non-secret runtime values. Secrets go in with `wrangler secret put` (see README).
   // NEXT_PUBLIC_* values are baked in at build time: set them in .env.production (or CI) before `pnpm deploy`.
   "vars": {
     // TEST PHASE: Resend's shared test sender (only delivers to the Resend account owner's email).
-    // AT LAUNCH: "City Seller <orders@cityseller.in>" once the domain is verified in Resend.
-    "EMAIL_FROM": "City Seller <onboarding@resend.dev>"
+    // AT LAUNCH: "Cartzee <orders@cartzee.in>" once the domain is verified in Resend.
+    "EMAIL_FROM": "Cartzee <onboarding@resend.dev>"
   },
   "observability": { "enabled": true }
 }

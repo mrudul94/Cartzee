@@ -33,17 +33,21 @@ export function ListingTemplate({ crumbs, title, products, chips, hideBudget, em
     <>
       <Container>
         <Breadcrumbs items={crumbs} />
-        <h1 className="mb-4 text-2xl font-semibold tracking-tight md:text-3xl">{title}</h1>
-        {chips && <ChipNav chips={chips} label="Refine" className="mb-6" />}
+        <h1 className="mb-3 text-2xl font-semibold tracking-tight md:text-3xl">{title}</h1>
+        {/* A lone "All" chip adds nothing, so chips show only when there is something to choose. */}
+        {chips && chips.length > 1 && <ChipNav chips={chips} label="Refine" className="mb-4" />}
         <Suspense
           fallback={
-            <ul className="grid grid-cols-2 gap-3 md:grid-cols-3 md:gap-4 lg:ml-auto lg:w-3/4 xl:grid-cols-4">
-              {products.slice(0, 12).map((p, i) => (
-                <li key={p.id}>
-                  <ProductCard product={p} priority={i < 2} headingLevel="h2" />
-                </li>
-              ))}
-            </ul>
+            <div className="flex gap-6">
+              <div aria-hidden className="hidden w-48 shrink-0 lg:block" />
+              <ul className="grid min-w-0 flex-1 grid-cols-2 gap-3 md:grid-cols-3 md:gap-4 xl:grid-cols-5">
+                {products.slice(0, 12).map((p, i) => (
+                  <li key={p.id}>
+                    <ProductCard product={p} priority={i < 2} headingLevel="h2" />
+                  </li>
+                ))}
+              </ul>
+            </div>
           }
         >
           <CategoryListing products={products} hideBudget={hideBudget} emptyMessage={emptyMessage} />

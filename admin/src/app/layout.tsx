@@ -9,7 +9,7 @@ const body = Onest({ subsets: ["latin", "latin-ext"], variable: "--font-body", d
 
 /** Admin website root layout. Never indexed. */
 export const metadata: Metadata = {
-  title: { default: "Admin", template: "%s | City Seller Admin" },
+  title: { default: "Admin", template: "%s | Cartzee Admin" },
   robots: { index: false, follow: false },
 };
 

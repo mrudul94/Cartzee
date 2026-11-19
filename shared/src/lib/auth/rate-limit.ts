@@ -23,7 +23,7 @@ async function sha256(text: string) {
 /** Hashed client IP (never stored raw) from Cloudflare / proxy headers. */
 export async function clientIpHash(headers: Headers): Promise<string> {
   const ip = headers.get("cf-connecting-ip") ?? headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown";
-  return sha256(`city-seller:${ip}`);
+  return sha256(`cartzee:${ip}`);
 }
 
 export async function isLocked(key: string, ipHash: string, now = Date.now()): Promise<boolean> {

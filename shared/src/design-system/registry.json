@@ -89,7 +89,6 @@
         "PincodeChecker",
         "PostForm",
         "ProductForm",
-        "ProductQuickActions",
         "ProfileForm",
         "ReviewForm",
         "SaleBanner",
@@ -99,6 +98,7 @@
         "admin/BlockEditor",
         "admin/EditorKit",
         "admin/PageEditors",
+        "admin/ProductQuickActions",
         "admin:/",
         "admin:/categories",
         "admin:/content/home",
@@ -179,6 +179,7 @@
         "TeamManager",
         "TrackOrderForm",
         "admin/EditorKit",
+        "admin/ProductQuickActions",
         "admin:/products"
       ],
       "accessibility": "aria-invalid when invalid; pair with FormField for label and described-by error.",
@@ -478,10 +479,10 @@
         "ProductCard",
         "TeamManager",
         "admin/AdminBits",
+        "admin/ProductQuickActions",
         "admin:/categories",
         "admin:/guides",
         "admin:/orders",
-        "admin:/products",
         "admin:/reviews",
         "shop:/[category]/[sub]/[product]",
         "shop:/account"
@@ -982,7 +983,8 @@
         "AddToCartButton",
         "CheckoutForm",
         "CustomerAuthForm",
-        "Toaster"
+        "Toaster",
+        "admin/ProductQuickActions"
       ],
       "accessibility": "Announced politely.",
       "example": "toast({ title: \"Added to cart\" })",
@@ -1889,11 +1891,14 @@
         "radius.lg",
         "radius.md",
         "shadow.focus",
+        "space.0",
         "space.1",
         "space.11",
         "space.2",
+        "space.24",
         "space.3",
         "space.4",
+        "space.48",
         "space.6",
         "space.8"
       ],
@@ -2234,7 +2239,7 @@
       "name": "BrandStory",
       "path": "shared/src/components/sections/InfoSections.tsx",
       "category": "section",
-      "description": "'Why choose City Seller?' story with category blurbs.",
+      "description": "'Why choose Cartzee?' story with category blurbs.",
       "variants": [],
       "props": {
         "title": "string",
@@ -2273,7 +2278,7 @@
         "HomeSections"
       ],
       "accessibility": "H2 + H3 blurbs.",
-      "example": "<BrandStory title=\"Why choose City Seller?\" paragraphs={…} blurbs={…} />",
+      "example": "<BrandStory title=\"Why choose Cartzee?\" paragraphs={…} blurbs={…} />",
       "lastUpdated": "2026-11-19"
     },
     {
@@ -2436,8 +2441,10 @@
         "font.size.3xl",
         "font.tracking.tight",
         "font.weight.semibold",
+        "space.0",
         "space.3",
         "space.4",
+        "space.48",
         "space.6"
       ],
       "usedIn": [
@@ -2654,7 +2661,7 @@
       "name": "Logo",
       "path": "shared/src/components/layout/Logo.tsx",
       "category": "layout",
-      "description": "City Seller wordmark link to home.",
+      "description": "Cartzee wordmark link to home.",
       "variants": [
         "default",
         "inverse"
@@ -2663,9 +2670,13 @@
         "inverse": "boolean"
       },
       "tokensUsed": [
+        "color.text",
+        "color.textInverse",
+        "font.size.2xl",
+        "font.tracking.tight",
+        "font.weight.bold",
         "space.11",
         "space.2",
-        "space.6",
         "space.9"
       ],
       "usedIn": [
@@ -2675,9 +2686,9 @@
         "admin:/login",
         "admin:/mfa"
       ],
-      "accessibility": "Link aria-label 'City Seller home'.",
+      "accessibility": "Link aria-label 'Cartzee home'.",
       "example": "<Logo />",
-      "lastUpdated": "2026-11-15"
+      "lastUpdated": "2026-11-19"
     },
     {
       "name": "NavDropdown",
@@ -2755,8 +2766,7 @@
         "space.3",
         "space.4",
         "space.6",
-        "space.8",
-        "space.9"
+        "space.8"
       ],
       "usedIn": [],
       "accessibility": "Links in lists.",
@@ -2797,8 +2807,7 @@
         "space.3",
         "space.4",
         "space.6",
-        "space.8",
-        "space.9"
+        "space.8"
       ],
       "usedIn": [
         "Header"
@@ -2843,8 +2852,7 @@
         "space.3",
         "space.4",
         "space.6",
-        "space.8",
-        "space.9"
+        "space.8"
       ],
       "usedIn": [
         "HomeSections",
@@ -3508,7 +3516,7 @@
       ],
       "accessibility": "",
       "example": "buildOrganizationJsonLd()",
-      "lastUpdated": "2026-11-15"
+      "lastUpdated": "2026-11-19"
     },
     {
       "name": "buildWebSiteJsonLd",
@@ -3523,7 +3531,7 @@
       ],
       "accessibility": "",
       "example": "buildWebSiteJsonLd()",
-      "lastUpdated": "2026-11-15"
+      "lastUpdated": "2026-11-19"
     },
     {
       "name": "buildBreadcrumbJsonLd",
@@ -3540,7 +3548,7 @@
       ],
       "accessibility": "",
       "example": "buildBreadcrumbJsonLd(crumbs)",
-      "lastUpdated": "2026-11-15"
+      "lastUpdated": "2026-11-19"
     },
     {
       "name": "buildFaqJsonLd",
@@ -3557,7 +3565,7 @@
       ],
       "accessibility": "",
       "example": "buildFaqJsonLd(faqs)",
-      "lastUpdated": "2026-11-15"
+      "lastUpdated": "2026-11-19"
     },
     {
       "name": "buildProductJsonLd",
@@ -3575,7 +3583,7 @@
       ],
       "accessibility": "",
       "example": "buildProductJsonLd(p, 'Kitchen > Jars')",
-      "lastUpdated": "2026-11-15"
+      "lastUpdated": "2026-11-19"
     },
     {
       "name": "buildItemListJsonLd",
@@ -3593,7 +3601,7 @@
       ],
       "accessibility": "",
       "example": "buildItemListJsonLd(title, items)",
-      "lastUpdated": "2026-11-15"
+      "lastUpdated": "2026-11-19"
     },
     {
       "name": "buildArticleJsonLd",
@@ -3610,7 +3618,7 @@
       ],
       "accessibility": "",
       "example": "buildArticleJsonLd(post)",
-      "lastUpdated": "2026-11-15"
+      "lastUpdated": "2026-11-19"
     },
     {
       "name": "JsonLd",
@@ -3768,8 +3776,8 @@
       ],
       "usedIn": [
         "ListingTemplate",
+        "admin/ProductQuickActions",
         "admin:/orders",
-        "admin:/products",
         "admin:/reviews"
       ],
       "lastUpdated": "2026-11-12",
@@ -3854,7 +3862,7 @@
       "usedIn": [
         "admin:/login"
       ],
-      "lastUpdated": "2026-11-14",
+      "lastUpdated": "2026-11-19",
       "accessibility": "Labelled fields, autocomplete tokens, alert on error.",
       "name": "LoginForm",
       "path": "admin/src/components/admin/LoginForm.tsx",
@@ -3882,7 +3890,7 @@
       "usedIn": [
         "admin:/orders/[id]"
       ],
-      "lastUpdated": "2026-11-12",
+      "lastUpdated": "2026-11-19",
       "accessibility": "Inline field errors; destructive actions confirm first; result announced.",
       "name": "OrderActions",
       "path": "admin/src/components/admin/OrderActions.tsx",
@@ -4326,7 +4334,7 @@
         "admin/BlockEditor",
         "admin/PageEditors"
       ],
-      "lastUpdated": "2026-11-15",
+      "lastUpdated": "2026-11-19",
       "accessibility": "Each item is a fieldset with a legend; move/remove buttons are labelled with the item name.",
       "props": {
         "items": "T[]",
@@ -4374,7 +4382,7 @@
         "PostForm",
         "SectionEditor"
       ],
-      "lastUpdated": "2026-11-15",
+      "lastUpdated": "2026-11-19",
       "accessibility": "Labelled input; hidden file input triggered by a labelled button.",
       "props": {
         "id": "string",
@@ -4420,7 +4428,7 @@
       "usedIn": [
         "SectionEditor"
       ],
-      "lastUpdated": "2026-11-15",
+      "lastUpdated": "2026-11-19",
       "accessibility": "Native datetime-local inputs with labels and hints.",
       "props": {
         "value": "{startsAt, endsAt} ISO",
@@ -4463,7 +4471,7 @@
         "SettingsForm",
         "admin/PageEditors"
       ],
-      "lastUpdated": "2026-11-15",
+      "lastUpdated": "2026-11-19",
       "accessibility": "Result announced (status/alert).",
       "props": {
         "contentKey": "settings|home|faqs|page:*",
@@ -4511,7 +4519,7 @@
         "admin/BlockEditor",
         "admin/PageEditors"
       ],
-      "lastUpdated": "2026-11-15",
+      "lastUpdated": "2026-11-19",
       "accessibility": "Uses FormField (label + hint).",
       "props": {
         "id": "string",
@@ -4615,6 +4623,7 @@
         "color.secondary",
         "color.text",
         "color.textMuted",
+        "color.warningSoft",
         "font.family.heading",
         "font.size.lg",
         "font.size.sm",
@@ -4633,7 +4642,7 @@
       "usedIn": [
         "admin:/content/home"
       ],
-      "lastUpdated": "2026-11-12",
+      "lastUpdated": "2026-11-19",
       "accessibility": "Ordered list; aria-current on the section being edited; delete asks for confirmation.",
       "props": {
         "initial": "HomeContent",
@@ -4816,7 +4825,7 @@
       "usedIn": [
         "admin:/guides/[slug]"
       ],
-      "lastUpdated": "2026-11-12",
+      "lastUpdated": "2026-11-19",
       "accessibility": "",
       "props": {
         "values": "PostFormValues",
@@ -4835,28 +4844,27 @@
       "variants": [],
       "tokensUsed": [
         "color.error",
+        "font.weight.semibold",
         "space.1",
+        "space.20",
         "space.4"
       ],
       "usedIn": [
         "admin:/products"
       ],
-      "lastUpdated": "2026-11-15",
+      "lastUpdated": "2026-11-19",
       "accessibility": "Each button label includes the product title.",
       "props": {
         "id": "string",
         "title": "string",
-        "inStock": "boolean",
-        "isActive": "boolean",
-        "isNew": "boolean|null",
-        "showsNew": "boolean",
-        "action": "server action"
+        "orderCount": "number",
+        "action": "server action (duplicate/remove)"
       },
       "name": "ProductQuickActions",
       "path": "admin/src/components/admin/ProductQuickActions.tsx",
       "category": "admin",
-      "description": "One-click product changes in the product list: sold out / in stock, hide / show, New badge (auto/on/off), duplicate.",
-      "example": "<ProductQuickActions id={p.id} title={p.title} … action={productQuickAction} />"
+      "description": "Row buttons in the product list: sold out / in stock, hide / show, New badge, duplicate, remove. Updates instantly (needs ProductQuickProvider).",
+      "example": "<ProductQuickActions id={p.id} title={p.title} action={productQuickAction} />"
     },
     {
       "variants": [],
@@ -5027,7 +5035,8 @@
       "variants": [],
       "tokensUsed": [],
       "usedIn": [
-        "admin:/products",
+        "admin/ProductQuickActions",
+        "byPosition",
         "lib/data/seed-repo",
         "lib/data/supabase-repo",
         "toCardProduct"
@@ -5043,6 +5052,24 @@
       "category": "util",
       "description": "New badge rule: manual override wins; otherwise automatic for 30 days after the product is added.",
       "example": "isProductNew(product)"
+    },
+    {
+      "name": "byPosition",
+      "path": "shared/src/lib/utils/product.ts",
+      "category": "util",
+      "description": "Shop product order: admin position first (lower first), then newest first. Use as a sort comparator.",
+      "example": "products.sort(byPosition)",
+      "props": {
+        "a, b": "{position, createdAt}"
+      },
+      "variants": [],
+      "tokensUsed": [],
+      "usedIn": [
+        "lib/data/admin-repo",
+        "lib/data/seed-repo"
+      ],
+      "lastUpdated": "2026-11-19",
+      "accessibility": ""
     },
     {
       "name": "PasswordInput",
@@ -5174,7 +5201,7 @@
       ],
       "accessibility": "Tabs are buttons with aria-pressed; errors announced via role=alert.",
       "example": "<CustomerAuthForm signIn={a} signUp={b} forgot={c} next=\"/checkout\" />",
-      "lastUpdated": "2026-11-17"
+      "lastUpdated": "2026-11-19"
     },
     {
       "name": "SetPasswordForm",
@@ -5200,7 +5227,7 @@
       ],
       "accessibility": "Errors announced via role=alert.",
       "example": "<SetPasswordForm action={setPassword} />",
-      "lastUpdated": "2026-11-14"
+      "lastUpdated": "2026-11-19"
     },
     {
       "name": "MfaForm",
@@ -5232,7 +5259,7 @@
       ],
       "accessibility": "Code input uses inputMode=numeric and autocomplete=one-time-code.",
       "example": "<MfaForm email={email} verify={verifyCode} resend={resendCode} />",
-      "lastUpdated": "2026-11-15"
+      "lastUpdated": "2026-11-19"
     },
     {
       "name": "TeamManager",
@@ -5267,7 +5294,7 @@
       ],
       "accessibility": "Permission checkboxes are labelled; destructive remove asks for confirmation.",
       "example": "<TeamManager team={t} selfId={id} … />",
-      "lastUpdated": "2026-11-15"
+      "lastUpdated": "2026-11-19"
     },
     {
       "name": "DeleteProductCard",
@@ -5399,7 +5426,7 @@
       ],
       "accessibility": "Labelled fields; result announced via role=status/alert.",
       "example": "<ProfileForm name={n} phone={p} email={e} action={saveProfile} />",
-      "lastUpdated": "2026-11-16"
+      "lastUpdated": "2026-11-19"
     },
     {
       "name": "AddressBook",
@@ -5433,7 +5460,7 @@
       ],
       "accessibility": "Each card has labelled actions; delete asks for confirmation; form errors per field.",
       "example": "<AddressBook addresses={a} save={s} remove={r} makeDefault={d} />",
-      "lastUpdated": "2026-11-16"
+      "lastUpdated": "2026-11-19"
     },
     {
       "name": "OrderSelfService",
@@ -5680,8 +5707,7 @@
         "space.3",
         "space.4",
         "space.6",
-        "space.8",
-        "space.9"
+        "space.8"
       ],
       "usedIn": [
         "Header"
@@ -5724,8 +5750,7 @@
         "space.3",
         "space.4",
         "space.6",
-        "space.8",
-        "space.9"
+        "space.8"
       ],
       "usedIn": [
         "Header"
@@ -5800,6 +5825,7 @@
       "tokensUsed": [
         "aspect.square",
         "color.background",
+        "color.border",
         "color.primary",
         "color.surface",
         "color.text",
@@ -5809,7 +5835,9 @@
         "font.size.base",
         "font.size.sm",
         "font.size.xs",
+        "font.weight.medium",
         "font.weight.semibold",
+        "radius.full",
         "radius.md",
         "shadow.focus",
         "space.0",
@@ -5828,6 +5856,160 @@
       "accessibility": "Category list is a labelled nav of buttons with aria-current; tiles are links with visible names.",
       "example": "<CategoryBrowser categories={data} />",
       "lastUpdated": "2026-11-19"
+    },
+    {
+      "name": "keepFormValues",
+      "path": "shared/src/hooks/useKeepFormValues.ts",
+      "category": "hook",
+      "description": "onSubmit helper that keeps typed values when a form action returns errors (React would otherwise clear the form).",
+      "variants": [],
+      "props": {
+        "dispatch": "form action from useActionState"
+      },
+      "tokensUsed": [],
+      "usedIn": [
+        "AddressBook",
+        "CategoryForm",
+        "CustomerAuthForm",
+        "LoginForm",
+        "MfaForm",
+        "OrderActions",
+        "PostForm",
+        "ProductForm",
+        "ProfileForm",
+        "ReviewForm",
+        "TeamManager",
+        "admin/EditorKit"
+      ],
+      "accessibility": "",
+      "example": "<form action={formAction} onSubmit={keepFormValues(formAction)}>",
+      "lastUpdated": "2026-11-19"
+    },
+    {
+      "variants": [],
+      "tokensUsed": [
+        "color.error",
+        "font.weight.semibold",
+        "space.1",
+        "space.20",
+        "space.4"
+      ],
+      "usedIn": [
+        "ProductQuickActions",
+        "QuickBadges",
+        "QuickFilterChips",
+        "QuickPosition",
+        "QuickStock",
+        "admin:/products"
+      ],
+      "lastUpdated": "2026-11-19",
+      "accessibility": "",
+      "props": {
+        "rows": "Record<id, QuickRow>",
+        "action": "quickProductAction"
+      },
+      "name": "ProductQuickProvider",
+      "path": "admin/src/components/admin/ProductQuickActions.tsx",
+      "category": "admin",
+      "description": "Product-list state for quick actions: optimistic updates, rollback + toast on failure, per-product pending, ignores stale responses.",
+      "example": "<ProductQuickProvider rows={quickRows} action={quickProductAction}>…</ProductQuickProvider>"
+    },
+    {
+      "variants": [],
+      "tokensUsed": [
+        "color.error",
+        "font.weight.semibold",
+        "space.1",
+        "space.20",
+        "space.4"
+      ],
+      "usedIn": [
+        "admin:/products"
+      ],
+      "lastUpdated": "2026-11-19",
+      "accessibility": "",
+      "props": {
+        "hrefs": "Record<filter, href>",
+        "active": "string",
+        "staleCount": "number"
+      },
+      "name": "QuickFilterChips",
+      "path": "admin/src/components/admin/ProductQuickActions.tsx",
+      "category": "admin",
+      "description": "Product filter chips with live Sold out / Hidden counts.",
+      "example": "<QuickFilterChips hrefs={…} active={filter} staleCount={n} />"
+    },
+    {
+      "variants": [],
+      "tokensUsed": [
+        "color.error",
+        "font.weight.semibold",
+        "space.1",
+        "space.20",
+        "space.4"
+      ],
+      "usedIn": [
+        "admin:/products"
+      ],
+      "lastUpdated": "2026-11-19",
+      "accessibility": "",
+      "props": {
+        "id": "string",
+        "isBestseller": "boolean",
+        "isFlashSale": "boolean"
+      },
+      "name": "QuickBadges",
+      "path": "admin/src/components/admin/ProductQuickActions.tsx",
+      "category": "admin",
+      "description": "Hidden / Bestseller / Flash sale / New / Sold out badges for a product row, live.",
+      "example": "<QuickBadges id={p.id} isBestseller isFlashSale={false} />"
+    },
+    {
+      "variants": [],
+      "tokensUsed": [
+        "color.error",
+        "font.weight.semibold",
+        "space.1",
+        "space.20",
+        "space.4"
+      ],
+      "usedIn": [
+        "admin:/products"
+      ],
+      "lastUpdated": "2026-11-19",
+      "accessibility": "",
+      "props": {
+        "id": "string"
+      },
+      "name": "QuickStock",
+      "path": "admin/src/components/admin/ProductQuickActions.tsx",
+      "category": "admin",
+      "description": "Live stock number (red when sold out).",
+      "example": "<QuickStock id={p.id} />"
+    },
+    {
+      "variants": [],
+      "tokensUsed": [
+        "color.error",
+        "font.weight.semibold",
+        "space.1",
+        "space.20",
+        "space.4"
+      ],
+      "usedIn": [
+        "admin:/products"
+      ],
+      "lastUpdated": "2026-11-19",
+      "accessibility": "",
+      "props": {
+        "id": "string",
+        "title": "string"
+      },
+      "name": "QuickPosition",
+      "path": "admin/src/components/admin/ProductQuickActions.tsx",
+      "category": "admin",
+      "description": "Position box for a product row; Enter or Set saves, empty = automatic.",
+      "example": "<QuickPosition id={p.id} title={p.title} />"
     }
   ]
 }

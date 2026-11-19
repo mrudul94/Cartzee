@@ -58,3 +58,33 @@ export function newSection(type: SectionType): HomeSection {
       return { ...base, type, title: "Frequently asked questions" };
   }
 }
+
+/** Main-category types that come after the shop rows (trust/info). Category rows are placed before the first of these. */
+export const INFO_SECTION_TYPES: ReadonlySet<SectionType> = new Set(["valueProps", "customerCare", "brandStory", "guides", "faq"]);
+
+/** The homepage row for one category: its products, 7 across on wide screens, "View all" to the category. */
+export function categoryRowSection(c: { slug: string; name: string; parentSlug: string | null }): HomeSection {
+  return {
+    id: `cat-${c.slug}`.slice(0, 40),
+    type: "productRow",
+    enabled: true,
+    ...sched,
+    title: c.name.slice(0, 60),
+    subtitle: "",
+    eyebrow: "",
+    source: "category",
+    categorySlug: c.slug,
+    productSlugs: [],
+    limit: 7,
+    layout: "row",
+    viewAllHref: c.parentSlug ? `/${c.parentSlug}/${c.slug}` : `/${c.slug}`,
+    background: "background",
+  };
+}
+
+/** Inserts sections before the first trust/info section (or at the end). */
+export function insertBeforeInfo(sections: HomeSection[], add: HomeSection[]): HomeSection[] {
+  const at = sections.findIndex((s) => INFO_SECTION_TYPES.has(s.type));
+  const i = at < 0 ? sections.length : at;
+  return [...sections.slice(0, i), ...add, ...sections.slice(i)];
+}

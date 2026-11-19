@@ -51,7 +51,7 @@ describe("content schemas and defaults", () => {
   });
 
   it("only allows site paths and https links", () => {
-    for (const ok of ["/kitchen", "/kitchen/storage-containers?x=1", "https://cityseller.in/x"]) expect(linkSchema.safeParse(ok).success, ok).toBe(true);
+    for (const ok of ["/kitchen", "/kitchen/storage-containers?x=1", "https://cartzee.in/x"]) expect(linkSchema.safeParse(ok).success, ok).toBe(true);
     for (const bad of ["javascript:alert(1)", "JAVASCRIPT:alert(1)", "//evil.example", "data:text/html,hi", "http://insecure.example", "kitchen", " javascript:x"])
       expect(linkSchema.safeParse(bad).success, bad).toBe(false);
   });
@@ -137,27 +137,60 @@ describe("CMS actions (dev admin)", () => {
     expect((await saveContentAction({}, fd({ key: "faqs", value: "not json" }))).ok).toBeFalsy();
   });
 
-  it("product quick actions: sold out, back in stock, hide, New badge, duplicate", async () => {
-    const { productQuickAction } = await import("@admin/app/cms-actions");
+  it("product quick actions: sold out, back in stock, hide, New badge, position; each returns the saved row", async () => {
+    const { quickProductAction } = await import("@admin/app/cms-actions");
     const { adminRepo } = await import("@/lib/data/admin-repo");
     const { repo } = await import("@/lib/data");
     const p = seedProducts[2]!;
+    const saved = async (op: Parameters<typeof quickProductAction>[1], value?: number | null) => {
+      const r = await quickProductAction(p.id, op, value);
+      if (!r.ok) throw new Error(r.message);
+      return r.product;
+    };
 
-    await productQuickAction(fd({ id: p.id, op: "soldout" }));
-    expect((await adminRepo.getProduct(p.id))?.stock).toBe(0);
-    await productQuickAction(fd({ id: p.id, op: "instock", restock: "15" }));
+    expect((await saved("soldout")).stock).toBe(0);
+    expect((await adminRepo.getProduct(p.id))?.stock).toBe(0); // survives a reload
+    expect((await saved("instock", 15)).stock).toBe(15);
     expect((await adminRepo.getProduct(p.id))?.stock).toBe(15);
 
-    await productQuickAction(fd({ id: p.id, op: "hide" }));
+    expect((await saved("hide")).isActive).toBe(false);
     expect(await repo.getProductBySlug(p.slug)).toBeNull();
-    await productQuickAction(fd({ id: p.id, op: "show" }));
+    expect((await saved("show")).isActive).toBe(true);
     expect(await repo.getProductBySlug(p.slug)).not.toBeNull();
 
-    await productQuickAction(fd({ id: p.id, op: "new-on" }));
+    expect((await saved("new-on")).isNew).toBe(true);
     expect((await repo.listProducts({ newArrivals: true })).some((x) => x.id === p.id)).toBe(true);
-    await productQuickAction(fd({ id: p.id, op: "new-off" }));
+    expect((await saved("new-off")).isNew).toBe(false);
     expect((await repo.listProducts({ newArrivals: true })).some((x) => x.id === p.id)).toBe(false);
 
+    expect((await saved("position", 3)).position).toBe(3);
+    expect((await saved("position", null)).position).toBeNull();
+  });
+
+  it("quick actions refuse bad input and unknown products (the list rolls back)", async () => {
+    const { quickProductAction } = await import("@admin/app/cms-actions");
+    const p = seedProducts[2]!;
+    expect(await quickProductAction(p.id, "position", 0)).toMatchObject({ ok: false });
+    expect(await quickProductAction(p.id, "position", 1.5)).toMatchObject({ ok: false });
+    expect(await quickProductAction("no-such-product", "soldout")).toMatchObject({ ok: false, message: "Product not found" });
+    expect(await quickProductAction(p.id, "delete" as never)).toMatchObject({ ok: false });
+  });
+
+  it("rapid toggles on two products each end in the right saved state", async () => {
+    const { quickProductAction } = await import("@admin/app/cms-actions");
+    const { adminRepo } = await import("@/lib/data/admin-repo");
+    const [a, b] = [seedProducts[3]!, seedProducts[4]!];
+    await Promise.all([quickProductAction(a.id, "soldout"), quickProductAction(b.id, "soldout")]);
+    await Promise.all([quickProductAction(a.id, "instock", 10), quickProductAction(b.id, "instock", 7)]);
+    await quickProductAction(b.id, "soldout");
+    expect((await adminRepo.getProduct(a.id))?.stock).toBe(10);
+    expect((await adminRepo.getProduct(b.id))?.stock).toBe(0);
+  });
+
+  it("duplicate from the list opens the hidden copy", async () => {
+    const { productQuickAction } = await import("@admin/app/cms-actions");
+    const { adminRepo } = await import("@/lib/data/admin-repo");
+    const p = seedProducts[2]!;
     const err = await productQuickAction(fd({ id: p.id, op: "duplicate" })).catch((e: { url?: string }) => e);
     expect((err as { url?: string }).url).toMatch(/^\/products\/.+\?created=1/);
     const copy = (await adminRepo.listProducts()).find((x) => x.slug === `${p.slug}-copy`);

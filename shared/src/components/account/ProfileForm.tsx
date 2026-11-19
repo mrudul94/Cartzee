@@ -1,5 +1,6 @@
 "use client";
 
+import { keepFormValues } from "@/hooks/useKeepFormValues";
 import { useActionState } from "react";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
@@ -20,7 +21,7 @@ export function ProfileForm({ name, phone, email, action }: ProfileFormProps) {
   const [state, formAction, pending] = useActionState(action, {});
   return (
     <Card padding="lg" className="flex flex-col gap-4">
-      <form action={formAction} className="flex flex-col gap-4" noValidate>
+      <form action={formAction} onSubmit={keepFormValues(formAction)} className="flex flex-col gap-4" noValidate>
         <div className="grid gap-4 md:grid-cols-2">
           <FormField id="profile-name" label="Full name" error={state.errors?.name} required>
             <Input id="profile-name" name="name" defaultValue={name} autoComplete="name" invalid={Boolean(state.errors?.name)} />

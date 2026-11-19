@@ -2,17 +2,14 @@ import Image from "next/image";
 import Link from "next/link";
 import { Plus } from "lucide-react";
 import { MarginText } from "@/components/admin/AdminBits";
-import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
-import { ChipNav } from "@/components/ui/ChipNav";
 import { DataTable } from "@/components/ui/DataTable";
 import { Input } from "@/components/ui/Input";
 import { adminRepo } from "@/lib/data/admin-repo";
 import { daysSince, formatINR } from "@/lib/utils/format";
 import { paths } from "@/lib/utils/paths";
-import { isProductNew } from "@/lib/utils/product";
-import { ProductQuickActions } from "@/components/admin/ProductQuickActions";
-import { productQuickAction } from "../../cms-actions";
+import { ProductQuickActions, ProductQuickProvider, QuickBadges, QuickFilterChips, QuickPosition, QuickStock, type QuickRow } from "@/components/admin/ProductQuickActions";
+import { productQuickAction, quickProductAction } from "../../cms-actions";
 import { requirePermission } from "@/lib/auth/admin";
 
 export const metadata = { title: "Products" };
@@ -33,8 +30,13 @@ export default async function AdminProductsPage({ searchParams }: Props) {
   const pick = filters[filter as keyof typeof filters] ?? filters.all;
   const rows = all.filter((p) => pick(p) && (!needle || `${p.title} ${p.slug}`.toLowerCase().includes(needle)));
   const href = (f: string) => paths.admin(`/products?filter=${f}${q ? `&q=${encodeURIComponent(q)}` : ""}`);
+  // Quick-action state for every product (filter counts cover all of them, not just this page's rows).
+  const quickRows: Record<string, QuickRow> = Object.fromEntries(
+    all.map((p) => [p.id, { stock: p.stock, isActive: p.isActive, isNew: p.isNew ?? null, position: p.position ?? null, createdAt: p.createdAt }]),
+  );
 
   return (
+    <ProductQuickProvider rows={quickRows} action={quickProductAction}>
     <div className="flex flex-col gap-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <h1 className="font-heading text-3xl font-semibold">Products</h1>
@@ -59,15 +61,7 @@ export default async function AdminProductsPage({ searchParams }: Props) {
         </label>
         <Input id="product-q" name="q" type="search" defaultValue={q} placeholder="Search by title or slug" />
       </form>
-      <ChipNav
-        label="Filter products"
-        chips={[
-          { label: "All", href: href("all"), active: filter === "all", count: all.length },
-          { label: "Price check due", href: href("stale"), active: filter === "stale", count: all.filter(filters.stale).length },
-          { label: "Sold out", href: href("soldout"), active: filter === "soldout", count: all.filter(filters.soldout).length },
-          { label: "Hidden", href: href("hidden"), active: filter === "hidden", count: all.filter(filters.hidden).length },
-        ]}
-      />
+      <QuickFilterChips hrefs={{ all: href("all"), stale: href("stale"), soldout: href("soldout"), hidden: href("hidden") }} active={filter} staleCount={all.filter(filters.stale).length} />
       <DataTable
         caption="Products"
         rows={rows}
@@ -83,21 +77,21 @@ export default async function AdminProductsPage({ searchParams }: Props) {
                 </span>
                 <span>
                   <span className="font-medium">{p.title}</span>
-                  <span className="mt-1 flex flex-wrap gap-1">
-                    {!p.isActive && <Badge variant="neutral">Hidden</Badge>}
-                    {p.isBestseller && <Badge variant="outline">Bestseller</Badge>}
-                    {p.isFlashSale && <Badge variant="sale">Flash sale</Badge>}
-                    {isProductNew(p) && <Badge variant="success">New</Badge>}
-                    {p.stock === 0 && <Badge variant="dark">Sold out</Badge>}
-                  </span>
+                  <QuickBadges id={p.id} isBestseller={p.isBestseller} isFlashSale={p.isFlashSale} />
                 </span>
               </Link>
             ),
           },
+          {
+            header: "Position",
+            // Lower shows first in the shop; empty = automatic (newest first, after numbered products). Enter or Set saves.
+            cell: (p) => <QuickPosition id={p.id} title={p.title} />,
+            align: "right",
+          },
           { header: "Price", cell: (p) => <>{formatINR(p.price)}<s className="block text-sm text-text-muted">{formatINR(p.mrp)}</s></>, align: "right" },
           { header: "Meesho", cell: (p) => formatINR(p.meeshoPrice), align: "right", hideOnMobile: true },
           { header: "Margin", cell: (p) => <MarginText price={p.price} cost={p.meeshoPrice} />, align: "right" },
-          { header: "Stock", cell: (p) => <span className={p.stock === 0 ? "font-semibold text-error" : undefined}>{p.stock}</span>, align: "right", hideOnMobile: true },
+          { header: "Stock", cell: (p) => <QuickStock id={p.id} />, align: "right", hideOnMobile: true },
           // Paid orders (not cancelled or returned) containing this product; the shop shows "10+ bought" from 10.
           { header: "Bought", cell: (p) => p.boughtCount ?? 0, align: "right", hideOnMobile: true },
           {
@@ -113,20 +107,12 @@ export default async function AdminProductsPage({ searchParams }: Props) {
             header: "Quick actions",
             align: "right",
             cell: (p) => (
-              <ProductQuickActions
-                id={p.id}
-                title={p.title}
-                orderCount={orderCounts.get(p.id) ?? 0}
-                inStock={p.stock > 0}
-                isActive={p.isActive}
-                isNew={p.isNew ?? null}
-                showsNew={isProductNew(p)}
-                action={productQuickAction}
-              />
+              <ProductQuickActions id={p.id} title={p.title} orderCount={orderCounts.get(p.id) ?? 0} action={productQuickAction} />
             ),
           },
         ]}
       />
     </div>
+    </ProductQuickProvider>
   );
 }

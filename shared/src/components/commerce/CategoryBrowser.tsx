@@ -81,9 +81,17 @@ export function CategoryBrowser({ categories }: { categories: BrowserCategory[] 
         </div>
         {current.subcategories.length > 0 && (
           <section aria-label={`${current.name} types`} className="mb-4">
-            <ul className={grid}>
+            {/* Subcategories have no pictures: shown as name chips. */}
+            <ul className="flex flex-wrap gap-2">
               {current.subcategories.map((t) => (
-                <Tile key={t.href} t={t} />
+                <li key={t.href}>
+                  <Link
+                    href={t.href}
+                    className="inline-flex min-h-11 items-center rounded-full border border-border bg-background px-4 text-sm font-medium text-text hover:border-primary hover:text-primary focus-visible:outline-none focus-visible:shadow-focus"
+                  >
+                    {t.label}
+                  </Link>
+                </li>
               ))}
             </ul>
           </section>

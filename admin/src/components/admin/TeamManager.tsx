@@ -1,5 +1,6 @@
 "use client";
 
+import { keepFormValues } from "@/hooks/useKeepFormValues";
 import { startTransition, useActionState, useEffect, useRef, useState } from "react";
 import { Trash2, UserPlus } from "lucide-react";
 import { Badge } from "@/components/ui/Badge";
@@ -54,7 +55,7 @@ function MemberRow({ m, update, remove }: { m: TeamMemberView; update: Action; r
         {m.isMe && <Badge>You</Badge>}
         {m.role === "super_admin" ? <Badge variant="dark">Super Admin</Badge> : <Badge variant="outline">Admin</Badge>}
       </div>
-      <form action={uAction} className="flex flex-col gap-3">
+      <form action={uAction} onSubmit={keepFormValues(uAction)} className="flex flex-col gap-3">
         <input type="hidden" name="userId" value={m.userId} />
         <FormField id={`role-${m.userId}`} label="Role">
           <Select id={`role-${m.userId}`} name="role" size="sm" value={role} onChange={(e) => setRole(e.target.value as AdminRole)} options={ROLE_OPTIONS} className="max-w-80" />

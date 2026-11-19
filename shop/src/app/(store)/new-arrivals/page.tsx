@@ -8,7 +8,7 @@ export const revalidate = 3600;
 
 export const metadata = buildMetadata({
   title: "New Arrivals: Latest Home Essentials",
-  description: "The newest kitchen, storage, cleaning, bathroom and décor products at City Seller, with prepaid checkout and delivery across India.",
+  description: "The newest kitchen, storage, cleaning, bathroom and décor products at Cartzee, with prepaid checkout and delivery across India.",
   path: paths.newArrivals(),
 });
 
@@ -19,7 +19,7 @@ export default async function NewArrivalsPage() {
     <ListingTemplate
       crumbs={[{ label: "New arrivals" }]}
       title="New arrivals"
-      answer={`New arrivals are the latest products added to City Seller in the last ${NEW_BADGE_DAYS} days, plus a few new picks our team wants you to see first.`}
+      answer={`New arrivals are the latest products added to Cartzee in the last ${NEW_BADGE_DAYS} days, plus a few new picks our team wants you to see first.`}
       products={products.map(toCardProduct)}
       emptyMessage="No new arrivals right now. Check back soon, or browse our bestsellers."
     />

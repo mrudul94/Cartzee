@@ -66,7 +66,7 @@ export const useCart = create<CartState>()(
       setOpen: (isOpen) => set({ isOpen }),
     }),
     {
-      name: "city-seller-cart",
+      name: "cartzee-cart",
       version: 1,
       storage: createJSONStorage(() => {
         try {

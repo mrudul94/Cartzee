@@ -59,7 +59,7 @@ export function ReviewList({ reviews, rating, reviewCount, productTitle }: Revie
             </p>
             {r.reply && (
               <div className="mt-3 rounded-md border-l-4 border-primary bg-background p-3 text-sm">
-                <p className="font-semibold text-text">Reply from City Seller</p>
+                <p className="font-semibold text-text">Reply from Cartzee</p>
                 <p className="mt-1 text-text">{r.reply}</p>
               </div>
             )}

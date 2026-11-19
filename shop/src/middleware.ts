@@ -1,7 +1,7 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { createServerClient } from "@supabase/ssr";
 
-/** Shop website: one canonical host (www.cityseller.in/… → cityseller.in/…). The admin is a separate app. */
+/** Shop website: one canonical host (www.cartzee.in/… → cartzee.in/…). The admin is a separate app. */
 const SITE_HOST = (() => {
   try {
     return new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "").hostname.toLowerCase() || undefined;

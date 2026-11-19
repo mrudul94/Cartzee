@@ -15,5 +15,5 @@ export const metadata = buildMetadata({
 /** Homepage: sections, banners and their order come from Admin → Homepage. */
 export default async function HomePage() {
   const [home, categories, posts, faqs, settings] = await Promise.all([getHome(), repo.listCategories(), repo.listPosts(), getStoreFaqs(), getSettings()]);
-  return <HomeSections sections={home.sections} ctx={{ categories, posts, faqs, settings }} />;
+  return <HomeSections sections={home.sections} autoCategoryRows={!home.categoryRowsManaged} ctx={{ categories, posts, faqs, settings }} />;
 }

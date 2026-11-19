@@ -9,7 +9,7 @@ import { site } from "@/lib/site";
 
 export async function sendEmail(msg: { to: string; subject: string; html: string; text: string }) {
   const key = process.env.RESEND_API_KEY;
-  const from = process.env.EMAIL_FROM ?? `${site.name} <orders@cityseller.in>`;
+  const from = process.env.EMAIL_FROM ?? `${site.name} <orders@cartzee.in>`;
   if (!key) {
     console.info(`[email:mock] to=${msg.to} subject="${msg.subject}"\n${msg.text}`);
     return { ok: true, mock: true };

@@ -87,7 +87,7 @@ export default async function AdminReviewsPage({ searchParams }: Props) {
                   <input type="hidden" name="id" value={r.id} />
                   <input type="hidden" name="op" value="reply" />
                   <label htmlFor={`reply-${r.id}`} className="text-sm font-medium">
-                    Public reply from City Seller {r.reply ? "(shown under the review)" : "(optional)"}
+                    Public reply from Cartzee {r.reply ? "(shown under the review)" : "(optional)"}
                   </label>
                   <Textarea id={`reply-${r.id}`} name="reply" rows={2} maxLength={1000} defaultValue={r.reply ?? ""} placeholder="e.g. Thank you! Glad it fits your kitchen." />
                   <Button type="submit" size="sm" variant="outline" className="self-start">

@@ -1,5 +1,6 @@
 "use client";
 
+import { keepFormValues } from "@/hooks/useKeepFormValues";
 import { useActionState, useEffect, useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
@@ -64,7 +65,7 @@ export function CustomerAuthForm({ next, signIn, signUp, forgot, initialMode = "
 
       {mode === "signin" ? (
         <>
-          <form action={inAction} className="flex flex-col gap-4" noValidate>
+          <form action={inAction} onSubmit={keepFormValues(inAction)} className="flex flex-col gap-4" noValidate>
             <input type="hidden" name="next" value={next} />
             <FormField id="in-email" label="Email" error={inState.errors?.email} required>
               <Input id="in-email" name="email" type="email" autoComplete="email" invalid={Boolean(inState.errors?.email)} />
@@ -92,7 +93,7 @@ export function CustomerAuthForm({ next, signIn, signUp, forgot, initialMode = "
           </form>
         </>
       ) : (
-        <form action={upAction} className="flex flex-col gap-4" noValidate>
+        <form action={upAction} onSubmit={keepFormValues(upAction)} className="flex flex-col gap-4" noValidate>
           <input type="hidden" name="next" value={next} />
           <FormField id="up-name" label="Full name" error={upState.errors?.name} required>
             <Input id="up-name" name="name" autoComplete="name" invalid={Boolean(upState.errors?.name)} />

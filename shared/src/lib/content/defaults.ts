@@ -14,13 +14,13 @@ export const DEFAULT_SETTINGS = {
     phone: "+91 90000 00000",
     /** WhatsApp number in international format, digits only (91XXXXXXXXXX). */
     whatsapp: "919000000000",
-    email: "care@cityseller.in",
+    email: "care@cartzee.in",
     hours: "Mon to Sat, 10 AM to 7 PM IST",
   },
   social: {
-    instagram: "https://instagram.com/cityseller",
-    facebook: "https://facebook.com/cityseller",
-    youtube: "https://youtube.com/@cityseller",
+    instagram: "https://instagram.com/cartzee",
+    facebook: "https://facebook.com/cartzee",
+    youtube: "https://youtube.com/@cartzee",
   },
   delivery: {
     freeAbove: 499,
@@ -29,5 +29,5 @@ export const DEFAULT_SETTINGS = {
   },
   upiDiscountPercent: 5,
   /** Legacy: the floating WhatsApp button was removed from the shop; kept so older saved settings still load. */
-  whatsappButton: { enabled: false, message: "Hi City Seller, I have a question about " },
+  whatsappButton: { enabled: false, message: "Hi Cartzee, I have a question about " },
 };

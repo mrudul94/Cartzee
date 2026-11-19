@@ -2,8 +2,8 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { NextRequest } from "next/server";
 import { exportJWK, generateKeyPair, SignJWT } from "jose";
 
-const SHOP = "cityseller.in";
-const ADMIN = "admin.cityseller.in";
+const SHOP = "cartzee.in";
+const ADMIN = "admin.cartzee.in";
 
 const req = (host: string, path: string, headers: Record<string, string> = {}) =>
   new NextRequest(`https://${host}${path}`, { headers: { host, ...headers } });
@@ -50,12 +50,12 @@ describe("admin website", () => {
     const { publicKey, privateKey } = await generateKeyPair("RS256");
     const jwk = { ...(await exportJWK(publicKey)), kid: "k1", alg: "RS256", use: "sig" };
     vi.stubGlobal("fetch", async () => new Response(JSON.stringify({ keys: [jwk] }), { headers: { "content-type": "application/json" } }));
-    const mw = await adminMiddleware({ CF_ACCESS_TEAM_DOMAIN: "cityseller.cloudflareaccess.com", CF_ACCESS_AUD: "aud-123" });
+    const mw = await adminMiddleware({ CF_ACCESS_TEAM_DOMAIN: "cartzee.cloudflareaccess.com", CF_ACCESS_AUD: "aud-123" });
 
     const sign = (aud: string) =>
       new SignJWT({ email: "partner@example.com" })
         .setProtectedHeader({ alg: "RS256", kid: "k1" })
-        .setIssuer("https://cityseller.cloudflareaccess.com")
+        .setIssuer("https://cartzee.cloudflareaccess.com")
         .setAudience(aud)
         .setIssuedAt()
         .setExpirationTime("5m")

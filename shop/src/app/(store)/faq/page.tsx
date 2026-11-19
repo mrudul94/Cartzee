@@ -11,7 +11,7 @@ export const revalidate = 3600;
 
 export const metadata = buildMetadata({
   title: "Frequently asked questions",
-  description: "Answers about payment, delivery, returns and order tracking at City Seller.",
+  description: "Answers about payment, delivery, returns and order tracking at Cartzee.",
   path: paths.faq(),
 });
 

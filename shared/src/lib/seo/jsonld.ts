@@ -15,7 +15,7 @@ export function buildOrganizationJsonLd(settings: Pick<Settings, "care" | "socia
     "@id": `${site.url}/#organization`,
     name: site.name,
     url: site.url,
-    logo: abs("/logo/logo-full.png"),
+    logo: abs("/logo/mark.png"),
     description: site.description,
     email: care.email,
     telephone: care.phone,

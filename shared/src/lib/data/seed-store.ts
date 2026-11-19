@@ -23,9 +23,9 @@ type Store = {
  * Mutable in-memory data for mock mode (no Supabase). Lives on globalThis so dev hot reloads
  * and route handlers share it; resets on server restart. Admin edits apply here.
  */
-const g = globalThis as unknown as { __citySellerStore?: Store };
-const existing = g.__citySellerStore;
-export const store: Store = (g.__citySellerStore = {
+const g = globalThis as unknown as { __cartzeeStore?: Store };
+const existing = g.__cartzeeStore;
+export const store: Store = (g.__cartzeeStore = {
   products: existing?.products ?? [],
   categories: existing?.categories ?? [],
   posts: existing?.posts ?? [],

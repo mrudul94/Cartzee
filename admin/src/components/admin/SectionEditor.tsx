@@ -155,21 +155,43 @@ export function SectionEditor({ section: s, onChange, categories, products, uplo
                   { value: "manual", label: "Hand-picked" },
                 ]}
               />
-              <SelectField id={id("layout")} label="Layout" value={s.layout} onChange={(v) => set({ layout: v as typeof s.layout })} options={[{ value: "grid", label: "Grid" }, { value: "carousel", label: "Sideways scrolling row" }]} />
+              <SelectField
+                id={id("layout")}
+                label="Layout"
+                value={s.layout}
+                onChange={(v) => set({ layout: v as typeof s.layout })}
+                options={[
+                  { value: "row", label: "One row (7 across, scrolls on phones)" },
+                  { value: "grid", label: "Grid" },
+                  { value: "carousel", label: "Sideways scrolling row" },
+                ]}
+              />
             </Row>
             {s.source === "category" && (
               <SelectField
                 id={id("cat")}
                 label="Category"
+                hint="Products show in their Position order (Admin → Products), then newest first."
                 value={s.categorySlug}
-                onChange={(categorySlug) => set({ categorySlug })}
+                onChange={(categorySlug) => {
+                  // Keep the title and "View all" link in step with the category unless they were customised.
+                  const prev = categories.find((c) => c.slug === s.categorySlug);
+                  const next = categories.find((c) => c.slug === categorySlug);
+                  const autoTitle = !s.title || s.title === prev?.name || s.title === "New arrivals";
+                  const autoLink = !s.viewAllHref || (prev && s.viewAllHref === paths.category(prev)) || s.viewAllHref === "/new-arrivals";
+                  set({
+                    categorySlug,
+                    ...(next && autoTitle ? { title: next.name.slice(0, 60) } : {}),
+                    ...(next && autoLink ? { viewAllHref: paths.category(next) } : {}),
+                  });
+                }}
                 options={[{ value: "", label: "Choose…" }, ...categories.map((c) => ({ value: c.slug, label: c.parentSlug ? `— ${c.name}` : c.name }))]}
               />
             )}
             {s.source === "manual" && <ProductPicker label="Products" options={products} value={s.productSlugs} onChange={(productSlugs) => set({ productSlugs })} />}
             <Row>
               {s.source !== "manual" && (
-                <SelectField id={id("limit")} label="How many" value={String(s.limit)} onChange={(v) => set({ limit: Number(v) })} options={[4, 6, 8, 12].map((n) => ({ value: String(n), label: String(n) }))} />
+                <SelectField id={id("limit")} label="How many" value={String(s.limit)} onChange={(v) => set({ limit: Number(v) })} options={[4, 6, 7, 8, 12].map((n) => ({ value: String(n), label: String(n) }))} />
               )}
               <TextField id={id("viewall")} label="“View all” link (optional)" value={s.viewAllHref} onChange={(viewAllHref) => set({ viewAllHref })} placeholder="/bestsellers" />
               <SelectField id={id("bg")} label="Background" value={s.background} onChange={(v) => set({ background: v as typeof s.background })} options={BACKGROUNDS} />

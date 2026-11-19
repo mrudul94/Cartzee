@@ -59,3 +59,11 @@ export function toCardProduct(p: Product): CardProduct {
     isNew: isProductNew(p),
   };
 }
+
+/** Shop order: products with an admin position first (lower first), then the rest newest first. */
+export function byPosition(a: { position?: number | null; createdAt: string }, b: { position?: number | null; createdAt: string }) {
+  const pa = a.position ?? Infinity;
+  const pb = b.position ?? Infinity;
+  if (pa !== pb) return pa - pb;
+  return b.createdAt.localeCompare(a.createdAt);
+}

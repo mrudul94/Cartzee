@@ -11,7 +11,7 @@ export type Category = {
   parentSlug: string | null;
   /** 1–2 sentence direct answer shown at the top of the category page (AEO). */
   intro: string;
-  /** Short copy used in the "Why choose City Seller" blurbs. */
+  /** Short copy used in the "Why choose Cartzee" blurbs. */
   blurb: string;
   image: string;
   sortOrder: number;
@@ -50,6 +50,8 @@ export type Product = {
   isFlashSale: boolean;
   /** "New" badge override: true = always, false = never, null/undefined = automatic (added in the last 30 days). */
   isNew?: boolean | null;
+  /** Display order set in the admin (lower first); undefined/null = after positioned products, newest first. */
+  position?: number | null;
   images: { src: string; alt: string }[];
   faqs: Faq[];
   createdAt: string;

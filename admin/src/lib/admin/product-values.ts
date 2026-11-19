@@ -40,6 +40,7 @@ export function toFormValues(p: AdminProduct): ProductFormValues {
     isFlashSale: p.isFlashSale,
     isActive: p.isActive,
     isNew: p.isNew ?? null,
+    position: p.position ?? null,
     seoTitle: p.seoTitle,
     seoDescription: p.seoDescription,
     images: p.images,
@@ -69,5 +70,6 @@ export const emptyFormValues: ProductFormValues = {
   isFlashSale: false,
   isActive: true,
   isNew: null,
+  position: null,
   images: [],
 };

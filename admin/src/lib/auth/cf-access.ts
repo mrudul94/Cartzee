@@ -3,12 +3,12 @@ import { createRemoteJWKSet, jwtVerify } from "jose";
 /**
  * Cloudflare Access gate for the admin website (defence in depth).
  *
- * Cloudflare Access sits in front of admin.cityseller.in and only lets approved emails through.
+ * Cloudflare Access sits in front of admin.cartzee.in and only lets approved emails through.
  * It then adds a signed JWT (`Cf-Access-Jwt-Assertion` header / `CF_Authorization` cookie) to every
  * request. Verifying that JWT here means a request that reaches the app without passing Access —
  * e.g. via a *.workers.dev URL or a spoofed Host header — is refused.
  *
- * Env: CF_ACCESS_TEAM_DOMAIN (e.g. "cityseller.cloudflareaccess.com"), CF_ACCESS_AUD (application AUD tag).
+ * Env: CF_ACCESS_TEAM_DOMAIN (e.g. "cartzee.cloudflareaccess.com"), CF_ACCESS_AUD (application AUD tag).
  * Edge-safe (runs in middleware); uses WebCrypto via jose.
  */
 

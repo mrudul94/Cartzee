@@ -15,7 +15,7 @@ const EMPTY: PostFormValues = {
   slug: "",
   excerpt: "",
   cover: "",
-  author: "City Seller Team",
+  author: "Cartzee Team",
   isPublished: false,
   body: [{ type: "p", text: "" }],
   faqs: [],

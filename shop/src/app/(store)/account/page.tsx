@@ -9,7 +9,7 @@ import { buildMetadata } from "@/lib/seo/metadata";
 import { formatDate, formatINR } from "@/lib/utils/format";
 import { paths } from "@/lib/utils/paths";
 
-export const metadata = buildMetadata({ title: "My orders", description: "Your City Seller orders.", path: paths.login(), noindex: true });
+export const metadata = buildMetadata({ title: "My orders", description: "Your Cartzee orders.", path: paths.login(), noindex: true });
 
 /** My account → My orders (the layout guarantees a signed-in shopper). */
 export default async function AccountOrdersPage() {

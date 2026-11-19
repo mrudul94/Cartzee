@@ -93,7 +93,7 @@ export const testPosts: Post[] = [
     body: [{ type: "p", text: "Test paragraph." }, { type: "products", slugs: ["airtight-jar-set-6pc"] }],
     faqs: [],
     cover: "/logo/mark.png",
-    author: "City Seller Team",
+    author: "Cartzee Team",
     publishedAt: daysAgo(30),
     updatedAt: daysAgo(30),
   },

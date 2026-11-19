@@ -1,4 +1,4 @@
-# City Seller
+# Cartzee
 
 An Indian home-needs store with prepaid-only checkout (Razorpay). Orders are fulfilled through Meesho.
 Built with Next.js 15 (App Router), TypeScript, Tailwind CSS 3 driven by design tokens, Radix UI, Supabase,
@@ -10,14 +10,14 @@ Razorpay and Resend.
 ## Two websites, three folders
 
 ```
-shop/     cityseller.in        Next.js app for customers (Cloudflare Worker "city-seller-shop")
-admin/    admin.cityseller.in  Next.js app for you and your team (Worker "city-seller-admin")
+shop/     cartzee.in        Next.js app for customers (Cloudflare Worker "cartzee-shop")
+admin/    admin.cartzee.in  Next.js app for you and your team (Worker "cartzee-admin")
 shared/   design system, components and data code used by both (compiled by each app, no build step)
 ```
 
 | | Shop | Admin |
 |---|---|---|
-| Address | `cityseller.in` (`www` redirects here) | `admin.cityseller.in` |
+| Address | `cartzee.in` (`www` redirects here) | `admin.cartzee.in` |
 | For | Customers | You and your team |
 | Access | Browse freely; sign in (email + password) to place an order | Optional Cloudflare Access → password → 6-digit code by email → role permissions |
 | Search engines | Indexed (sitemap, robots, llms.txt, feed) | Blocked (`Disallow: /`, `noindex`) |
@@ -58,7 +58,7 @@ unless `ALLOW_MOCK_PAYMENTS=true` is set for a staging demo.
    The database starts empty: add your categories and products in the admin.
 3. Copy the project URL, the anon key and the service-role key into `.env.local`.
 4. **Customer accounts.** In Authentication → Providers keep *Email* on with "Confirm email" enabled.
-   In Authentication → URL Configuration set *Site URL* to `https://cityseller.in` and add `https://cityseller.in/auth/callback`
+   In Authentication → URL Configuration set *Site URL* to `https://cartzee.in` and add `https://cartzee.in/auth/callback`
    and `http://localhost:3000/auth/callback` to *Redirect URLs* (used by sign-up confirmation and password reset).
 
 
@@ -94,7 +94,7 @@ Then use the tunnel URL as the webhook URL in Razorpay.
 - **Telegram:** create a bot with @BotFather. Send the bot a message, then open
   `https://api.telegram.org/bot<TOKEN>/getUpdates` to find your chat id. Set `TELEGRAM_BOT_TOKEN` and `TELEGRAM_CHAT_ID`.
 
-## Admin panel (`admin.cityseller.in`)
+## Admin panel (`admin.cartzee.in`)
 
 **Pages**
 
@@ -164,7 +164,7 @@ A production build without Supabase locks the panel completely. The style guide 
 | `pnpm check:tokens` | Fails on raw hex/rgb/px or arbitrary Tailwind values in `shared/src/components` and `admin/src/components` |
 | `pnpm registry:sync` | Recomputes `usedIn` / `tokensUsed` and regenerates `COMPONENTS.md` |
 | `pnpm check:registry` | Fails if an export is unregistered or lacks a `/design-system` demo |
-| `pnpm logo` | Rebuilds the logo files and favicons from `shop/public/logo/CitySellerLogo.png` |
+| `pnpm logo` | Rebuilds the logo files and favicons from `shop/public/logo/logo-master.png` |
 | `pnpm build` | Token and registry checks, then production builds of both apps |
 | `pnpm deploy:shop` / `pnpm deploy:admin` | Lint + tests, then builds and deploys that one website to Cloudflare |
 
@@ -195,8 +195,8 @@ Analytics load on the shop only, and only when their IDs are set:
 
 **One-time setup**
 
-1. **Domain.** Add `cityseller.in` to Cloudflare (Websites → Add a site) and switch your registrar's nameservers to Cloudflare.
-2. **Cache storage.** Run `pnpm wrangler login`. Both sites cache pages and refresh tags in Workers KV (free plan, no card); the namespace IDs are already in each `wrangler.jsonc`. On a new Cloudflare account, create them with `pnpm wrangler kv namespace create city-seller-<shop|admin>-<cache|tags>` and paste the IDs in.
+1. **Domain.** Add `cartzee.in` to Cloudflare (Websites → Add a site) and switch your registrar's nameservers to Cloudflare.
+2. **Cache storage.** Run `pnpm wrangler login`. Both sites cache pages and refresh tags in Workers KV (free plan, no card); the namespace IDs are already in each `wrangler.jsonc`. On a new Cloudflare account, create them with `pnpm wrangler kv namespace create cartzee-<shop|admin>-<cache|tags>` and paste the IDs in.
 3. **Server secrets.** Stored on each Worker, never in Git. Run `npx wrangler secret put <NAME>` inside that app's folder:
    ```
    shop/   SUPABASE_SERVICE_ROLE_KEY  RAZORPAY_KEY_ID  RAZORPAY_KEY_SECRET  RAZORPAY_WEBHOOK_SECRET  REVALIDATE_SECRET
@@ -205,19 +205,19 @@ Analytics load on the shop only, and only when their IDs are set:
            CF_ACCESS_TEAM_DOMAIN  CF_ACCESS_AUD  NEXT_PUBLIC_SUPABASE_URL  NEXT_PUBLIC_SUPABASE_ANON_KEY
    ```
    `REVALIDATE_SECRET` must be the same long random value in both. The Supabase URL and anon key are not secret, but server code reads them at runtime.
-4. **Build-time values.** `NEXT_PUBLIC_SITE_URL=https://cityseller.in` (both apps), the Supabase URL and anon key, and the analytics IDs (shop)
+4. **Build-time values.** `NEXT_PUBLIC_SITE_URL=https://cartzee.in` (both apps), the Supabase URL and anon key, and the analytics IDs (shop)
    go in `shop/.env.production.local` / `admin/.env.production.local` for a manual deploy, or in GitHub repository variables for automatic deploys.
 5. **Cloudflare Access for the admin.**
-   1. In Zero Trust → Access → Applications, add a *Self-hosted* application for `admin.cityseller.in`.
+   1. In Zero Trust → Access → Applications, add a *Self-hosted* application for `admin.cartzee.in`.
    2. Add an *Allow* policy with your partners' emails, using login method *One-time PIN*.
    3. Copy the application's *AUD tag* into `CF_ACCESS_AUD`, and your team domain (`<team>.cloudflareaccess.com`) into `CF_ACCESS_TEAM_DOMAIN`.
 6. **Rate limiting.** In Security → WAF → Rate limiting rules, limit `/api/track`, `/api/checkout` and `/login` (both sites) to about 20 requests per minute per IP.
-7. **Razorpay webhook.** Point it at `https://cityseller.in/api/razorpay/webhook`.
+7. **Razorpay webhook.** Point it at `https://cartzee.in/api/razorpay/webhook`.
 
 **Deploying**
 
 - **Manual:** `pnpm deploy:shop` or `pnpm deploy:admin`. Each runs lint and tests, then builds and deploys only that website.
-  The `routes` in each `wrangler.jsonc` attach `cityseller.in` + `www.cityseller.in` (shop) and `admin.cityseller.in` (admin).
+  The `routes` in each `wrangler.jsonc` attach `cartzee.in` + `www.cartzee.in` (shop) and `admin.cartzee.in` (admin).
 - **Automatic (Cloudflare Workers Builds):** each site is a Worker connected to this GitHub repo (Workers & Pages → Import a repository).
   Root directory `shop` or `admin`; build command `cd .. && pnpm install --frozen-lockfile && cd <app> && npx opennextjs-cloudflare build`;
   deploy command `npx opennextjs-cloudflare deploy`. `NEXT_PUBLIC_*` values go in the Worker's *Build* variables; secrets in *Variables and Secrets*.
@@ -235,4 +235,4 @@ The project uses pnpm's hoisted `node_modules` layout (`pnpm-workspace.yaml`), b
 - The 5% UPI discount is advertised in the top bar. Configure it as a Razorpay offer, or remove the text.
 - Switch from Razorpay test keys to live keys, and update the webhook secret to match.
 - Use JPG, PNG or WebP product photos: Google Merchant Center and social apps do not accept SVG images.
-- After the first deploy, submit `https://cityseller.in/sitemap.xml` in Search Console, then run the Rich Results Test and a Lighthouse mobile check on the home, a category and a product page.
+- After the first deploy, submit `https://cartzee.in/sitemap.xml` in Search Console, then run the Rich Results Test and a Lighthouse mobile check on the home, a category and a product page.

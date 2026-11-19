@@ -74,6 +74,11 @@ export const productFormSchema = z
       .enum(["auto", "on", "off"])
       .default("auto")
       .transform((v) => (v === "auto" ? null : v === "on")),
+    /** Shop order: empty = automatic (after numbered products, newest first). */
+    position: z
+      .union([z.literal(""), z.coerce.number().int("Whole number").min(1, "1 or more").max(9999, "At most 9999")])
+      .optional()
+      .transform((v) => (v === "" || v === undefined ? null : v)),
     seoTitle: z.string().trim().max(70).optional().transform((v) => v || undefined),
     seoDescription: z.string().trim().max(170).optional().transform((v) => v || undefined),
     images: z
@@ -191,7 +196,7 @@ export const postFormSchema = z.object({
   slug: z.string().trim().max(90).optional().default(""),
   excerpt: z.string().trim().min(20, "Write a short summary (at least 20 characters)").max(240),
   cover: imageSrcSchema,
-  author: z.string().trim().min(2).max(60).default("City Seller Team"),
+  author: z.string().trim().min(2).max(60).default("Cartzee Team"),
   isPublished: checkbox,
   body: jsonList(postBlockSchema, 80).refine((b) => b.length > 0, "Add at least one paragraph"),
   faqs: jsonList(faqItemSchema, 10),

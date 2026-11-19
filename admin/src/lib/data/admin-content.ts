@@ -76,7 +76,8 @@ const seedContent: ContentAdmin = {
     if (store.categories.some((c) => c.slug === input.slug && c.id !== input.id)) throw new AdminError(`The URL slug "${input.slug}" is already used`);
     const existing = input.id ? store.categories.find((c) => c.id === input.id) : undefined;
     if (input.id && !existing) throw new AdminError("Category not found");
-    const { id: _id, ...fields } = input;
+    const { id: _id, ...rest } = input;
+    const fields = { ...rest, image: input.parentSlug ? "" : input.image }; // subcategories have no image
     if (existing) {
       const oldSlug = existing.slug;
       Object.assign(existing, fields, { blurb: input.blurb || input.intro });
@@ -205,7 +206,7 @@ const supabaseContent: ContentAdmin = {
       parent_id: parent?.id ?? null,
       intro: input.intro,
       blurb: input.blurb || input.intro,
-      image: input.image,
+      image: parent ? "" : input.image, // subcategories have no image
       sort_order: input.sortOrder,
       is_active: input.isActive,
       has_sizes: input.hasSizes ?? false,

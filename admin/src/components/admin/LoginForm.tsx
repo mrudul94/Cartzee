@@ -1,5 +1,6 @@
 "use client";
 
+import { keepFormValues } from "@/hooks/useKeepFormValues";
 import { useActionState } from "react";
 import { Button } from "@/components/ui/Button";
 import { FormField } from "@/components/ui/FormField";
@@ -13,7 +14,7 @@ export type LoginFormProps = { action: (prev: ActionState, fd: FormData) => Prom
 export function LoginForm({ action }: LoginFormProps) {
   const [state, formAction, pending] = useActionState(action, {});
   return (
-    <form action={formAction} className="flex flex-col gap-4" noValidate>
+    <form action={formAction} onSubmit={keepFormValues(formAction)} className="flex flex-col gap-4" noValidate>
       <FormField id="login-email" label="Email" error={state.errors?.email} required>
         <Input id="login-email" name="email" type="email" autoComplete="username" invalid={Boolean(state.errors?.email)} />
       </FormField>

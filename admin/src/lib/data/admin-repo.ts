@@ -2,6 +2,7 @@ import "server-only";
 import { isSupabaseConfigured } from "@/lib/config";
 import type { Faq, Order, OrderStatus, Product, Spec } from "@/lib/types";
 import { ORDER_STATUSES } from "@/lib/types";
+import { byPosition } from "@/lib/utils/product";
 import { store } from "@/lib/data/seed-store";
 import { fail, loadCategories, ORDER_COLUMNS, toOrder, toProducts, UUID, type OrderRow, type ProductRow } from "@/lib/data/supabase-repo";
 import { svc } from "@/lib/data/supabase-clients";
@@ -34,6 +35,8 @@ export type ProductInput = {
   isActive: boolean;
   /** "New" badge: null = automatic (first 30 days), true = always, false = never. */
   isNew: boolean | null;
+  /** Display order in the shop (lower first); null = after positioned products, newest first. */
+  position: number | null;
   faqs: Faq[];
   seoTitle?: string;
   seoDescription?: string;
@@ -41,7 +44,9 @@ export type ProductInput = {
 };
 
 /** One-click changes from the product list. */
-export type ProductPatch = { stock?: number; isActive?: boolean; isNew?: boolean | null };
+export type ProductPatch = { stock?: number; isActive?: boolean; isNew?: boolean | null; position?: number | null };
+/** A product's quick-action fields after a change (what the product list shows). */
+export type ProductQuickState = { id: string; title: string; slug: string; stock: number; isActive: boolean; isNew: boolean | null; position: number | null };
 export type UploadFolder = "products" | "banners" | "categories" | "guides";
 
 /** Admin-facing problem (bad input, duplicate slug); message is shown in the UI. */
@@ -54,7 +59,8 @@ export interface AdminRepo {
   getProduct(id: string): Promise<AdminProduct | null>;
   saveProduct(input: ProductInput): Promise<AdminProduct>;
   markPriceChecked(id: string): Promise<void>;
-  patchProduct(id: string, patch: ProductPatch): Promise<void>;
+  /** Applies a quick change and returns the saved values (source of truth). */
+  patchProduct(id: string, patch: ProductPatch): Promise<ProductQuickState>;
   /** Copies a product (hidden, slug + "-copy") so a similar item can be added quickly. */
   duplicateProduct(id: string): Promise<AdminProduct>;
   /** How many orders contain this product (such products can't be deleted, only hidden). */
@@ -110,7 +116,7 @@ const seedAdmin: AdminRepo = {
     return c;
   },
   async listProducts() {
-    return store.products.map(toAdmin);
+    return [...store.products].sort(byPosition).map(toAdmin);
   },
   async getProduct(id) {
     const p = store.products.find((x) => x.id === id);
@@ -145,6 +151,7 @@ const seedAdmin: AdminRepo = {
       isFlashSale: input.isFlashSale,
       isActive: input.isActive,
       isNew: input.isNew,
+      position: input.position,
       faqs: input.faqs,
       seoTitle: input.seoTitle,
       seoDescription: input.seoDescription,
@@ -164,6 +171,8 @@ const seedAdmin: AdminRepo = {
     if (patch.stock !== undefined) p.stock = patch.stock;
     if (patch.isActive !== undefined) p.isActive = patch.isActive;
     if (patch.isNew !== undefined) p.isNew = patch.isNew;
+    if (patch.position !== undefined) p.position = patch.position;
+    return { id: p.id, title: p.title, slug: p.slug, stock: p.stock, isActive: p.isActive, isNew: p.isNew ?? null, position: p.position ?? null };
   },
   async orderCountsByProduct() {
     const counts = new Map<string, number>();
@@ -191,6 +200,7 @@ const seedAdmin: AdminRepo = {
       title: `${p.title} (copy)`.slice(0, 120),
       isActive: false,
       isNew: null,
+      position: null,
       rating: 0,
       reviewCount: 0,
       createdAt: now,
@@ -245,7 +255,7 @@ const supabaseAdmin: AdminRepo = {
     return c;
   },
   async listProducts() {
-    const { data, error } = await svc().from("products").select("*, product_images(src, alt, sort_order)").order("created_at");
+    const { data, error } = await svc().from("products").select("*, product_images(src, alt, sort_order)").order("position", { ascending: true, nullsFirst: false }).order("created_at", { ascending: false });
     if (error) fail("admin products", error);
     return toAdminProducts(data as AdminProductRow[]);
   },
@@ -280,6 +290,7 @@ const supabaseAdmin: AdminRepo = {
       is_flash_sale: input.isFlashSale,
       is_active: input.isActive,
       is_new: input.isNew,
+      position: input.position,
       faqs: input.faqs,
       seo_title: input.seoTitle ?? null,
       seo_description: input.seoDescription ?? null,
@@ -316,8 +327,13 @@ const supabaseAdmin: AdminRepo = {
     if (patch.stock !== undefined) row.stock = patch.stock;
     if (patch.isActive !== undefined) row.is_active = patch.isActive;
     if (patch.isNew !== undefined) row.is_new = patch.isNew;
-    const { error } = await svc().from("products").update(row).eq("id", id);
+    if (patch.position !== undefined) row.position = patch.position;
+    if (!UUID.test(id)) throw new AdminError("Product not found");
+    const { data, error } = await svc().from("products").update(row).eq("id", id).select("id, title, slug, stock, is_active, is_new, position").maybeSingle();
     if (error) fail("patch product", error);
+    if (!data) throw new AdminError("Product not found");
+    const r = data as { id: string; title: string; slug: string; stock: number; is_active: boolean; is_new: boolean | null; position: number | null };
+    return { id: r.id, title: r.title, slug: r.slug, stock: r.stock, isActive: r.is_active, isNew: r.is_new, position: r.position ?? null };
   },
   async orderCountsByProduct() {
     const { data, error } = await svc().from("order_items").select("product_id, order_id").limit(100000);
@@ -354,6 +370,7 @@ const supabaseAdmin: AdminRepo = {
       title: `${p.title} (copy)`.slice(0, 120),
       isActive: false,
       isNew: null,
+      position: null,
       priceChecked: true,
       seoTitle: p.seoTitle,
       seoDescription: p.seoDescription,

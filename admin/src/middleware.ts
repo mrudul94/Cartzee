@@ -4,7 +4,7 @@ import { ADMIN_AUTH_COOKIE } from "./lib/auth/cookie-name";
 import { isAccessConfigured, verifyAccessToken } from "@/lib/auth/cf-access";
 
 /**
- * Admin website (admin.cityseller.in):
+ * Admin website (admin.cartzee.in):
  *  • Cloudflare Access: when configured, every request must carry a valid Access token, so requests
  *    that bypass Cloudflare are refused.
  *  • Refreshes the Supabase session cookie (Server Components can't set cookies).

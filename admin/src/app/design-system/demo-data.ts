@@ -2,7 +2,7 @@ import type { Category, Post, Product, Review } from "@/lib/types";
 
 /**
  * Generic example records for the admin style guide only (component previews). They are never
- * shown on the shop and never written to the database. Images use the City Seller logo files.
+ * shown on the shop and never written to the database. Images use the Cartzee logo files.
  */
 const IMG = "/logo/mark.png";
 const now = new Date().toISOString();
@@ -61,7 +61,7 @@ export const demoPosts: Post[] = [
     body: [{ type: "p", text: "Example paragraph." }],
     faqs: [],
     cover: IMG,
-    author: "City Seller Team",
+    author: "Cartzee Team",
     publishedAt: now,
     updatedAt: now,
   },

@@ -1,9 +1,9 @@
 # Reference UX patterns (structure only)
 
-These are structural notes from a home-needs storefront used as a UX reference. City Seller does not
+These are structural notes from a home-needs storefront used as a UX reference. Cartzee does not
 reuse its brand, copy, images or visual style. Only the information architecture is borrowed.
 
-| Area | Pattern observed | City Seller decision |
+| Area | Pattern observed | Cartzee decision |
 |---|---|---|
 | Top bar | Promo strip (extra % off on prepaid/UPI) | `TopBar`: UPI offer + socials + login |
 | Header | Logo, search, login, cart; mobile drawer holds socials | `Header` sticky, `MobileNav` drawer |

@@ -1,5 +1,6 @@
 "use client";
 
+import { keepFormValues } from "@/hooks/useKeepFormValues";
 import { useActionState, useState } from "react";
 import { ExternalLink, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
@@ -53,7 +54,7 @@ export function PostForm({
 
   return (
     <div className="flex flex-col gap-6">
-      <form action={formAction} className="flex flex-col gap-6" noValidate>
+      <form action={formAction} onSubmit={keepFormValues(formAction)} className="flex flex-col gap-6" noValidate>
         {v.originalSlug && <input type="hidden" name="originalSlug" value={v.originalSlug} />}
         <input type="hidden" name="cover" value={cover} />
         <input type="hidden" name="body" value={JSON.stringify(body)} />

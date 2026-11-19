@@ -1,5 +1,6 @@
 "use client";
 
+import { keepFormValues } from "@/hooks/useKeepFormValues";
 import { useActionState, useEffect, useState } from "react";
 import { MapPin, Pencil, Plus, Star, Trash2 } from "lucide-react";
 import { Badge } from "@/components/ui/Badge";
@@ -41,7 +42,7 @@ function AddressForm({ address, save, onDone }: { address?: SavedAddress; save: 
   );
   return (
     <Card padding="md">
-      <form action={action} className="flex flex-col gap-4" noValidate>
+      <form action={action} onSubmit={keepFormValues(action)} className="flex flex-col gap-4" noValidate>
         <input type="hidden" name="id" value={address?.id ?? ""} />
         <h3 className="font-heading text-lg font-semibold">{address ? "Edit address" : "Add a new address"}</h3>
         <div className="grid gap-4 md:grid-cols-2">

@@ -1,5 +1,6 @@
 "use client";
 
+import { keepFormValues } from "@/hooks/useKeepFormValues";
 import { useActionState } from "react";
 import { Button } from "@/components/ui/Button";
 import { FormField } from "@/components/ui/FormField";
@@ -28,7 +29,7 @@ export function MfaForm({ email, verify, resend, sendFailed }: MfaFormProps) {
       <p className="text-sm text-text-muted">
         We emailed a 6-digit code to <span className="font-semibold text-text">{email}</span>. It expires in 10 minutes.
       </p>
-      <form action={action} className="flex flex-col gap-4" noValidate>
+      <form action={action} onSubmit={keepFormValues(action)} className="flex flex-col gap-4" noValidate>
         <FormField id="mfa-code" label="6-digit code" error={state.errors?.code} required>
           <Input id="mfa-code" name="code" inputMode="numeric" autoComplete="one-time-code" maxLength={6} invalid={Boolean(state.errors?.code)} autoFocus />
         </FormField>

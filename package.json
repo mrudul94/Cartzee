@@ -1,12 +1,12 @@
 {
-  "name": "city-seller",
+  "name": "cartzee",
   "version": "0.1.0",
   "private": true,
   "type": "module",
   "scripts": {
     "dev": "pnpm -r --parallel dev",
-    "dev:shop": "pnpm --filter @cityseller/shop dev",
-    "dev:admin": "pnpm --filter @cityseller/admin dev",
+    "dev:shop": "pnpm --filter @cartzee/shop dev",
+    "dev:admin": "pnpm --filter @cartzee/admin dev",
     "build": "pnpm check:tokens && pnpm check:registry && pnpm -r build",
     "typecheck": "tsc --noEmit -p tsconfig.json && pnpm -r typecheck",
     "lint": "pnpm -r lint && pnpm check:tokens && pnpm check:registry",
@@ -15,9 +15,10 @@
     "registry:sync": "tsx scripts/registry.ts",
     "check:tokens": "tsx scripts/check-tokens.ts",
     "check:registry": "tsx scripts/registry.ts --check",
-    "deploy:shop": "pnpm lint && pnpm test && pnpm --filter @cityseller/shop cf:deploy",
-    "deploy:admin": "pnpm lint && pnpm test && pnpm --filter @cityseller/admin cf:deploy",
-    "logo": "tsx scripts/gen-logo.ts"
+    "deploy:shop": "pnpm lint && pnpm test && pnpm --filter @cartzee/shop cf:deploy",
+    "deploy:admin": "pnpm lint && pnpm test && pnpm --filter @cartzee/admin cf:deploy",
+    "logo": "tsx scripts/gen-logo.ts",
+    "copy:db": "node scripts/with-root-env.cjs tsx scripts/copy-db.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "5.9.2",

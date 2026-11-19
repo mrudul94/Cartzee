@@ -1,5 +1,6 @@
 "use client";
 
+import { keepFormValues } from "@/hooks/useKeepFormValues";
 import { useActionState, useState, type ReactNode } from "react";
 import { ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/Button";
@@ -39,6 +40,8 @@ export type ProductFormValues = {
   isActive: boolean;
   /** null = automatic */
   isNew: boolean | null;
+  /** Shop order (lower first); null = automatic. */
+  position: number | null;
   seoTitle?: string;
   seoDescription?: string;
   images: ManagedImage[];
@@ -103,7 +106,7 @@ export function ProductForm({ values: v, categories, action, upload, notice }: P
   const field = (name: string) => ({ id: `p-${name}`, name, invalid: Boolean(e[name]) });
 
   return (
-    <form action={formAction} className="flex flex-col gap-6" noValidate>
+    <form action={formAction} onSubmit={keepFormValues(formAction)} className="flex flex-col gap-6" noValidate>
       {v.id && <input type="hidden" name="id" value={v.id} />}
       <input type="hidden" name="images" value={JSON.stringify(images)} />
 
@@ -266,6 +269,14 @@ export function ProductForm({ values: v, categories, action, upload, notice }: P
             ]}
             className="max-w-80"
           />
+        </FormField>
+        <FormField
+          id="p-position"
+          label="Position in the shop (optional)"
+          error={e.position}
+          hint="Lower numbers show first in homepage rows and category pages (1 = first). Leave empty to list it after numbered products, newest first."
+        >
+          <Input {...field("position")} type="number" inputMode="numeric" min={1} max={9999} defaultValue={v.position ?? ""} placeholder="Automatic" className="max-w-40" />
         </FormField>
       </Section>
 

@@ -7,7 +7,7 @@ import { paths } from "@/lib/utils/paths";
 export const revalidate = 3600;
 export const metadata = buildMetadata({
   title: "All categories",
-  description: "Browse every City Seller category: kitchen, cleaning, storage, bathroom, home décor and more.",
+  description: "Browse every Cartzee category: kitchen, cleaning, storage, bathroom, home décor and more.",
   path: "/categories",
 });
 
@@ -23,7 +23,7 @@ export default async function CategoriesPage() {
     name: c.name,
     href: paths.category(c),
     image: c.image || undefined,
-    subcategories: c.children.map((s) => ({ href: paths.category(s), label: s.name, image: s.image || undefined })),
+    subcategories: c.children.map((s) => ({ href: paths.category(s), label: s.name })),
     products: products
       .filter((p) => p.categorySlug === c.slug)
       .slice(0, PER_CATEGORY)

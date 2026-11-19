@@ -43,7 +43,7 @@ export function DesignSystemView({ embedded = false }: { embedded?: boolean }) {
         </nav>
 
         <div className="flex flex-col gap-12 lg:col-span-4">
-          <h1 className="font-heading text-4xl font-semibold">City Seller design system</h1>
+          <h1 className="font-heading text-4xl font-semibold">Cartzee design system</h1>
           <section id="tokens" className="flex flex-col gap-8">
             <h2 className="font-heading text-3xl font-semibold">Tokens</h2>
             <div>

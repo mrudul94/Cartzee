@@ -1,7 +1,7 @@
 {
   "$schema": "../node_modules/wrangler/config-schema.json",
-  // Shop website (cityseller.in). The admin is a separate Worker in ../admin.
-  "name": "city-seller-shop",
+  // Shop website (cartzee.in). The admin is a separate Worker in ../admin.
+  "name": "cartzee-shop",
   "main": ".open-next/worker.js",
   "compatibility_date": "2026-11-01",
   "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
@@ -11,10 +11,10 @@
   },
   "services": [
     // Self-reference used by OpenNext for caching; must match "name".
-    { "binding": "WORKER_SELF_REFERENCE", "service": "city-seller-shop" }
+    { "binding": "WORKER_SELF_REFERENCE", "service": "cartzee-shop" }
   ],
   // Page cache (ISR) and cache tags (instant refresh after admin saves) in Workers KV: free plan, no card needed.
-  // (Created with: pnpm wrangler kv namespace create city-seller-shop-cache / city-seller-shop-tags)
+  // (KV namespaces made with: pnpm wrangler kv namespace create <name>; only the ids below matter)
   "kv_namespaces": [
     { "binding": "NEXT_INC_CACHE_KV", "id": "4be6cd06985d4281b6eb49067a220033" },
     { "binding": "NEXT_TAG_CACHE_KV", "id": "0e3bbba0bf2a45ebadb050849301dd8d" }
@@ -23,20 +23,20 @@
     // next/image optimisation via Cloudflare Images.
     "binding": "IMAGES"
   },
-  // TEST PHASE: served on the free *.workers.dev address (cityseller.in isn't on Cloudflare yet).
+  // TEST PHASE: served on the free *.workers.dev address (cartzee.in isn't on Cloudflare yet).
   // AT LAUNCH: set "workers_dev": false and restore the "routes" below (see README → Deploy).
   "workers_dev": true,
   "preview_urls": false,
   // "routes": [
-  //   { "pattern": "cityseller.in", "custom_domain": true },
-  //   { "pattern": "www.cityseller.in", "custom_domain": true }
+  //   { "pattern": "cartzee.in", "custom_domain": true },
+  //   { "pattern": "www.cartzee.in", "custom_domain": true }
   // ],
   // Non-secret runtime values. Secrets go in with `wrangler secret put` (see README).
   // NEXT_PUBLIC_* values are baked in at build time: set them in .env.production (or CI) before `pnpm deploy`.
   "vars": {
     // TEST PHASE: Resend's shared test sender (only delivers to the Resend account owner's email).
-    // AT LAUNCH: "City Seller <orders@cityseller.in>" once the domain is verified in Resend.
-    "EMAIL_FROM": "City Seller <onboarding@resend.dev>"
+    // AT LAUNCH: "Cartzee <orders@cartzee.in>" once the domain is verified in Resend.
+    "EMAIL_FROM": "Cartzee <onboarding@resend.dev>"
   },
   "observability": { "enabled": true }
 }

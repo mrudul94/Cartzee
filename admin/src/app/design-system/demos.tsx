@@ -60,7 +60,7 @@ import { HomeEditor } from "@/components/admin/HomeEditor";
 import { FaqEditor, PageEditor } from "@/components/admin/PageEditors";
 import { CategoryForm } from "@/components/admin/CategoryForm";
 import { PostForm } from "@/components/admin/PostForm";
-import { ProductQuickActions } from "@/components/admin/ProductQuickActions";
+import { ProductQuickActions, ProductQuickProvider, QuickBadges, QuickFilterChips, QuickPosition, QuickStock } from "@/components/admin/ProductQuickActions";
 import { SettingsForm } from "@/components/admin/SettingsForm";
 import { SettingsProvider } from "@/components/layout/SettingsProvider";
 import { HeroCarousel } from "@/components/sections/HeroCarousel";
@@ -68,7 +68,7 @@ import { HomeSections } from "@/components/sections/HomeSections";
 import { DEFAULT_PAGES } from "@/lib/content/schema";
 import { defaultStoreFaqs } from "@/lib/content/store-faqs";
 import { BlockEditorDemo, ImageFieldDemo, ListEditorDemo, ProductPickerDemo, ScheduleFieldsDemo, SectionEditorDemo, TextFieldDemo } from "./ClientDemos";
-import { demoVoidAction } from "./demo-actions";
+import { demoQuickAction, demoVoidAction } from "./demo-actions";
 
 import { AdminShell } from "@/components/admin/AdminShell";
 import { CopyField, MarginText, OrderStatusBadge, OrderTimeline, StatCard } from "@/components/admin/AdminBits";
@@ -382,7 +382,7 @@ export const demos: Record<string, ReactNode> = {
   ImageManager: <ImageManagerDemo images={demoProducts[0]!.images.slice(0, 2)} />,
   ProductForm: (
     <ProductForm
-      values={{ ...demoProducts[0]!, meeshoUrl: demoProducts[0]!.meeshoUrl ?? "", meeshoPrice: demoProducts[0]!.meeshoPrice ?? 0, isActive: true, isNew: null, id: undefined, sizes: "" }}
+      values={{ ...demoProducts[0]!, meeshoUrl: demoProducts[0]!.meeshoUrl ?? "", meeshoPrice: demoProducts[0]!.meeshoPrice ?? 0, isActive: true, isNew: null, position: null, id: undefined, sizes: "" }}
       categories={tree.map((c) => ({ slug: c.slug, name: c.name, children: c.children.map((x) => ({ slug: x.slug, name: x.name })) }))}
       action={demoFormAction}
       upload={demoUploadAction}
@@ -560,7 +560,12 @@ export const demos: Record<string, ReactNode> = {
       upload={demoUploadAction}
     />
   ),
-  ProductQuickActions: <ProductQuickActions id="demo" title="Demo product" inStock isActive isNew={null} showsNew action={demoVoidAction} />,
+  ProductQuickActions: <ProductQuickProvider rows={{ demo: { stock: 10, isActive: true, isNew: null, position: null, createdAt: "2026-01-01T00:00:00Z" } }} action={demoQuickAction}><ProductQuickActions id="demo" title="Demo product" action={demoVoidAction} /></ProductQuickProvider>,
+  ProductQuickProvider: <ProductQuickProvider rows={{ demo: { stock: 10, isActive: true, isNew: null, position: null, createdAt: "2026-01-01T00:00:00Z" } }} action={demoQuickAction}><div className="flex flex-col gap-2"><QuickFilterChips hrefs={{ all: "#", stale: "#", soldout: "#", hidden: "#" }} active="all" staleCount={0} /><QuickBadges id="demo" isBestseller isFlashSale={false} /><ProductQuickActions id="demo" title="Demo product" action={demoVoidAction} /></div></ProductQuickProvider>,
+  QuickFilterChips: <ProductQuickProvider rows={{ demo: { stock: 10, isActive: true, isNew: null, position: null, createdAt: "2026-01-01T00:00:00Z" } }} action={demoQuickAction}><QuickFilterChips hrefs={{ all: "#", stale: "#", soldout: "#", hidden: "#" }} active="all" staleCount={0} /></ProductQuickProvider>,
+  QuickBadges: <ProductQuickProvider rows={{ demo: { stock: 10, isActive: true, isNew: null, position: null, createdAt: "2026-01-01T00:00:00Z" } }} action={demoQuickAction}><QuickBadges id="demo" isBestseller isFlashSale /></ProductQuickProvider>,
+  QuickStock: <ProductQuickProvider rows={{ demo: { stock: 10, isActive: true, isNew: null, position: null, createdAt: "2026-01-01T00:00:00Z" } }} action={demoQuickAction}><QuickStock id="demo" /></ProductQuickProvider>,
+  QuickPosition: <ProductQuickProvider rows={{ demo: { stock: 10, isActive: true, isNew: null, position: null, createdAt: "2026-01-01T00:00:00Z" } }} action={demoQuickAction}><QuickPosition id="demo" title="Demo product" /></ProductQuickProvider>,
   SettingsForm: <SettingsForm initial={DEFAULT_SETTINGS} action={demoFormAction} />,
   SettingsProvider: (
     <SettingsProvider settings={{ ...DEFAULT_SETTINGS, upiDiscountPercent: 7 }}>

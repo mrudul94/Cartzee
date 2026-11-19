@@ -12,6 +12,14 @@ import { CACHE_TAGS } from "@/lib/cache";
 export async function refreshShop(): Promise<void> {
   Object.values(CACHE_TAGS).forEach((t) => revalidateTag(t));
   revalidatePath("/", "layout");
+  await refreshShopSite();
+}
+
+/**
+ * Only asks the shop to refresh (after the response). Doesn't touch the admin's own pages, so a server
+ * action using it returns just its result instead of re-rendering the page (used by product quick actions).
+ */
+export async function refreshShopSite(): Promise<void> {
   const secret = process.env.REVALIDATE_SECRET;
   const shop = (process.env.NEXT_PUBLIC_SITE_URL ?? "").replace(/\/$/, "");
   if (!secret || !shop) {

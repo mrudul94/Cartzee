@@ -1,5 +1,6 @@
 "use client";
 
+import { keepFormValues } from "@/hooks/useKeepFormValues";
 import { useActionState, useState } from "react";
 import { ExternalLink, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
@@ -55,14 +56,16 @@ export function CategoryForm({
   const e = state.errors ?? {};
   const [name, setName] = useState(v.name);
   const [image, setImage] = useState(v.image);
+  // Subcategories have no image (only main categories show one in the shop).
+  const [parentSlug, setParentSlug] = useState(v.parentSlug ?? "");
   const [faqs, setFaqs] = useState<Faq[]>(v.faqs);
   const f = (n: string) => ({ id: `cat-${n}`, name: n, invalid: Boolean(e[n]) });
 
   return (
     <div className="flex flex-col gap-6">
-      <form action={formAction} className="flex flex-col gap-6" noValidate>
+      <form action={formAction} onSubmit={keepFormValues(formAction)} className="flex flex-col gap-6" noValidate>
         {v.id && <input type="hidden" name="id" value={v.id} />}
-        <input type="hidden" name="image" value={image} />
+        <input type="hidden" name="image" value={parentSlug ? "" : image} />
         <input type="hidden" name="faqs" value={JSON.stringify(faqs.filter((x) => x.q.trim() || x.a.trim()))} />
         {state.message && (
           <p role={state.ok ? "status" : "alert"} className={state.ok ? "rounded-md bg-success-soft p-4 text-success" : "rounded-md bg-error-soft p-4 text-error"}>
@@ -82,7 +85,8 @@ export function CategoryForm({
             <FormField id="cat-parentSlug" label="Parent" error={e.parentSlug} hint={v.childCount ? "Has subcategories, so it must stay a main category" : undefined}>
               <Select
                 {...f("parentSlug")}
-                defaultValue={v.parentSlug ?? ""}
+                value={parentSlug}
+                onChange={(ev) => setParentSlug(ev.target.value)}
                 disabled={Boolean(v.childCount)}
                 options={[{ value: "", label: "None (main category)" }, ...parents.filter((p) => p.slug !== v.slug).map((p) => ({ value: p.slug, label: p.name }))]}
               />
@@ -97,7 +101,7 @@ export function CategoryForm({
           <FormField id="cat-blurb" label="Short blurb (homepage story cards)" hint="Optional; the intro is used if empty" error={e.blurb}>
             <Input {...f("blurb")} defaultValue={v.blurb} />
           </FormField>
-          <ImageField id="cat-image-src" label="Image" value={image} onChange={setImage} upload={upload} folder="categories" slug={v.slug || slugify(name)} error={e.image} optional />
+          {!parentSlug && <ImageField id="cat-image-src" label="Image" value={image} onChange={setImage} upload={upload} folder="categories" slug={v.slug || slugify(name)} error={e.image} optional />}
           <Checkbox id="cat-isActive" name="isActive" defaultChecked={v.isActive} label="Visible in the shop" />
           <Checkbox
             id="cat-hasSizes"

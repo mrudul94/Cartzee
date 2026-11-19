@@ -2,8 +2,8 @@
 
 import { useCallback, useEffect, useState } from "react";
 
-const KEY = "city-seller-pincode";
-const EVENT = "city-seller:pincode";
+const KEY = "cartzee-pincode";
+const EVENT = "cartzee:pincode";
 
 /**
  * The shopper's delivery PIN code, remembered in this browser and shared live between the header

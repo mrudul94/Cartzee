@@ -1,5 +1,6 @@
 "use client";
 
+import { keepFormValues } from "@/hooks/useKeepFormValues";
 import { useActionState, useState } from "react";
 import { Star } from "lucide-react";
 import { Button } from "@/components/ui/Button";
@@ -35,7 +36,7 @@ export function ReviewForm({ orderId, productId, productTitle, action }: ReviewF
   }
   const shown = hover || rating;
   return (
-    <form action={formAction} className="flex flex-col gap-3" noValidate>
+    <form action={formAction} onSubmit={keepFormValues(formAction)} className="flex flex-col gap-3" noValidate>
       <input type="hidden" name="orderId" value={orderId} />
       <input type="hidden" name="productId" value={productId} />
       <fieldset>

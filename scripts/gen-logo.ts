@@ -1,8 +1,8 @@
 /**
  * Builds web-ready logo files and favicons from the master logo.
- *   pnpm logo        (re-run after replacing shop/public/logo/CitySellerLogo.png)
+ *   pnpm logo        (re-run after replacing shop/public/logo/logo-master.png)
  *
- * The master is a stacked logo (mark above the "CitySeller" wordmark) on a transparent background.
+ * The master is a stacked logo (mark above the "Cartzee" wordmark) on a transparent background.
  * Output:
  *   {shop,admin}/public/logo/mark.png            the "C" mark, square
  *   {shop,admin}/public/logo/wordmark.png        dark wordmark (light backgrounds)
@@ -15,7 +15,7 @@ import { join } from "node:path";
 import sharp from "sharp";
 
 const ROOT = process.cwd();
-const MASTER = join(ROOT, "shop/public/logo/CitySellerLogo.png");
+const MASTER = join(ROOT, "shop/public/logo/logo-master.png");
 const APPS = ["shop", "admin"] as const;
 const clear = { r: 0, g: 0, b: 0, alpha: 0 };
 

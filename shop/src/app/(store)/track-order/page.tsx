@@ -7,7 +7,7 @@ import { paths } from "@/lib/utils/paths";
 
 export const metadata = buildMetadata({
   title: "Track your order",
-  description: "Track your City Seller order with your order number and mobile number. No login needed.",
+  description: "Track your Cartzee order with your order number and mobile number. No login needed.",
   path: paths.track(),
 });
 

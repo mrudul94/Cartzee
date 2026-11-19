@@ -31,9 +31,6 @@ export function MegaMenu({ tree }: { tree: NavCategory[] }) {
               {c.children.map((s) => (
                 <li key={s.slug}>
                   <Link href={paths.category(s)} className="flex min-h-11 items-center gap-3 rounded-md px-1 text-base text-text-muted hover:bg-background hover:text-text">
-                    <span className="relative h-9 w-9 shrink-0 overflow-hidden rounded-md bg-background">
-                      {s.image && <Image src={s.image} alt="" fill sizes="36px" className="object-cover" />}
-                    </span>
                     {s.name}
                   </Link>
                 </li>
@@ -95,9 +92,6 @@ export function CategoryNav({ tree }: { tree: NavCategory[] }) {
                         href={paths.category(s)}
                         className="flex min-h-11 items-center gap-3 rounded-md px-2 text-base text-text-muted hover:bg-background hover:text-text focus-visible:outline-none focus-visible:shadow-focus"
                       >
-                        <span className="relative h-9 w-9 shrink-0 overflow-hidden rounded-md bg-background">
-                          {s.image && <Image src={s.image} alt="" fill sizes="36px" className="object-cover" />}
-                        </span>
                         {s.name}
                       </Link>
                     </li>

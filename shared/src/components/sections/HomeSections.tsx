@@ -2,6 +2,7 @@ import { Section } from "@/components/layout/Container";
 import { buildCategoryTree } from "@/components/layout/MegaMenu";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { isScheduledLive, type HomeSection, type Settings, orderHeroSlides } from "@/lib/content/schema";
+import { categoryRowSection, insertBeforeInfo } from "@/lib/content/new-section";
 import { repo } from "@/lib/data";
 import type { Category, Faq, Post } from "@/lib/types";
 import { BUDGET_TIERS } from "@/lib/utils/budget";
@@ -46,8 +47,14 @@ async function productsFor(s: Extract<HomeSection, { type: "productRow" }>, cate
  * Renders the homepage from Admin → Homepage: sections in their saved order, skipping hidden
  * or out-of-schedule sections, slides and banners. Every section maps to an existing component.
  */
-export async function HomeSections({ sections, ctx }: { sections: HomeSection[]; ctx: HomeContext }) {
+/**
+ * `autoCategoryRows`: older saved homepages (before category rows were editable) get one row per main
+ * category added automatically, before the trust/info sections. Newer ones list those rows as sections.
+ */
+export async function HomeSections({ sections: saved, ctx, autoCategoryRows = false }: { sections: HomeSection[]; ctx: HomeContext; autoCategoryRows?: boolean }) {
   const now = ctx.now ?? new Date();
+  const tops = ctx.categories.filter((c) => !c.parentSlug);
+  const sections = autoCategoryRows ? insertBeforeInfo(saved, tops.map(categoryRowSection)) : saved;
   const live = sections.filter((s) => s.enabled && isScheduledLive(s, now));
   const tree = buildCategoryTree(ctx.categories);
   const bySlug = new Map(ctx.categories.map((c) => [c.slug, c]));
@@ -67,6 +74,7 @@ export async function HomeSections({ sections, ctx }: { sections: HomeSection[];
         }
         case "productRow": {
           const products = await productsFor(s, ctx.categories);
+          if (products.length === 0) return null; // e.g. a category with no products yet
           return (
             <ProductGrid
               key={s.id}
@@ -77,7 +85,7 @@ export async function HomeSections({ sections, ctx }: { sections: HomeSection[];
               viewAllHref={s.viewAllHref || undefined}
               layout={s.layout}
               background={s.background}
-              spacing={prev?.type === "offerBanner" ? "sm" : "md"}
+              spacing={prev?.type === "offerBanner" || s.layout === "row" ? "sm" : "md"}
               priorityCount={i === 0 ? 2 : 0}
             />
           );
@@ -162,36 +170,10 @@ export async function HomeSections({ sections, ctx }: { sections: HomeSection[];
     }),
   );
 
-  // One row per top category (up to 7 of its products), placed after the shop sections and before the
-  // trust/info sections (value props, customer care, brand story, guides, FAQ). Empty categories are skipped.
-  const categoryRows = (
-    await Promise.all(
-      tree.map(async (c) => {
-        const products = await repo.listProducts({ category: c.slug, limit: 7 });
-        if (products.length === 0) return null;
-        return (
-          <ProductGrid
-            key={`category-row-${c.slug}`}
-            title={c.name}
-            products={products.map(toCardProduct)}
-            viewAllHref={paths.category(c)}
-            layout="row"
-            spacing="sm"
-          />
-        );
-      }),
-    )
-  ).filter(Boolean);
-  const INFO_TYPES = new Set<HomeSection["type"]>(["valueProps", "customerCare", "brandStory", "guides", "faq"]);
-  const firstInfo = live.findIndex((s) => INFO_TYPES.has(s.type));
-  const at = firstInfo < 0 ? rendered.length : firstInfo;
-
   return (
     <>
-      {!h1Used && <h1 className="sr-only">City Seller: everyday home needs, honestly priced</h1>}
-      {rendered.slice(0, at)}
-      {categoryRows}
-      {rendered.slice(at)}
+      {!h1Used && <h1 className="sr-only">Cartzee: everyday home needs, honestly priced</h1>}
+      {rendered}
     </>
   );
 }

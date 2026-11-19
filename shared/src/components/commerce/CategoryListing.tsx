@@ -198,12 +198,13 @@ export function CategoryListing({ products, hideBudget = false, emptyMessage = "
   );
 
   return (
-    <div className="grid gap-8 lg:grid-cols-4">
-      <aside className="hidden lg:block" aria-label="Filters">
+    <div className="flex gap-6">
+      {/* Narrow fixed filter column (stays in view while scrolling); products take the rest. */}
+      <aside className="hidden w-48 shrink-0 self-start lg:sticky lg:top-24 lg:block" aria-label="Filters">
         {panel}
       </aside>
-      <div className="lg:col-span-3">
-        <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+      <div className="min-w-0 flex-1">
+        <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
           <p className="text-text-muted" aria-live="polite">
             {filtered.length} {filtered.length === 1 ? "product" : "products"}
           </p>
@@ -232,7 +233,7 @@ export function CategoryListing({ products, hideBudget = false, emptyMessage = "
         {visible.length === 0 ? (
           <p className="rounded-lg border border-border bg-surface p-8 text-center text-text-muted">{emptyMessage}</p>
         ) : (
-          <ul className="grid grid-cols-2 gap-3 md:grid-cols-3 md:gap-4 xl:grid-cols-4">
+          <ul className="grid grid-cols-2 gap-3 md:grid-cols-3 md:gap-4 xl:grid-cols-5">
             {visible.map((p, i) => (
               <li key={p.id}>
                 <ProductCard product={p} priority={i < 2} headingLevel="h2" />

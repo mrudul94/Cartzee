@@ -11,7 +11,7 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
   const q = (await searchParams).q?.trim();
   return buildMetadata({
     title: q ? `Search results for "${q}"` : "Search",
-    description: "Search City Seller for kitchen, storage, cleaning, bathroom and décor products.",
+    description: "Search Cartzee for kitchen, storage, cleaning, bathroom and décor products.",
     path: paths.search(),
     noindex: true,
   });

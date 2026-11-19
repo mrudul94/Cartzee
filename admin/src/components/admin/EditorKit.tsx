@@ -1,5 +1,6 @@
 "use client";
 
+import { keepFormValues } from "@/hooks/useKeepFormValues";
 import Image from "next/image";
 import { useActionState, useId, useRef, useState, useTransition, type ReactNode } from "react";
 import { ArrowDown, ArrowUp, ImagePlus, Plus, Trash2 } from "lucide-react";
@@ -170,7 +171,7 @@ export function ContentSaveForm({ contentKey, value, action, children, saveLabel
   const [state, formAction, pending] = useActionState(action, {});
   const id = useId();
   return (
-    <form action={formAction} className="flex flex-col gap-6" aria-describedby={`${id}-status`} noValidate>
+    <form action={formAction} onSubmit={keepFormValues(formAction)} className="flex flex-col gap-6" aria-describedby={`${id}-status`} noValidate>
       <input type="hidden" name="key" value={contentKey} />
       <input type="hidden" name="value" value={JSON.stringify(value)} />
       {children}

@@ -11,7 +11,7 @@ import { supabaseRepo } from "./supabase-repo";
 export const repo: Repo = isSupabaseConfigured ? supabaseRepo : seedRepo;
 
 if (!isSupabaseConfigured && process.env.NODE_ENV === "production" && process.env.NEXT_PHASE !== "phase-production-build") {
-  console.warn("[city-seller] Supabase is not configured: serving seed data and keeping orders in memory.");
+  console.warn("[cartzee] Supabase is not configured: serving seed data and keeping orders in memory.");
 }
 
 export { OrderError } from "./repo";

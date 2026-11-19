@@ -169,7 +169,7 @@ const rank = (c: string) => order.findIndex((o) => c.startsWith(o));
 const sorted = [...entries].sort((a, b) => rank(a.category) - rank(b.category) || a.category.localeCompare(b.category) || a.name.localeCompare(b.name));
 const esc = (s: string) => s.replace(/\|/g, "\\|");
 const md = [
-  "# City Seller component registry",
+  "# Cartzee component registry",
   "",
   "> Generated from `registry.json` by `pnpm registry:sync`. Do not edit by hand; edit `registry.json` instead.",
   "",

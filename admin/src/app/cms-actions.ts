@@ -5,11 +5,12 @@ import { redirect } from "next/navigation";
 import { categoryFormSchema, fieldErrors, formObject, postFormSchema, type ActionState } from "@/lib/admin/forms";
 import { requirePermission } from "@/lib/auth/admin";
 import { isContentKey } from "@/lib/content/schema";
-import { AdminError, adminRepo } from "@/lib/data/admin-repo";
+import { AdminError, adminRepo, type ProductPatch, type ProductQuickState } from "@/lib/data/admin-repo";
 import { contentAdmin } from "@/lib/data/admin-content";
 import { ContentError, logActivity, resetContent, saveContent } from "@/lib/data/content-repo";
 import { paths } from "@/lib/utils/paths";
-import { refreshShop } from "@/lib/refresh";
+import { refreshShop, refreshShopSite } from "@/lib/refresh";
+import { background } from "@/lib/background";
 
 /**
  * CMS server actions. Every action: requirePermission() → validate → save → activity log →
@@ -54,15 +55,12 @@ export async function resetContentAction(fd: FormData) {
 
 /* ------------------------------------------------------------------ product quick actions */
 
-const QUICK = ["soldout", "instock", "show", "hide", "new-auto", "new-on", "new-off", "duplicate", "delete"] as const;
-type Quick = (typeof QUICK)[number];
-
+/** Duplicate / remove from the product list (these navigate away, so they stay plain form posts). */
 export async function productQuickAction(fd: FormData) {
   const admin = await requirePermission("products");
   const id = String(fd.get("id") ?? "");
-  const op = String(fd.get("op") ?? "") as Quick;
-  if (!id || !QUICK.includes(op)) return;
-  const restock = Math.max(1, Math.min(100_000, Math.floor(Number(fd.get("restock")) || 10)));
+  const op = String(fd.get("op") ?? "");
+  if (!id || (op !== "duplicate" && op !== "delete")) return;
   const product = await adminRepo.getProduct(id);
   if (!product) return;
 
@@ -77,33 +75,69 @@ export async function productQuickAction(fd: FormData) {
     await refreshShop();
     redirect(paths.admin("/products?deleted=1"));
   }
-  if (op === "duplicate") {
-    const copy = await adminRepo.duplicateProduct(id);
-    await logActivity(admin.email, `Duplicated product "${product.title}"`, copy.slug);
-    await refreshShop();
-    redirect(paths.admin(`/products/${copy.id}?created=1`));
-  }
-  const patch =
-    op === "soldout" ? { stock: 0 }
-    : op === "instock" ? { stock: restock }
-    : op === "show" ? { isActive: true }
-    : op === "hide" ? { isActive: false }
-    : op === "new-on" ? { isNew: true }
-    : op === "new-off" ? { isNew: false }
-    : { isNew: null };
-  await adminRepo.patchProduct(id, patch);
-  const label: Record<Exclude<Quick, "duplicate" | "delete">, string> = {
-    soldout: "Marked sold out",
-    instock: `Back in stock (${restock})`,
-    show: "Shown in store",
-    hide: "Hidden from store",
-    "new-auto": "New badge set to automatic",
-    "new-on": "New badge on",
-    "new-off": "New badge off",
-  };
-  await logActivity(admin.email, `${label[op]}: "${product.title}"`, product.slug);
+  const copy = await adminRepo.duplicateProduct(id);
+  await logActivity(admin.email, `Duplicated product "${product.title}"`, copy.slug);
   await refreshShop();
-  revalidatePath("/products");
+  redirect(paths.admin(`/products/${copy.id}?created=1`));
+}
+
+const QUICK_OPS = ["soldout", "instock", "show", "hide", "new-auto", "new-on", "new-off", "position"] as const;
+export type QuickOp = (typeof QUICK_OPS)[number];
+export type QuickResult = { ok: true; product: ProductQuickState } | { ok: false; message: string };
+
+/**
+ * One-click product change from the list (stock, visibility, New badge, position).
+ * Returns the saved row so the list updates in place; it does NOT re-render the admin page (that full
+ * re-render was what made each click take seconds). The activity log and the shop refresh run after the
+ * response. Admin reads stay uncached (straight from the database).
+ */
+export async function quickProductAction(id: string, op: QuickOp, value?: number | null): Promise<QuickResult> {
+  const admin = await requirePermission("products");
+  if (typeof id !== "string" || !id || !QUICK_OPS.includes(op)) return { ok: false, message: "Unknown action." };
+  const whole = (v: unknown, min: number, max: number) => (typeof v === "number" && Number.isInteger(v) && v >= min && v <= max ? v : undefined);
+  let patch: ProductPatch;
+  let label: string;
+  switch (op) {
+    case "soldout":
+      [patch, label] = [{ stock: 0 }, "Marked sold out"];
+      break;
+    case "instock": {
+      const stock = whole(value, 1, 100_000) ?? 10;
+      [patch, label] = [{ stock }, `Back in stock (${stock})`];
+      break;
+    }
+    case "show":
+      [patch, label] = [{ isActive: true }, "Shown in store"];
+      break;
+    case "hide":
+      [patch, label] = [{ isActive: false }, "Hidden from store"];
+      break;
+    case "new-on":
+      [patch, label] = [{ isNew: true }, "New badge on"];
+      break;
+    case "new-off":
+      [patch, label] = [{ isNew: false }, "New badge off"];
+      break;
+    case "new-auto":
+      [patch, label] = [{ isNew: null }, "New badge set to automatic"];
+      break;
+    case "position": {
+      const position = value === null || value === undefined ? null : whole(value, 1, 9999);
+      if (position === undefined) return { ok: false, message: "Position must be a whole number from 1 to 9999 (or empty)." };
+      [patch, label] = [{ position }, `Position ${position ?? "automatic"}`];
+      break;
+    }
+  }
+  try {
+    const product = await adminRepo.patchProduct(id, patch);
+    await background("activity log", () => logActivity(admin.email, `${label}: "${product.title}"`, product.slug));
+    await refreshShopSite();
+    return { ok: true, product };
+  } catch (e) {
+    if (e instanceof AdminError) return { ok: false, message: e.message };
+    console.error("[quick action]", e);
+    return { ok: false, message: "Could not save. Check your connection and try again." };
+  }
 }
 
 /* ------------------------------------------------------------------ categories */

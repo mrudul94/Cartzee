@@ -35,7 +35,7 @@ export default async function BudgetPage({ params }: Props) {
     <ListingTemplate
       crumbs={[{ label: "Shop by budget" }, { label: tier.label }]}
       title={`Home essentials ${tier.label.toLowerCase()}`}
-      answer={`These are City Seller's home-needs products priced ${tier.label.toLowerCase()}, across kitchen, storage, cleaning, bathroom and décor. All prices include taxes and are paid online at checkout.`}
+      answer={`These are Cartzee's home-needs products priced ${tier.label.toLowerCase()}, across kitchen, storage, cleaning, bathroom and décor. All prices include taxes and are paid online at checkout.`}
       products={products.map(toCardProduct)}
       hideBudget
       chips={BUDGET_TIERS.map((t) => ({ label: t.label, href: paths.budget(t.slug), active: t.slug === tier.slug }))}

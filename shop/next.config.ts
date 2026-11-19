@@ -19,7 +19,7 @@ processEnv(
   root,
 );
 
-/** Shop website (cityseller.in). Shared code lives in ../shared and is compiled by this app. */
+/** Shop website (cartzee.in). Shared code lives in ../shared and is compiled by this app. */
 const nextConfig: NextConfig = {
   outputFileTracingRoot: root,
   // Turbopack (fast dev compiler) needs the monorepo root so it can compile ../shared.

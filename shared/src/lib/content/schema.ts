@@ -115,7 +115,7 @@ export const sectionSchema = z.discriminatedUnion("type", [
     categorySlug: text(80),
     productSlugs: z.array(z.string().max(100)).max(24).default([]),
     limit: z.coerce.number().int().min(2).max(12).default(8),
-    layout: z.enum(["grid", "carousel"]).default("grid"),
+    layout: z.enum(["grid", "carousel", "row"]).default("grid"),
     viewAllHref: optionalLink,
     background: backgroundSchema,
   }),
@@ -159,7 +159,15 @@ export const sectionSchema = z.discriminatedUnion("type", [
 export type HomeSection = z.infer<typeof sectionSchema>;
 export type SectionType = HomeSection["type"];
 
-export const homeSchema = z.object({ sections: z.array(sectionSchema).max(30) }).superRefine((h, ctx) => {
+export const homeSchema = z
+  .object({
+    sections: z.array(sectionSchema).max(40),
+    /**
+     * false (older saved homepages): the shop adds one row per main category automatically.
+     * true: those rows are ordinary "Product row" sections the admin arranges (set when the homepage is saved).
+     */
+    categoryRowsManaged: z.boolean().default(false),
+  }).superRefine((h, ctx) => {
   const ids = new Set<string>();
   h.sections.forEach((s, i) => {
     if (ids.has(s.id)) ctx.addIssue({ code: "custom", path: ["sections", i, "id"], message: "Duplicate section id" });
@@ -209,6 +217,7 @@ export type PageSlug = (typeof PAGE_SLUGS)[number];
 /* ==================================================================== defaults (= the site before the CMS) */
 
 export const DEFAULT_HOME: HomeContent = {
+  categoryRowsManaged: false,
   sections: [
     {
       id: "bestsellers", type: "productRow", enabled: true, startsAt: "", endsAt: "",
@@ -241,9 +250,9 @@ export const DEFAULT_HOME: HomeContent = {
     },
     { id: "care", type: "customerCare", enabled: true, startsAt: "", endsAt: "", title: "We're here to help", subtitle: "Questions about a product, delivery or return? Real people answer, usually within a few hours." },
     {
-      id: "story", type: "brandStory", enabled: true, startsAt: "", endsAt: "", title: "Why choose City Seller?", showCategoryBlurbs: true,
+      id: "story", type: "brandStory", enabled: true, startsAt: "", endsAt: "", title: "Why choose Cartzee?", showCategoryBlurbs: true,
       paragraphs: [
-        "City Seller is an online store for the small things that make a home run smoothly. We pick practical products for real Indian homes, from rented one-BHKs to joint-family kitchens, and list them with clear specs, real dimensions and the full MRP so you can compare honestly.",
+        "Cartzee is an online store for the small things that make a home run smoothly. We pick practical products for real Indian homes, from rented one-BHKs to joint-family kitchens, and list them with clear specs, real dimensions and the full MRP so you can compare honestly.",
         "Every order is prepaid and handled by a small team that checks each one before it ships. If something arrives damaged or wrong, we make it right.",
       ],
     },

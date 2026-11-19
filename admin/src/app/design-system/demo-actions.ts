@@ -14,3 +14,11 @@ export async function demoUploadAction(_fd: FormData): Promise<{ src?: string; e
 export async function demoVoidAction(_fd: FormData): Promise<void> {
   /* style-guide preview: no-op */
 }
+
+/** Quick-action preview: "saves" instantly and echoes the change (nothing is stored). */
+export async function demoQuickAction(id: string, op: string, value?: number | null) {
+  return {
+    ok: true as const,
+    product: { id, stock: op === "soldout" ? 0 : (value ?? 10), isActive: op !== "hide", isNew: op === "new-on" ? true : op === "new-off" ? false : null, position: op === "position" ? (value ?? null) : null },
+  };
+}

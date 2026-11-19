@@ -20,7 +20,7 @@ processEnv(
 );
 
 
-/** Admin website (admin.cityseller.in). Never indexed, cached or framed. */
+/** Admin website (admin.cartzee.in). Never indexed, cached or framed. */
 const nextConfig: NextConfig = {
   outputFileTracingRoot: root,
   // Turbopack (fast dev compiler) needs the monorepo root so it can compile ../shared.

@@ -5,7 +5,7 @@ import { DEFAULT_SETTINGS } from "@/lib/content/defaults";
 export const defaultStoreFaqs: Faq[] = [
   {
     q: "Do you offer Cash on Delivery?",
-    a: "No. City Seller accepts prepaid orders only, through UPI, credit or debit cards and netbanking via Razorpay. Prepaid keeps prices low and lets us dispatch faster. UPI payments get an extra 5% off.",
+    a: "No. Cartzee accepts prepaid orders only, through UPI, credit or debit cards and netbanking via Razorpay. Prepaid keeps prices low and lets us dispatch faster. UPI payments get an extra 5% off.",
   },
   {
     q: "How long does delivery take?",

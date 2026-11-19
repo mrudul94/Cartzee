@@ -8,7 +8,7 @@ export const revalidate = 3600;
 
 export const metadata = buildMetadata({
   title: "Bestsellers: Most Loved Home Essentials",
-  description: "City Seller bestsellers: the storage, kitchen, cleaning and bathroom products customers across India buy most.",
+  description: "Cartzee bestsellers: the storage, kitchen, cleaning and bathroom products customers across India buy most.",
   path: paths.bestsellers(),
 });
 
@@ -18,7 +18,7 @@ export default async function BestsellersPage() {
     <ListingTemplate
       crumbs={[{ label: "Bestsellers" }]}
       title="Bestsellers"
-      answer="City Seller's bestsellers are the home essentials customers order most, from airtight jars and choppers to spin mops and no-drill bathroom shelves."
+      answer="Cartzee's bestsellers are the home essentials customers order most, from airtight jars and choppers to spin mops and no-drill bathroom shelves."
       products={products.map(toCardProduct)}
     />
   );

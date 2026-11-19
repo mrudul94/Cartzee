@@ -35,9 +35,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!data) return productMetadata(asProduct(category, sub));
   return buildMetadata({
     title: `${data.sub.name}: ${data.parent.name} Online`,
-    description: `${data.sub.intro} Shop ${data.sub.name.toLowerCase()} at City Seller with prepaid checkout and delivery across India.`,
+    description: `${data.sub.intro} Shop ${data.sub.name.toLowerCase()} at Cartzee with prepaid checkout and delivery across India.`,
     path: paths.category(data.sub),
-    image: data.sub.image,
+    image: data.parent.image || undefined, // subcategories have no image; share the main category's
     seoTitle: data.sub.seoTitle,
     seoDescription: data.sub.seoDescription,
   });

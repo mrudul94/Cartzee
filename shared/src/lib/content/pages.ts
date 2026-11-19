@@ -11,7 +11,7 @@ export const policies: Record<"shipping" | "returns" | "privacy" | "terms", Cont
     slug: "shipping",
     title: "Shipping policy",
     answer: `${site.name} ships prepaid orders across India. Most orders arrive in 4 to 8 days, and delivery is free on orders above ₹${DEFAULT_SETTINGS.delivery.freeAbove}.`,
-    description: "Delivery times, charges and coverage for City Seller orders across India.",
+    description: "Delivery times, charges and coverage for Cartzee orders across India.",
     updated: "2026-11-01",
     blocks: [
       { type: "h2", text: "Delivery times" },
@@ -29,7 +29,7 @@ export const policies: Record<"shipping" | "returns" | "privacy" | "terms", Cont
     slug: "returns",
     title: "Returns and refunds",
     answer: `If your item arrives damaged, defective or different from what you ordered, tell us within ${DEFAULT_SETTINGS.delivery.returnWindowDays} days of delivery and we will replace it or refund you in full.`,
-    description: "How to report a damaged or wrong item and get a replacement or refund from City Seller.",
+    description: "How to report a damaged or wrong item and get a replacement or refund from Cartzee.",
     updated: "2026-11-01",
     blocks: [
       { type: "h2", text: "What can be returned" },
@@ -45,7 +45,7 @@ export const policies: Record<"shipping" | "returns" | "privacy" | "terms", Cont
     slug: "privacy",
     title: "Privacy policy",
     answer: `${site.name} collects only the details needed to deliver your order (name, phone, email and address) and never sells your data.`,
-    description: "What personal data City Seller collects, why, and how it is protected.",
+    description: "What personal data Cartzee collects, why, and how it is protected.",
     updated: "2026-11-01",
     blocks: [
       { type: "h2", text: "What we collect" },
@@ -62,7 +62,7 @@ export const policies: Record<"shipping" | "returns" | "privacy" | "terms", Cont
     slug: "terms",
     title: "Terms of service",
     answer: `These terms cover buying from ${site.name}: prepaid orders, pricing in rupees inclusive of taxes, delivery within India and our return policy.`,
-    description: "Terms and conditions for shopping at City Seller.",
+    description: "Terms and conditions for shopping at Cartzee.",
     updated: "2026-11-01",
     blocks: [
       { type: "h2", text: "Orders" },
@@ -81,7 +81,7 @@ export const aboutPage: ContentPage = {
   slug: "about",
   title: `About ${site.name}`,
   answer: `${site.name} is an Indian online store for practical home needs: storage, kitchen, cleaning, bathroom and décor products at honest prices, with prepaid checkout and delivery across India.`,
-  description: "Who we are and how City Seller picks, prices and delivers home essentials.",
+  description: "Who we are and how Cartzee picks, prices and delivers home essentials.",
   updated: "2026-11-01",
   blocks: [
     { type: "h2", text: "What we do" },

@@ -8,7 +8,7 @@ import { Card } from "@/components/ui/Card";
 import { Checkbox } from "@/components/ui/Checkbox";
 import { Select } from "@/components/ui/Input";
 import type { ActionState } from "@/lib/admin/forms";
-import { newSection } from "@/lib/content/new-section";
+import { categoryRowSection, insertBeforeInfo, newSection } from "@/lib/content/new-section";
 import { scheduleState, SECTION_LABELS, type HomeContent, type HomeSection, type SectionType } from "@/lib/content/schema";
 import { cn } from "@/lib/utils/cn";
 import { ContentSaveForm } from "./EditorKit";
@@ -27,13 +27,22 @@ export type HomeEditorProps = {
 const iconBtn =
   "inline-flex h-9 w-9 items-center justify-center rounded-md text-text hover:bg-secondary/60 disabled:opacity-40 focus-visible:outline-none focus-visible:shadow-focus";
 
+const SOURCE_LABELS = { bestsellers: "Bestsellers", flashSale: "Flash sale", newArrivals: "New arrivals" } as const;
+
+/** Bold name in the section list: product rows show their own title (e.g. the category name). */
+function heading(s: HomeSection): string {
+  return s.type === "productRow" && s.title ? s.title : SECTION_LABELS[s.type];
+}
+
 /** One-line description shown in the section list. */
-function summary(s: HomeSection): string {
+function summary(s: HomeSection, categories: CategoryOptionLite[]): string {
   switch (s.type) {
     case "hero":
       return `${s.slides.length} slide${s.slides.length === 1 ? "" : "s"}: ${s.slides[0]?.title ?? ""}`;
     case "productRow":
-      return `${s.title} · ${s.source === "manual" ? `${s.productSlugs.length} picked` : s.source}`;
+      if (s.source === "manual") return `Product row · ${s.productSlugs.length} hand-picked`;
+      if (s.source === "category") return `Product row · category: ${categories.find((c) => c.slug === s.categorySlug)?.name ?? "not chosen"}`;
+      return `Product row · ${SOURCE_LABELS[s.source]}`;
     case "offerBanner":
       return s.banner.title;
     case "bannerGrid":
@@ -61,7 +70,13 @@ const STATE_BADGE = {
  * with an edit panel. Nothing changes on the shop until "Save changes".
  */
 export function HomeEditor({ initial, categories, products, shopUrl, action, upload }: HomeEditorProps) {
-  const [sections, setSections] = useState<HomeSection[]>(initial.sections);
+  const tops = categories.filter((c) => !c.parentSlug);
+  // Older homepages added category rows automatically; list them here so they can be arranged (kept on Save).
+  const upgrading = !initial.categoryRowsManaged;
+  const [sections, setSections] = useState<HomeSection[]>(() => (upgrading ? insertBeforeInfo(initial.sections, tops.map(categoryRowSection)) : initial.sections));
+  const hasRowFor = (slug: string) => sections.some((s) => s.type === "productRow" && s.source === "category" && s.categorySlug === slug);
+  const missing = tops.filter((c) => !hasRowFor(c.slug));
+  const addMissing = () => setSections((all) => insertBeforeInfo(all, missing.map(categoryRowSection)));
   const [selected, setSelected] = useState<string | null>(initial.sections[0]?.id ?? null);
   const [addType, setAddType] = useState<SectionType>("offerBanner");
   const current = sections.find((s) => s.id === selected);
@@ -88,7 +103,7 @@ export function HomeEditor({ initial, categories, products, shopUrl, action, upl
   return (
     <ContentSaveForm
       contentKey="home"
-      value={{ sections }}
+      value={{ sections, categoryRowsManaged: true }}
       action={action}
       extra={
         <Button href={shopUrl} target="_blank" variant="outline" icon={<ExternalLink aria-hidden className="h-4 w-4" />} iconPosition="right">
@@ -99,6 +114,11 @@ export function HomeEditor({ initial, categories, products, shopUrl, action, upl
       <div className="grid gap-6 lg:grid-cols-5">
         <Card padding="sm" className="self-start lg:col-span-2">
           <h2 className="px-1 pb-2 font-heading text-lg font-semibold">Sections (top to bottom)</h2>
+          {upgrading && (
+            <p role="status" className="mb-2 rounded-md bg-warning-soft p-3 text-sm">
+              Each category&apos;s product row is now listed here, so you can move, hide or edit it. Click <strong>Save changes</strong> to keep this layout.
+            </p>
+          )}
           <ol className="flex flex-col gap-1">
             {sections.map((s, i) => {
               const state = scheduleState(s);
@@ -108,11 +128,11 @@ export function HomeEditor({ initial, categories, products, shopUrl, action, upl
                     <Checkbox id={`show-${s.id}`} label={<span className="sr-only">Show {SECTION_LABELS[s.type]}</span>} checked={s.enabled} onCheckedChange={(enabled) => update({ ...s, enabled } as HomeSection)} />
                     <button type="button" onClick={() => setSelected(s.id)} className="min-w-0 flex-1 py-2 text-left focus-visible:outline-none focus-visible:shadow-focus" aria-current={s.id === selected || undefined}>
                       <span className="flex flex-wrap items-center gap-1">
-                        <span className="font-semibold">{SECTION_LABELS[s.type]}</span>
+                        <span className="font-semibold">{heading(s)}</span>
                         {!s.enabled && <Badge variant="neutral">Hidden</Badge>}
                         {s.enabled && state !== "live" && <Badge variant={STATE_BADGE[state].variant}>{STATE_BADGE[state].label}</Badge>}
                       </span>
-                      <span className="block truncate text-sm text-text-muted">{summary(s)}</span>
+                      <span className="block truncate text-sm text-text-muted">{summary(s, categories)}</span>
                     </button>
                     <div className="flex">
                       <button type="button" className={iconBtn} onClick={() => setSelected(s.id)} aria-label={`Edit ${SECTION_LABELS[s.type]}`}>
@@ -133,6 +153,14 @@ export function HomeEditor({ initial, categories, products, shopUrl, action, upl
               );
             })}
           </ol>
+          {missing.length > 0 && (
+            <div className="mt-3 flex flex-wrap items-center justify-between gap-2 rounded-md bg-background p-2 text-sm">
+              <span className="text-text-muted">No row yet for: {missing.map((c) => c.name).join(", ")}</span>
+              <Button size="sm" variant="outline" icon={<Plus aria-hidden className="h-4 w-4" />} onClick={addMissing}>
+                Add category rows
+              </Button>
+            </div>
+          )}
           <div className="mt-3 flex gap-2 border-t border-border pt-3">
             <label htmlFor="add-section" className="sr-only">
               Section type to add

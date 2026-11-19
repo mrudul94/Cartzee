@@ -13,7 +13,7 @@ const EXT = ["", ".ts", ".tsx", "/index.ts", "/index.tsx"];
  */
 function atAlias(): Plugin {
   return {
-    name: "cityseller-at-alias",
+    name: "cartzee-at-alias",
     enforce: "pre",
     resolveId(id) {
       if (!id.startsWith("@/")) return null;

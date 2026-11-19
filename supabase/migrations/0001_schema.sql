@@ -1,4 +1,4 @@
--- City Seller schema. Apply with `supabase db push` (or paste into the Supabase SQL editor in order).
+-- Cartzee schema. Apply with `supabase db push` (or paste into the Supabase SQL editor in order).
 -- Money is stored as numeric(10,2) rupees; Razorpay amounts are converted to paise in app code.
 -- gen_random_uuid() is built into Postgres 13+ (no extension needed).
 
@@ -174,7 +174,7 @@ create table public.blog_posts (
   body jsonb not null default '[]'::jsonb,
   faqs jsonb not null default '[]'::jsonb,
   cover text not null default '',
-  author text not null default 'City Seller Team',
+  author text not null default 'Cartzee Team',
   is_published boolean not null default false,
   published_at timestamptz,
   updated_at timestamptz not null default now()

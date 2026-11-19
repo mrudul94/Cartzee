@@ -1,5 +1,5 @@
 /**
- * City Seller design tokens — the single source of truth for every visual value.
+ * Cartzee design tokens — the single source of truth for every visual value.
  *
  * Flow: tokens.ts → (tailwind.config.ts plugin) → CSS custom properties on :root
  *       → Tailwind theme keys that read those variables.

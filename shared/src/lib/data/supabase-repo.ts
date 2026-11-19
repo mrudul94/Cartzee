@@ -15,7 +15,7 @@ type CategoryRow = {
 export type ProductRow = {
   id: string; slug: string; category_id: string; subcategory_id: string; title: string; summary: string; description: string;
   how_to_use: string[]; specs: Spec[]; material: string; colour: string; price: number; mrp: number; rating: number;
-  review_count: number; bought_count?: number; sizes?: string[] | null; stock: number; is_bestseller: boolean; is_flash_sale: boolean; is_new: boolean | null; faqs: Faq[];
+  review_count: number; bought_count?: number; sizes?: string[] | null; stock: number; is_bestseller: boolean; is_flash_sale: boolean; is_new: boolean | null; position?: number | null; faqs: Faq[];
   seo_title: string | null; seo_description: string | null; created_at: string;
   product_images: { src: string; alt: string; sort_order: number }[];
 };
@@ -28,7 +28,7 @@ export type OrderRow = {
 };
 
 export const PRODUCT_COLUMNS =
-  "id, slug, category_id, subcategory_id, title, summary, description, how_to_use, specs, material, colour, price, mrp, rating, review_count, bought_count, sizes, stock, is_bestseller, is_flash_sale, is_new, faqs, seo_title, seo_description, created_at, product_images(src, alt, sort_order)";
+  "id, slug, category_id, subcategory_id, title, summary, description, how_to_use, specs, material, colour, price, mrp, rating, review_count, bought_count, sizes, stock, is_bestseller, is_flash_sale, is_new, position, faqs, seo_title, seo_description, created_at, product_images(src, alt, sort_order)";
 export const ORDER_COLUMNS = "*, order_items(*), order_events(status, note, created_at)";
 export const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
@@ -87,6 +87,7 @@ export async function toProducts(rows: ProductRow[]): Promise<Product[]> {
     isBestseller: r.is_bestseller,
     isFlashSale: r.is_flash_sale,
     isNew: r.is_new,
+    position: r.position ?? null,
     images: [...(r.product_images ?? [])].sort((a, b) => a.sort_order - b.sort_order).map(({ src, alt }) => ({ src, alt })),
     faqs: r.faqs ?? [],
     createdAt: r.created_at,
@@ -96,13 +97,13 @@ export async function toProducts(rows: ProductRow[]): Promise<Product[]> {
 }
 
 /**
- * Every active product (RLS hides inactive ones), oldest first. One query serves all the product lists on
+ * Every active product (RLS hides inactive ones), by admin position, then newest first. One query serves all the product lists on
  * a page (bestsellers, category rows, related items…), deduped per request and cached across requests
  * (tag "catalog": cleared by admin saves and when an order is paid). Fine for catalogues up to a few
  * thousand products.
  */
 const fetchAllProducts = async (): Promise<Product[]> => {
-  const { data, error } = await pub().from("products").select(PRODUCT_COLUMNS).order("created_at", { ascending: true });
+  const { data, error } = await pub().from("products").select(PRODUCT_COLUMNS).order("position", { ascending: true, nullsFirst: false }).order("created_at", { ascending: false });
   if (error) fail("products", error);
   return toProducts(data as unknown as ProductRow[]);
 };
