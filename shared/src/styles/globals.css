@@ -51,3 +51,9 @@
     @apply underline underline-offset-4 hover:text-primary;
   }
 }
+
+/* Microsoft Edge adds its own "show password" eye to password fields; our PasswordInput already has one. */
+input[type="password"]::-ms-reveal,
+input[type="password"]::-ms-clear {
+  display: none;
+}

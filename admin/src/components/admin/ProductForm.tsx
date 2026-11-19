@@ -12,6 +12,7 @@ import type { Faq, Spec } from "@/lib/types";
 import { calcDiscount, calcMargin, daysSince, formatINR, slugify } from "@/lib/utils/format";
 import { NEW_BADGE_DAYS } from "@/lib/utils/product";
 import { ImageManager, type ManagedImage } from "./ImageManager";
+import { cn } from "@/lib/utils/cn";
 
 export type ProductFormValues = {
   id?: string;
@@ -25,6 +26,7 @@ export type ProductFormValues = {
   specs: Spec[];
   faqs: Faq[];
   material: string;
+  sizes: string;
   colour: string;
   price: number;
   mrp: number;
@@ -44,7 +46,14 @@ export type ProductFormValues = {
   path?: string;
 };
 
-export type CategoryOption = { slug: string; name: string; children: { slug: string; name: string }[] };
+export type CategoryOption = { slug: string; name: string; hasSizes?: boolean; children: { slug: string; name: string; hasSizes?: boolean }[] };
+
+/** Quick-pick sizes for clothing products. */
+const SIZE_PRESETS = [
+  { label: "Adult", sizes: ["XS", "S", "M", "L", "XL", "XXL"] },
+  { label: "Kids (age)", sizes: ["0-6M", "6-12M", "1-2Y", "2-3Y", "3-4Y", "4-5Y", "5-6Y", "6-7Y", "7-8Y", "8-9Y", "9-10Y"] },
+];
+const splitSizes = (v: string) => v.split(",").map((s) => s.trim()).filter(Boolean);
 
 export type ProductFormProps = {
   values: ProductFormValues;
@@ -74,6 +83,8 @@ export function ProductForm({ values: v, categories, action, upload, notice }: P
   const [title, setTitle] = useState(v.title);
   const [slug, setSlug] = useState(v.slug);
   const [category, setCategory] = useState(v.categorySlug);
+  const [sub, setSub] = useState(v.subcategorySlug);
+  const [sizes, setSizes] = useState(v.sizes);
   const [price, setPrice] = useState(String(v.price || ""));
   const [mrp, setMrp] = useState(String(v.mrp || ""));
   const [cost, setCost] = useState(String(v.meeshoPrice || ""));
@@ -81,7 +92,12 @@ export function ProductForm({ values: v, categories, action, upload, notice }: P
   const [seoTitle, setSeoTitle] = useState(v.seoTitle ?? "");
   const [seoDescription, setSeoDescription] = useState(v.seoDescription ?? "");
 
-  const subs = categories.find((c) => c.slug === category)?.children ?? [];
+  const cat = categories.find((c) => c.slug === category);
+  const subs = cat?.children ?? [];
+  // Clothing (category or subcategory marked "products come in sizes"): sizes are required.
+  const needsSizes = Boolean(cat?.hasSizes || subs.find((s) => s.slug === sub)?.hasSizes);
+  const chosenSizes = splitSizes(sizes);
+  const toggleSize = (s: string) => setSizes((chosenSizes.includes(s) ? chosenSizes.filter((x) => x !== s) : [...chosenSizes, s]).join(", "));
   const margin = calcMargin(Number(price) || 0, Number(cost) || 0);
   const stale = v.priceCheckedAt ? daysSince(v.priceCheckedAt) : null;
   const field = (name: string) => ({ id: `p-${name}`, name, invalid: Boolean(e[name]) });
@@ -106,13 +122,20 @@ export function ProductForm({ values: v, categories, action, upload, notice }: P
         </FormField>
         <div className="grid gap-4 md:grid-cols-2">
           <FormField id="p-categorySlug" label="Category" error={e.categorySlug} required>
-            <Select {...field("categorySlug")} value={category} onChange={(ev) => setCategory(ev.target.value)} placeholder="Choose category" options={categories.map((c) => ({ value: c.slug, label: c.name }))} />
+            <Select
+              {...field("categorySlug")}
+              value={category}
+              onChange={(ev) => {
+                setCategory(ev.target.value);
+                setSub("");
+              }}
+              placeholder="Choose category" options={categories.map((c) => ({ value: c.slug, label: c.name }))} />
           </FormField>
           <FormField id="p-subcategorySlug" label="Subcategory (optional)" error={e.subcategorySlug} hint={subs.length ? undefined : "This category has no subcategories."}>
             <Select
-              key={category}
               {...field("subcategorySlug")}
-              defaultValue={subs.some((s) => s.slug === v.subcategorySlug) ? v.subcategorySlug : ""}
+              value={subs.some((s) => s.slug === sub) ? sub : ""}
+              onChange={(ev) => setSub(ev.target.value)}
               options={[{ value: "", label: "None" }, ...subs.map((s) => ({ value: s.slug, label: s.name }))]}
             />
           </FormField>
@@ -170,6 +193,47 @@ export function ProductForm({ values: v, categories, action, upload, notice }: P
             <Input {...field("colour")} defaultValue={v.colour} placeholder="e.g. Grey" />
           </FormField>
         </div>
+        {needsSizes || chosenSizes.length > 0 ? (
+          <FormField
+            id="p-sizes"
+            label="Sizes"
+            error={e.sizes}
+            required={needsSizes}
+            hint={
+              needsSizes
+                ? "Clothing: tap the sizes this item comes in (or type them, comma separated). Shoppers must pick one, and the size shows on the order."
+                : "This category isn't marked as clothing. Clear the sizes if the product doesn't come in sizes."
+            }
+          >
+            <div className="flex flex-col gap-3">
+              <Input {...field("sizes")} value={sizes} onChange={(ev) => setSizes(ev.target.value)} placeholder="e.g. S, M, L, XL" />
+              {SIZE_PRESETS.map((group) => (
+                <div key={group.label} className="flex flex-wrap items-center gap-2">
+                  <span className="w-20 text-sm text-text-muted">{group.label}</span>
+                  {group.sizes.map((s) => {
+                    const on = chosenSizes.includes(s);
+                    return (
+                      <button
+                        key={s}
+                        type="button"
+                        aria-pressed={on}
+                        onClick={() => toggleSize(s)}
+                        className={cn(
+                          "inline-flex min-h-11 min-w-11 items-center justify-center rounded-md border px-3 text-sm font-semibold transition-colors duration-fast focus-visible:outline-none focus-visible:shadow-focus",
+                          on ? "border-ink bg-ink text-text-inverse" : "border-border-strong bg-surface text-text hover:border-ink",
+                        )}
+                      >
+                        {s}
+                      </button>
+                    );
+                  })}
+                </div>
+              ))}
+            </div>
+          </FormField>
+        ) : (
+          <input type="hidden" name="sizes" value="" />
+        )}
         <FormField id="p-description" label="Description" error={e.description} hint="Separate paragraphs with a blank line." required>
           <Textarea {...field("description")} rows={6} defaultValue={v.description} />
         </FormField>

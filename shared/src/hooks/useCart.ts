@@ -15,14 +15,20 @@ export type CartLine = {
   mrp: number;
   quantity: number;
   maxQty: number;
+  /** Chosen clothing size; the same product in two sizes is two lines. */
+  size?: string;
 };
+
+/** Identifies a cart line: product + size. */
+export const lineKey = (l: Pick<CartLine, "productId" | "size">) => (l.size ? `${l.productId}::${l.size}` : l.productId);
 
 type CartState = {
   items: CartLine[];
   isOpen: boolean;
   add: (line: Omit<CartLine, "quantity">, quantity?: number) => void;
-  setQuantity: (productId: string, quantity: number) => void;
-  remove: (productId: string) => void;
+  /** `key` is lineKey(line) (product id, plus "::size" for sized items). */
+  setQuantity: (key: string, quantity: number) => void;
+  remove: (key: string) => void;
   clear: () => void;
   open: () => void;
   close: () => void;
@@ -40,23 +46,20 @@ export const useCart = create<CartState>()(
       add: (line, quantity = 1) =>
         set((s) => {
           const cap = Math.min(MAX_PER_LINE, line.maxQty);
-          const existing = s.items.find((i) => i.productId === line.productId);
+          const key = lineKey(line);
+          const existing = s.items.find((i) => lineKey(i) === key);
           if (existing) {
             return {
-              items: s.items.map((i) =>
-                i.productId === line.productId ? { ...i, ...line, quantity: Math.min(cap, i.quantity + quantity) } : i,
-              ),
+              items: s.items.map((i) => (lineKey(i) === key ? { ...i, ...line, quantity: Math.min(cap, i.quantity + quantity) } : i)),
             };
           }
           return { items: [...s.items, { ...line, quantity: Math.min(cap, quantity) }] };
         }),
-      setQuantity: (productId, quantity) =>
+      setQuantity: (key, quantity) =>
         set((s) => ({
-          items: s.items.map((i) =>
-            i.productId === productId ? { ...i, quantity: Math.max(1, Math.min(Math.min(MAX_PER_LINE, i.maxQty), quantity)) } : i,
-          ),
+          items: s.items.map((i) => (lineKey(i) === key ? { ...i, quantity: Math.max(1, Math.min(Math.min(MAX_PER_LINE, i.maxQty), quantity)) } : i)),
         })),
-      remove: (productId) => set((s) => ({ items: s.items.filter((i) => i.productId !== productId) })),
+      remove: (key) => set((s) => ({ items: s.items.filter((i) => lineKey(i) !== key) })),
       clear: () => set({ items: [] }),
       open: () => set({ isOpen: true }),
       close: () => set({ isOpen: false }),

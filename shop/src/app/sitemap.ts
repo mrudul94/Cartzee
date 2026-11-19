@@ -33,6 +33,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...BUDGET_TIERS.map((t) => ({ url: abs(paths.budget(t.slug)), changeFrequency: "weekly" as const, priority: 0.6 })),
     { url: abs(paths.flashSale()), changeFrequency: "daily", priority: 0.7 },
     { url: abs(paths.bestsellers()), changeFrequency: "weekly", priority: 0.7 },
+    { url: abs("/categories"), changeFrequency: "weekly", priority: 0.6 },
     { url: abs(paths.newArrivals()), changeFrequency: "daily", priority: 0.7 },
     { url: abs(paths.guides()), changeFrequency: "weekly", priority: 0.6 },
     ...posts.map((p) => ({ url: abs(paths.guide(p.slug)), lastModified: new Date(p.updatedAt), changeFrequency: "monthly" as const, priority: 0.6 })),

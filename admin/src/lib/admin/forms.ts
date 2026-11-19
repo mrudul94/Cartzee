@@ -53,6 +53,12 @@ export const productFormSchema = z
     specs: z.string().optional().default("").transform(textToSpecs),
     faqs: z.string().optional().default("").transform(textToFaqs),
     material: z.string().trim().max(60).default(""),
+    /** Clothing sizes, comma separated in the form ("S, M, L" or "2-3Y, 4-5Y"); empty for non-clothing. */
+    sizes: z
+      .string()
+      .default("")
+      .transform((v) => [...new Set(v.split(",").map((s) => s.trim()).filter(Boolean))])
+      .refine((a) => a.length <= 20 && a.every((s) => s.length <= 20), "Up to 20 sizes, each at most 20 characters"),
     colour: z.string().trim().max(60).default(""),
     price: money.refine((v) => v > 0, "Price must be more than 0"),
     mrp: money,
@@ -160,6 +166,8 @@ export const categoryFormSchema = z.object({
   image: z.union([z.literal(""), imageSrcSchema]).default(""),
   sortOrder: z.coerce.number().int().min(0).max(999).default(0),
   isActive: checkbox,
+  /** Clothing: products here must list sizes. */
+  hasSizes: checkbox,
   seoTitle: z.string().trim().max(70).optional().transform((v) => v || undefined),
   seoDescription: z.string().trim().max(170).optional().transform((v) => v || undefined),
   faqs: jsonList(faqItemSchema, 10),

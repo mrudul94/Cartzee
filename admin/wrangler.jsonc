@@ -13,24 +13,29 @@
     // Self-reference used by OpenNext for caching; must match "name".
     { "binding": "WORKER_SELF_REFERENCE", "service": "city-seller-admin" }
   ],
-  "r2_buckets": [
-    // Create once: pnpm wrangler r2 bucket create city-seller-admin-opennext-cache
-    { "binding": "NEXT_INC_CACHE_R2_BUCKET", "bucket_name": "city-seller-admin-opennext-cache" }
+  // Page cache (ISR) and cache tags (instant refresh after admin saves) in Workers KV: free plan, no card needed.
+  // (Created with: pnpm wrangler kv namespace create city-seller-admin-cache / city-seller-admin-tags)
+  "kv_namespaces": [
+    { "binding": "NEXT_INC_CACHE_KV", "id": "68eb64ff55ba412a8c2c5c8c33a1a9dc" },
+    { "binding": "NEXT_TAG_CACHE_KV", "id": "896a789881dc45e196065b00a20e11e5" }
   ],
   "images": {
     // next/image optimisation via Cloudflare Images.
     "binding": "IMAGES"
   },
-  // Only the real domains: no *.workers.dev or preview URLs (they would bypass Cloudflare Access).
-  "workers_dev": false,
+  // TEST PHASE: served on the free *.workers.dev address (cityseller.in isn't on Cloudflare yet).
+  // AT LAUNCH: set "workers_dev": false and restore the "routes" below (see README → Deploy).
+  "workers_dev": true,
   "preview_urls": false,
-  "routes": [
-    { "pattern": "admin.cityseller.in", "custom_domain": true }
-  ],
+  // "routes": [
+  //   { "pattern": "admin.cityseller.in", "custom_domain": true }
+  // ],
   // Non-secret runtime values. Secrets go in with `wrangler secret put` (see README).
   // NEXT_PUBLIC_* values are baked in at build time: set them in .env.production (or CI) before `pnpm deploy`.
   "vars": {
-    "EMAIL_FROM": "City Seller <orders@cityseller.in>"
+    // TEST PHASE: Resend's shared test sender (only delivers to the Resend account owner's email).
+    // AT LAUNCH: "City Seller <orders@cityseller.in>" once the domain is verified in Resend.
+    "EMAIL_FROM": "City Seller <onboarding@resend.dev>"
   },
   "observability": { "enabled": true }
 }

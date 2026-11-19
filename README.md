@@ -196,7 +196,7 @@ Analytics load on the shop only, and only when their IDs are set:
 **One-time setup**
 
 1. **Domain.** Add `cityseller.in` to Cloudflare (Websites → Add a site) and switch your registrar's nameservers to Cloudflare.
-2. **Cache bucket.** Run `pnpm wrangler login`, then `pnpm wrangler r2 bucket create city-seller-shop-opennext-cache` and `pnpm wrangler r2 bucket create city-seller-admin-opennext-cache`.
+2. **Cache storage.** Run `pnpm wrangler login`. Both sites cache pages and refresh tags in Workers KV (free plan, no card); the namespace IDs are already in each `wrangler.jsonc`. On a new Cloudflare account, create them with `pnpm wrangler kv namespace create city-seller-<shop|admin>-<cache|tags>` and paste the IDs in.
 3. **Server secrets.** Stored on each Worker, never in Git. Run `npx wrangler secret put <NAME>` inside that app's folder:
    ```
    shop/   SUPABASE_SERVICE_ROLE_KEY  RAZORPAY_KEY_ID  RAZORPAY_KEY_SECRET  RAZORPAY_WEBHOOK_SECRET  REVALIDATE_SECRET
@@ -218,11 +218,15 @@ Analytics load on the shop only, and only when their IDs are set:
 
 - **Manual:** `pnpm deploy:shop` or `pnpm deploy:admin`. Each runs lint and tests, then builds and deploys only that website.
   The `routes` in each `wrangler.jsonc` attach `cityseller.in` + `www.cityseller.in` (shop) and `admin.cityseller.in` (admin).
-- **Automatic:** `.github/workflows/deploy-shop.yml` and `deploy-admin.yml` deploy on pushes to `main` that touch that app or `shared/`;
-  `ci.yml` checks every other branch and pull request. Add `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID` as repository secrets,
-  and the `NEXT_PUBLIC_*` values as repository variables.
+- **Automatic (Cloudflare Workers Builds):** each site is a Worker connected to this GitHub repo (Workers & Pages → Import a repository).
+  Root directory `shop` or `admin`; build command `cd .. && pnpm install --frozen-lockfile && cd <app> && npx opennextjs-cloudflare build`;
+  deploy command `npx opennextjs-cloudflare deploy`. `NEXT_PUBLIC_*` values go in the Worker's *Build* variables; secrets in *Variables and Secrets*.
+  `ci.yml` still checks every pull request.
 
-`workers_dev` and preview URLs are disabled, so the admin can't be reached through a side address.
+**Test phase (now):** both `wrangler.jsonc` files serve the free `*.workers.dev` address and send email from Resend's test sender.
+At launch: set `"workers_dev": false`, restore the commented `routes`, and set `EMAIL_FROM` to your verified domain.
+
+At launch, `workers_dev` and preview URLs are disabled, so the admin can't be reached through a side address.
 The project uses pnpm's hoisted `node_modules` layout (`pnpm-workspace.yaml`), because the Cloudflare bundler can't copy pnpm's symlinks on Windows.
 
 ## Before launch

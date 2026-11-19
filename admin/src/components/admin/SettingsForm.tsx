@@ -43,15 +43,9 @@ export function SettingsForm({ initial, action }: { initial: Settings; action: (
       <Group title="Customer care" description="Shown in the footer, contact page, emails, Google data and llms.txt.">
         <div className="grid gap-4 md:grid-cols-2">
           <TextField id="care-phone" label="Phone" value={s.care.phone} onChange={(v) => set("care", { phone: v })} required placeholder="+91 98765 43210" />
-          <TextField id="care-whatsapp" label="WhatsApp number" hint="Digits with country code, e.g. 919876543210" value={s.care.whatsapp} onChange={(v) => set("care", { whatsapp: v.replace(/\D/g, "") })} required />
           <TextField id="care-email" label="Email" value={s.care.email} onChange={(v) => set("care", { email: v })} required />
           <TextField id="care-hours" label="Hours" value={s.care.hours} onChange={(v) => set("care", { hours: v })} required placeholder="Mon to Sat, 10 AM to 7 PM IST" />
         </div>
-      </Group>
-
-      <Group title="WhatsApp chat button" description="Floating button on every shop page. It uses the WhatsApp number above.">
-        <Checkbox id="wa-enabled" label="Show the WhatsApp button" checked={s.whatsappButton.enabled} onCheckedChange={(v) => set("whatsappButton", { enabled: v })} />
-        <TextField id="wa-message" label="Prefilled message" value={s.whatsappButton.message} onChange={(v) => set("whatsappButton", { message: v })} maxLength={200} />
       </Group>
 
       <Group title="Social links" description="Leave empty to hide an icon.">

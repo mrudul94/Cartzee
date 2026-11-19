@@ -1,9 +1,9 @@
 "use client";
 
-import { ShoppingBag } from "lucide-react";
+import { ShoppingCart } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
-import { cartTotals, useCart } from "@/hooks/useCart";
+import { cartTotals, lineKey, useCart } from "@/hooks/useCart";
 import { useHydrated } from "@/hooks/useHydrated";
 import { useSettings } from "@/components/layout/SettingsProvider";
 import { paths } from "@/lib/utils/paths";
@@ -22,7 +22,7 @@ export function CartView() {
   if (items.length === 0) {
     return (
       <div className="flex flex-col items-center gap-4 py-16 text-center">
-        <ShoppingBag aria-hidden className="h-12 w-12 text-text-muted" />
+        <ShoppingCart aria-hidden className="h-12 w-12 text-text-muted" />
         <p className="text-lg font-semibold">Your cart is empty</p>
         <Button href={paths.bestsellers()} variant="secondary">
           Shop bestsellers
@@ -37,7 +37,7 @@ export function CartView() {
         <FreeShippingProgress subtotal={totals.subtotal} className="mb-2" />
         <ul className="divide-y divide-border">
           {items.map((l) => (
-            <CartLineItem key={l.productId} line={l} size="md" />
+            <CartLineItem key={lineKey(l)} line={l} size="md" />
           ))}
         </ul>
       </Card>

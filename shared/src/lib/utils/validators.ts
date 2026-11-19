@@ -42,6 +42,8 @@ export const addressSchema = z.object({
 export const cartLineSchema = z.object({
   productId: z.string().min(1),
   quantity: z.number().int().min(1).max(10),
+  /** Clothing size, when the product has sizes (checked against the product on the server). */
+  size: z.string().trim().max(20).optional(),
 });
 
 export const checkoutSchema = z.object({

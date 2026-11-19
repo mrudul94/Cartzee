@@ -25,10 +25,9 @@ import { Container, Section } from "@/components/layout/Container";
 import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
 import { Logo } from "@/components/layout/Logo";
-import { BudgetMenu, buildCategoryTree, MegaMenu } from "@/components/layout/MegaMenu";
+import { BudgetMenu, buildCategoryTree, CategoryNav, MegaMenu, MoreMenu } from "@/components/layout/MegaMenu";
 import { MobileNav } from "@/components/layout/MobileNav";
 import { NavDropdown } from "@/components/layout/NavDropdown";
-import { TopBar } from "@/components/layout/TopBar";
 import { CategoryTiles } from "@/components/sections/CategoryTiles";
 import { ContentPage } from "@/components/sections/ContentPage";
 import { GuideCards } from "@/components/sections/GuideCards";
@@ -76,7 +75,14 @@ import { CopyField, MarginText, OrderStatusBadge, OrderTimeline, StatCard } from
 import { ImageManagerDemo } from "./ClientDemos";
 import { LoginForm } from "@/components/admin/LoginForm";
 import { DeleteProductCard } from "@/components/admin/DeleteProductCard";
+import { DeliveryPromise } from "@/components/commerce/DeliveryPromise";
+import { FreeDeliveryTag } from "@/components/commerce/FreeDeliveryTag";
+import { CategoryStrip } from "@/components/layout/CategoryStrip";
+import { MobileTabBar } from "@/components/layout/MobileTabBar";
+import { ScrollRail } from "@/components/ui/ScrollRail";
 import { OrderSelfService } from "@/components/commerce/OrderSelfService";
+import { CategoryBrowser } from "@/components/commerce/CategoryBrowser";
+import { ReviewForm } from "@/components/commerce/ReviewForm";
 import { AccountMenu } from "@/components/account/AccountMenu";
 import { AccountNav } from "@/components/account/AccountNav";
 import { AddressBook } from "@/components/account/AddressBook";
@@ -85,7 +91,6 @@ import { MfaForm } from "@/components/admin/MfaForm";
 import { TeamManager } from "@/components/admin/TeamManager";
 import { CustomerAuthForm } from "@/components/commerce/CustomerAuthForm";
 import { SetPasswordForm } from "@/components/commerce/SetPasswordForm";
-import { WhatsAppButton } from "@/components/layout/WhatsAppButton";
 import { PageSkeleton } from "@/components/ui/PageSkeleton";
 import { PasswordInput } from "@/components/ui/PasswordInput";
 import { OrderActions } from "@/components/admin/OrderActions";
@@ -341,7 +346,6 @@ export const demos: Record<string, ReactNode> = {
       <span className="rounded-md bg-ink p-2"><Logo inverse /></span>
     </div>
   ),
-  TopBar: <TopBar settings={DEFAULT_SETTINGS} />,
   NavDropdown: <NavDropdown label="Dropdown"><p className="p-4">Panel content</p></NavDropdown>,
   MegaMenu: <div className="relative"><MegaMenu tree={tree} /></div>,
   BudgetMenu: <BudgetMenu />,
@@ -378,7 +382,7 @@ export const demos: Record<string, ReactNode> = {
   ImageManager: <ImageManagerDemo images={demoProducts[0]!.images.slice(0, 2)} />,
   ProductForm: (
     <ProductForm
-      values={{ ...demoProducts[0]!, meeshoUrl: demoProducts[0]!.meeshoUrl ?? "", meeshoPrice: demoProducts[0]!.meeshoPrice ?? 0, isActive: true, isNew: null, id: undefined }}
+      values={{ ...demoProducts[0]!, meeshoUrl: demoProducts[0]!.meeshoUrl ?? "", meeshoPrice: demoProducts[0]!.meeshoPrice ?? 0, isActive: true, isNew: null, id: undefined, sizes: "" }}
       categories={tree.map((c) => ({ slug: c.slug, name: c.name, children: c.children.map((x) => ({ slug: x.slug, name: x.name })) }))}
       action={demoFormAction}
       upload={demoUploadAction}
@@ -429,11 +433,6 @@ export const demos: Record<string, ReactNode> = {
   ProductPicker: <ProductPickerDemo />,
   PasswordInput: <PasswordInput name="demo-password" aria-label="Password" defaultValue="hunter2-example" />,
   PageSkeleton: <PageSkeleton variant="listing" bare />,
-  WhatsAppButton: (
-    <div className="relative h-24 overflow-hidden rounded-md border border-border transform">
-      <WhatsAppButton number={DEFAULT_SETTINGS.care.whatsapp} message="Hi" />
-    </div>
-  ),
   CustomerAuthForm: <CustomerAuthForm next="/checkout" signIn={demoFormAction} signUp={demoFormAction} forgot={demoFormAction} />,
   SetPasswordForm: <SetPasswordForm action={demoFormAction} />,
   AccountMenu: <AccountMenu />,
@@ -453,11 +452,64 @@ export const demos: Record<string, ReactNode> = {
       makeDefault={demoFormAction}
     />
   ),
+  ReviewForm: <ReviewForm orderId="demo" productId="demo-product" productTitle="Example product" action={demoFormAction} />,
+  CategoryBrowser: (
+    <div className="max-w-modal overflow-hidden rounded-md border border-border">
+      <CategoryBrowser
+        categories={demoCategories
+          .filter((c) => !c.parentSlug)
+          .map((c) => ({
+            slug: c.slug,
+            name: c.name,
+            href: "#",
+            subcategories: [],
+            products: demoProducts.map((p) => ({ href: "#", label: p.title, image: p.images[0]?.src, price: p.price })),
+          }))}
+      />
+    </div>
+  ),
   OrderSelfService: (
     <div className="flex flex-col gap-4">
       <OrderSelfService orderId="demo" options={{ cancel: true, requestCancel: false, cancelRequested: false, requestReturn: false, returnUntil: null }} cancel={demoFormAction} requestCancel={demoFormAction} requestReturn={demoFormAction} />
       <OrderSelfService orderId="demo-2" options={{ cancel: false, requestCancel: false, cancelRequested: false, requestReturn: true, returnUntil: new Date().toISOString() }} cancel={demoFormAction} requestCancel={demoFormAction} requestReturn={demoFormAction} />
     </div>
+  ),
+  CategoryNav: (
+    <div className="relative flex items-center gap-1 rounded-md border border-border">
+      <CategoryNav tree={buildCategoryTree(demoCategories)} />
+    </div>
+  ),
+  MoreMenu: (
+    <div className="flex justify-end">
+      <MoreMenu />
+    </div>
+  ),
+  CategoryStrip: <CategoryStrip tree={buildCategoryTree(demoCategories)} className="lg:block" />,
+  MobileTabBar: (
+    <SettingsProvider settings={DEFAULT_SETTINGS}>
+      <div className="relative h-20 overflow-hidden rounded-md border border-border transform">
+        <MobileTabBar />
+      </div>
+    </SettingsProvider>
+  ),
+  ScrollRail: (
+    <ScrollRail label="Demo rail">
+      {Array.from({ length: 12 }, (_, i) => (
+        <li key={i} className="w-40 shrink-0 snap-start rounded-md border border-border bg-surface p-4">
+          Item {i + 1}
+        </li>
+      ))}
+    </ScrollRail>
+  ),
+  FreeDeliveryTag: (
+    <SettingsProvider settings={DEFAULT_SETTINGS}>
+      <FreeDeliveryTag price={999} />
+    </SettingsProvider>
+  ),
+  DeliveryPromise: (
+    <SettingsProvider settings={DEFAULT_SETTINGS}>
+      <DeliveryPromise price={349} />
+    </SettingsProvider>
   ),
   DeleteProductCard: (
     <div className="flex flex-col gap-4">
@@ -530,6 +582,6 @@ export const demos: Record<string, ReactNode> = {
     />
   ),
 
-  StoreShell: <p className="text-text-muted">Wraps every storefront page (TopBar, Header, Footer, CartDrawer, site JSON-LD). See <Link className="underline" href="/">the homepage</Link>.</p>,
+  StoreShell: <p className="text-text-muted">Wraps every storefront page (Header, Footer, CartDrawer, site JSON-LD). See <Link className="underline" href="/">the homepage</Link>.</p>,
 };
 

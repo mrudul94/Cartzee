@@ -119,6 +119,65 @@ describe("saved addresses (migration 0008)", () => {
   });
 });
 
+describe("reviews and bought counts (migration 0009)", () => {
+  it("keeps product rating in line with approved reviews, one review per order item", async () => {
+    const p = await pid("prd_003");
+    const id = await createOrder([{ product_id: p, quantity: 1 }]);
+    const add = (rating: number, approved: boolean, order: string | null) =>
+      db.query("insert into reviews (product_id, order_id, author, city, rating, body, is_approved, verified) values ($1, $2, 'Asha R.', 'Pune', $3, 'Good quality item.', $4, true) returning id", [p, order, rating, approved]);
+    const first = (await add(4, false, id)).rows[0] as { id: string };
+    const stats = () => one<{ rating: string; review_count: number }>("select rating, review_count from products where id = $1", [p]);
+    expect((await stats()).review_count).toBe(0);
+    await db.query("update reviews set is_approved = true where id = $1", [first.id]);
+    expect(await stats()).toMatchObject({ review_count: 1 });
+    expect(Number((await stats()).rating)).toBe(4);
+    await add(2, true, null);
+    expect(Number((await stats()).rating)).toBe(3);
+    await expect(add(5, true, id)).rejects.toThrow(/duplicate key|unique/);
+    await db.query("delete from reviews where id = $1", [first.id]);
+    expect(await stats()).toMatchObject({ review_count: 1 });
+  });
+
+  it("counts an order as bought once paid, and not after it's cancelled", async () => {
+    const p = await pid("prd_011");
+    const bought = async () => (await one<{ bought_count: number }>("select bought_count from products where id = $1", [p])).bought_count;
+    const before = await bought();
+    const id = await createOrder([{ product_id: p, quantity: 2 }]);
+    expect(await bought()).toBe(before);
+    await db.query("update orders set status = 'paid' where id = $1", [id]);
+    expect(await bought()).toBe(before + 1);
+    await db.query("update orders set status = 'shipped' where id = $1", [id]);
+    expect(await bought()).toBe(before + 1);
+    await db.query("update orders set status = 'cancelled_refunded' where id = $1", [id]);
+    expect(await bought()).toBe(before);
+    await asRole(db, "anon", async () => {
+      expect((await db.query("select bought_count, rating, review_count from products limit 1")).rows).toHaveLength(1);
+    });
+  });
+});
+
+describe("clothing sizes (migration 0010)", () => {
+  it("requires a valid size for sized products, keeps sizes as separate lines, and checks stock per product", async () => {
+    const shirt = await pid("prd_004");
+    const plain = await pid("prd_010");
+    await db.query("update products set sizes = '{S,M,L}', stock = 3 where id = $1", [shirt]);
+    const order = (items: object[]) => createOrder(items as { product_id: string; quantity: number }[]);
+
+    await expect(order([{ product_id: shirt, quantity: 1 }])).rejects.toThrow(/Choose a size/);
+    await expect(order([{ product_id: shirt, quantity: 1, size: "XXL" }])).rejects.toThrow(/not available/);
+    await expect(order([{ product_id: plain, quantity: 1, size: "M" }])).rejects.toThrow(/does not come in sizes/);
+    await expect(order([{ product_id: shirt, quantity: 2, size: "M" }, { product_id: shirt, quantity: 2, size: "L" }])).rejects.toThrow(/out of stock/);
+
+    const id = await order([{ product_id: shirt, quantity: 1, size: "M" }, { product_id: shirt, quantity: 1, size: "L" }, { product_id: shirt, quantity: 1, size: "M" }]);
+    const items = (await db.query<{ size: string; quantity: number }>("select size, quantity from order_items where order_id = $1 order by size", [id])).rows;
+    expect(items).toEqual([{ size: "L", quantity: 1 }, { size: "M", quantity: 2 }]);
+    await asRole(db, "anon", async () => {
+      expect((await db.query("select sizes from products limit 1")).rows).toHaveLength(1);
+    });
+    await db.query("update products set sizes = '{}', stock = 50 where id = $1", [shirt]);
+  });
+});
+
 describe("mark_order_paid", () => {
   it("is idempotent, checks amount and Razorpay order, and decrements stock", async () => {
     const product = await pid("prd_004");

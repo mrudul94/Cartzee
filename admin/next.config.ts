@@ -23,6 +23,8 @@ processEnv(
 /** Admin website (admin.cityseller.in). Never indexed, cached or framed. */
 const nextConfig: NextConfig = {
   outputFileTracingRoot: root,
+  // Turbopack (fast dev compiler) needs the monorepo root so it can compile ../shared.
+  turbopack: { root },
   experimental: {
     externalDir: true,
     // Product photo uploads (max 5 MB, validated server-side) go through a server action.

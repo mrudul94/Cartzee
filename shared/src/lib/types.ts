@@ -5,6 +5,8 @@ export type Category = {
   id: string;
   slug: string;
   name: string;
+  /** Clothing: products in this category (or its subcategories) must list sizes. */
+  hasSizes?: boolean;
   /** null for top-level categories; parent slug for subcategories. */
   parentSlug: string | null;
   /** 1–2 sentence direct answer shown at the top of the category page (AEO). */
@@ -39,6 +41,10 @@ export type Product = {
   priceCheckedAt?: string;
   rating: number;
   reviewCount: number;
+  /** Paid orders (not cancelled or returned) that included this product. */
+  boughtCount?: number;
+  /** Clothing sizes (e.g. S, M, L). When set, shoppers must choose one. */
+  sizes?: string[];
   stock: number;
   isBestseller: boolean;
   isFlashSale: boolean;
@@ -62,6 +68,8 @@ export type Review = {
   photos: string[];
   createdAt: string;
   verified: boolean;
+  /** The shop's public reply, if any. */
+  reply?: string;
 };
 
 export type PostBlock =
@@ -112,6 +120,8 @@ export type OrderItem = {
   title: string;
   image: string;
   quantity: number;
+  /** Chosen size for clothing ("" or undefined when the product has no sizes). */
+  size?: string;
   /** Locked at order time. */
   unitPrice: number;
   unitMrp: number;

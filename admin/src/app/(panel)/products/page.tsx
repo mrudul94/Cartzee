@@ -98,6 +98,8 @@ export default async function AdminProductsPage({ searchParams }: Props) {
           { header: "Meesho", cell: (p) => formatINR(p.meeshoPrice), align: "right", hideOnMobile: true },
           { header: "Margin", cell: (p) => <MarginText price={p.price} cost={p.meeshoPrice} />, align: "right" },
           { header: "Stock", cell: (p) => <span className={p.stock === 0 ? "font-semibold text-error" : undefined}>{p.stock}</span>, align: "right", hideOnMobile: true },
+          // Paid orders (not cancelled or returned) containing this product; the shop shows "10+ bought" from 10.
+          { header: "Bought", cell: (p) => p.boughtCount ?? 0, align: "right", hideOnMobile: true },
           {
             header: "Price checked",
             cell: (p) => {

@@ -6,11 +6,11 @@
 component with a new variant if it is close, and only create a new component (then register it) if nothing similar exists.
 Live previews: `/design-system`.
 
-Total entries: **151**
+Total entries: **160**
 
 | Name | Category | Path | Description | Variants | Used in |
 |---|---|---|---|---|---|
-| [Button](#button) | ui/action | `shared/src/components/ui/Button.tsx` | Primary action button used for Add to Cart, Buy Now, forms and links styled as buttons. | primary, secondary, soft, outline, ghost, link, danger, inverse | 40 |
+| [Button](#button) | ui/action | `shared/src/components/ui/Button.tsx` | Primary action button used for Add to Cart, Buy Now, forms and links styled as buttons. | primary, secondary, soft, outline, ghost, link, danger, inverse | 41 |
 | [CopyButton](#copybutton) | ui/action | `shared/src/components/ui/CopyButton.tsx` | Copies a value to the clipboard with a brief Copied state. | – | 1 |
 | [Accordion](#accordion) | ui/disclosure | `shared/src/components/ui/Disclosure.tsx` | Radix accordion for FAQs and mobile nav. | plain, boxed, single, multiple | 2 |
 | [Tabs](#tabs) | ui/disclosure | `shared/src/components/ui/Disclosure.tsx` | Radix tabs for grouped content. | – | 0 |
@@ -19,19 +19,20 @@ Total entries: **151**
 | [Table](#table) | ui/display | `shared/src/components/ui/Misc.tsx` | Key–value HTML table (product specs, order details). | – | 1 |
 | [PageSkeleton](#pageskeleton) | ui/feedback | `shared/src/components/ui/PageSkeleton.tsx` | Route-level loading placeholder shaped like the page that is loading. | home, listing, product, table, account, accountContent, order, checkout | 7 |
 | [Skeleton](#skeleton) | ui/feedback | `shared/src/components/ui/Misc.tsx` | Pulse placeholder block sized with token classes. | – | 1 |
-| [toast](#toast) | ui/feedback | `shared/src/components/ui/Toast.tsx` | Imperative function to show a toast from client code. | success, error, info | 3 |
+| [toast](#toast) | ui/feedback | `shared/src/components/ui/Toast.tsx` | Imperative function to show a toast from client code. | success, error, info | 4 |
 | [Toaster](#toaster) | ui/feedback | `shared/src/components/ui/Toast.tsx` | Toast viewport; mount once in root layout. | – | 2 |
 | [Checkbox](#checkbox) | ui/form | `shared/src/components/ui/Checkbox.tsx` | Radix checkbox with label row; used in filter facets. | – | 10 |
-| [FormField](#formfield) | ui/form | `shared/src/components/ui/FormField.tsx` | Label + control + hint/error wrapper for all form controls. | – | 16 |
-| [Input](#input) | ui/form | `shared/src/components/ui/Input.tsx` | Text input sharing fieldVariants with Textarea and Select; optional leading icon. | default, invalid | 19 |
+| [FormField](#formfield) | ui/form | `shared/src/components/ui/FormField.tsx` | Label + control + hint/error wrapper for all form controls. | – | 17 |
+| [Input](#input) | ui/form | `shared/src/components/ui/Input.tsx` | Text input sharing fieldVariants with Textarea and Select; optional leading icon. | default, invalid | 20 |
 | [PasswordInput](#passwordinput) | ui/form | `shared/src/components/ui/PasswordInput.tsx` | Password field with a show/hide eye toggle; accepts all Input props. | – | 4 |
 | [QuantityStepper](#quantitystepper) | ui/form | `shared/src/components/ui/Misc.tsx` | −/+ quantity control. | – | 2 |
 | [RadioGroup](#radiogroup) | ui/form | `shared/src/components/ui/Checkbox.tsx` | Radix radio group rendering a list of labelled options; used for budget and rating filters. | – | 1 |
 | [Select](#select) | ui/form | `shared/src/components/ui/Input.tsx` | Native select styled with field tokens (best mobile UX); used for sort, state picker. | default, invalid | 9 |
-| [Textarea](#textarea) | ui/form | `shared/src/components/ui/Input.tsx` | Multi-line text field with the same look as Input. | default, invalid | 6 |
+| [Textarea](#textarea) | ui/form | `shared/src/components/ui/Input.tsx` | Multi-line text field with the same look as Input. | default, invalid | 8 |
 | [Icon](#icon) | ui/icon | `shared/src/components/ui/Icon.tsx` | Token-sized wrapper for lucide icons. | – | 0 |
-| [SocialIcon](#socialicon) | ui/icon | `shared/src/components/ui/Icon.tsx` | Inline brand marks (Instagram, Facebook, YouTube, WhatsApp). | instagram, facebook, youtube, whatsapp | 4 |
+| [SocialIcon](#socialicon) | ui/icon | `shared/src/components/ui/Icon.tsx` | Inline brand marks (Instagram, Facebook, YouTube, WhatsApp). | instagram, facebook, youtube, whatsapp | 2 |
 | [Card](#card) | ui/layout | `shared/src/components/ui/Card.tsx` | Surface container with padding/elevation variants; polymorphic `as`. | flat, raised, outline, interactive | 24 |
+| [ScrollRail](#scrollrail) | ui/layout | `shared/src/components/ui/ScrollRail.tsx` | Sideways-scrolling list with snap and previous/next arrows on larger screens (hidden at the ends). | – | 2 |
 | [Separator](#separator) | ui/layout | `shared/src/components/ui/Misc.tsx` | Horizontal or vertical rule. | horizontal, vertical | 0 |
 | [ChipNav](#chipnav) | ui/navigation | `shared/src/components/ui/ChipNav.tsx` | Scrolling link chips with optional counts: listing refine chips, budget tiers, admin status filters. | default, active, with count | 4 |
 | [Pagination](#pagination) | ui/navigation | `shared/src/components/ui/Misc.tsx` | Crawlable page links with prev/next and ellipsis. | – | 1 |
@@ -44,9 +45,12 @@ Total entries: **151**
 | [CartDrawer](#cartdrawer) | commerce | `shared/src/components/commerce/CartDrawer.tsx` | Slide-in mini cart mounted once in StoreShell. | – | 1 |
 | [CartLineItem](#cartlineitem) | commerce | `shared/src/components/commerce/CartLineItem.tsx` | Cart row with thumbnail, price, quantity stepper and remove. | – | 2 |
 | [CartView](#cartview) | commerce | `shared/src/components/commerce/CartView.tsx` | Full cart page body. | – | 1 |
+| [CategoryBrowser](#categorybrowser) | commerce | `shared/src/components/commerce/CategoryBrowser.tsx` | All-categories browser (app style): category list on the left, compact picture tiles on the right (subcategories, then products with price); remembers the choice in ?c=. | – | 1 |
 | [CategoryListing](#categorylisting) | commerce | `shared/src/components/commerce/CategoryListing.tsx` | Client filters (budget, material, colour, rating), sort and pagination with URL state. | – | 1 |
 | [CheckoutForm](#checkoutform) | commerce | `shared/src/components/commerce/CheckoutForm.tsx` | Contact + address form (RHF + Zod Indian PIN/phone) and prepaid pay button. | – | 1 |
 | [CustomerAuthForm](#customerauthform) | commerce | `shared/src/components/commerce/CustomerAuthForm.tsx` | Shopper sign in / create account / forgot password form (email + password). | – | 1 |
+| [DeliveryPromise](#deliverypromise) | commerce | `shared/src/components/commerce/DeliveryPromise.tsx` | Product-page delivery line: 'Get it by <date>' for the saved PIN, plus free delivery or the fee. | – | 1 |
+| [FreeDeliveryTag](#freedeliverytag) | commerce | `shared/src/components/commerce/FreeDeliveryTag.tsx` | 'Free delivery' note on product cards when the price reaches the free-delivery threshold from Settings. | – | 1 |
 | [FreeShippingProgress](#freeshippingprogress) | commerce | `shared/src/components/commerce/OrderSummary.tsx` | 'Add ₹X more for free delivery' with progress bar. | – | 3 |
 | [OrderSelfService](#orderselfservice) | commerce | `shared/src/components/commerce/OrderSelfService.tsx` | Shopper's own order page: Cancel order (before packing, instant refund), Request cancellation (while packing) or Request a return (after delivery, within the return window), each with a reason. | – | 1 |
 | [OrderStatusPoller](#orderstatuspoller) | commerce | `shared/src/components/commerce/OrderStatusPoller.tsx` | Refreshes the order success page every few seconds while payment confirmation (webhook) is pending. | – | 1 |
@@ -58,7 +62,8 @@ Total entries: **151**
 | [ProductCard](#productcard) | commerce | `shared/src/components/commerce/ProductCard.tsx` | Product tile: hover second image, discount/sold-out/bestseller badges, title, rating, price, Add to Cart. | default, plain | 4 |
 | [ProductGallery](#productgallery) | commerce | `shared/src/components/commerce/ProductGallery.tsx` | Main image, thumbnails, counter, arrows and zoom modal with hover magnify. | – | 1 |
 | [PurchaseTracker](#purchasetracker) | commerce | `shared/src/components/commerce/PurchaseTracker.tsx` | Sends the GA4 purchase event once per order on the order success page. | – | 1 |
-| [RatingStars](#ratingstars) | commerce | `shared/src/components/commerce/RatingStars.tsx` | Read-only star rating with fractional fill. | – | 4 |
+| [RatingStars](#ratingstars) | commerce | `shared/src/components/commerce/RatingStars.tsx` | Read-only star rating with fractional fill. | – | 3 |
+| [ReviewForm](#reviewform) | commerce | `shared/src/components/commerce/ReviewForm.tsx` | Verified-purchase review for one delivered item: tappable 1–5 stars, optional title, review text; held for admin approval. | – | 1 |
 | [ReviewList](#reviewlist) | commerce | `shared/src/components/commerce/ReviewList.tsx` | Rating summary with distribution plus reviews with photos. | – | 1 |
 | [SearchBox](#searchbox) | commerce | `shared/src/components/commerce/SearchBox.tsx` | GET form to /search (works without JS; SearchAction target). | – | 2 |
 | [SetPasswordForm](#setpasswordform) | commerce | `shared/src/components/commerce/SetPasswordForm.tsx` | Choose a new password after a reset link. | – | 1 |
@@ -68,12 +73,12 @@ Total entries: **151**
 | [AccountNav](#accountnav) | commerce/account | `shared/src/components/account/AccountNav.tsx` | My account sidebar: greeting, orders, profile, saved addresses, track order, change password, help and sign out. | – | 1 |
 | [AddressBook](#addressbook) | commerce/account | `shared/src/components/account/AddressBook.tsx` | Saved delivery addresses: add, edit, delete (with confirm), choose default; up to 10. | – | 1 |
 | [ProfileForm](#profileform) | commerce/account | `shared/src/components/account/ProfileForm.tsx` | My account → Profile: edit name and mobile; email shown read-only. | – | 1 |
-| [AnswerIntro](#answerintro) | section | `shared/src/components/sections/InfoSections.tsx` | H1 + 1–2 sentence direct answer for AEO at the top of listing and info pages. | – | 6 |
+| [AnswerIntro](#answerintro) | section | `shared/src/components/sections/InfoSections.tsx` | H1 + 1–2 sentence direct answer for AEO at the top of listing and info pages. | – | 5 |
 | [BrandStory](#brandstory) | section | `shared/src/components/sections/InfoSections.tsx` | 'Why choose City Seller?' story with category blurbs. | – | 1 |
 | [CategoryTiles](#categorytiles) | section | `shared/src/components/sections/CategoryTiles.tsx` | Navigational tiles for categories, featured collections and budget tiers. | circle, card, price | 1 |
 | [ContentPage](#contentpage) | section | `shared/src/components/sections/ContentPage.tsx` | Policy/info page template from ContentPage data. | – | 2 |
 | [CustomerCare](#customercare) | section | `shared/src/components/sections/InfoSections.tsx` | Care block: phone, WhatsApp, email, hours + Track order. | – | 3 |
-| [FAQSection](#faqsection) | section | `shared/src/components/sections/InfoSections.tsx` | FAQ accordion with FAQPage JSON-LD. | – | 6 |
+| [FAQSection](#faqsection) | section | `shared/src/components/sections/InfoSections.tsx` | FAQ accordion with FAQPage JSON-LD. | – | 5 |
 | [GuideCards](#guidecards) | section | `shared/src/components/sections/GuideCards.tsx` | Buying-guide card grid. | – | 2 |
 | [HeroBanner](#herobanner) | section | `shared/src/components/sections/HeroBanner.tsx` | Homepage hero slide: the finished artwork only (text is in the image), full width at 7:3, never cropped; optional whole-slide link. | – | 1 |
 | [HeroCarousel](#herocarousel) | section | `shared/src/components/sections/HeroCarousel.tsx` | Rotating hero for 2–5 slides: auto-advance (paused on hover, focus or the pause button; off for reduced motion), arrows and dots; first slide is the LCP image. | – | 1 |
@@ -86,18 +91,20 @@ Total entries: **151**
 | [Analytics](#analytics) | layout | `shared/src/components/layout/Analytics.tsx` | Loads GA4 (NEXT_PUBLIC_GA_ID) and Microsoft Clarity (NEXT_PUBLIC_CLARITY_ID) after the page is interactive; shop only, never in the admin. | – | 1 |
 | [Breadcrumbs](#breadcrumbs) | layout | `shared/src/components/layout/Breadcrumbs.tsx` | Breadcrumb trail with BreadcrumbList JSON-LD; Home auto-prepended. | – | 18 |
 | [BudgetMenu](#budgetmenu) | layout | `shared/src/components/layout/MegaMenu.tsx` | 'Shop by Budget' dropdown of five price tiers. | – | 1 |
-| [Container](#container) | layout | `shared/src/components/layout/Container.tsx` | Centred page-width wrapper with standard gutters. | default, narrow, prose, full | 20 |
+| [CategoryNav](#categorynav) | layout | `shared/src/components/layout/MegaMenu.tsx` | Marketplace-style category bar: one hover menu per top category (subcategory columns, View all, category picture); plain link when a category has no subcategories; 4 on laptops, 6 on wide screens, then All categories. | – | 1 |
+| [CategoryStrip](#categorystrip) | layout | `shared/src/components/layout/CategoryStrip.tsx` | Phone/tablet header row of sideways-scrolling category bubbles (Flash Sale, Bestsellers, New, then categories). | – | 1 |
+| [Container](#container) | layout | `shared/src/components/layout/Container.tsx` | Centred page-width wrapper with standard gutters. | default, narrow, prose, full | 19 |
 | [Footer](#footer) | layout | `shared/src/components/layout/Footer.tsx` | Footer: care hours/phone/email, shop, help, policies, socials, business name. | – | 1 |
 | [Header](#header) | layout | `shared/src/components/layout/Header.tsx` | Sticky header: logo, search, account, cart, desktop nav row. | – | 1 |
 | [Logo](#logo) | layout | `shared/src/components/layout/Logo.tsx` | City Seller wordmark link to home. | default, inverse | 5 |
-| [MegaMenu](#megamenu) | layout | `shared/src/components/layout/MegaMenu.tsx` | Data-driven 'Shop by Category' mega-menu (category → subcategory links with thumbnails). | – | 1 |
+| [MegaMenu](#megamenu) | layout | `shared/src/components/layout/MegaMenu.tsx` | Data-driven 'Shop by Category' mega-menu (category → subcategory links with thumbnails). | – | 0 |
 | [MobileNav](#mobilenav) | layout | `shared/src/components/layout/MobileNav.tsx` | Hamburger + left drawer with category accordion, budget tiers, links and socials. | – | 1 |
+| [MobileTabBar](#mobiletabbar) | layout | `shared/src/components/layout/MobileTabBar.tsx` | App-style bottom bar on phones: Home, Categories, Account, Cart (opens the cart drawer with a live count). | – | 1 |
+| [MoreMenu](#moremenu) | layout | `shared/src/components/layout/MegaMenu.tsx` | 'More' dropdown at the end of the category bar: Bestsellers, New arrivals, Buying guides, All categories. | – | 1 |
 | [NavDropdown](#navdropdown) | layout | `shared/src/components/layout/NavDropdown.tsx` | Disclosure dropdown used by MegaMenu and BudgetMenu (hover + click + Escape). | mega, menu | 1 |
 | [Section](#section) | layout | `shared/src/components/layout/Container.tsx` | Full-bleed band with background token and vertical rhythm. | background, surface, secondary, soft, ink | 7 |
 | [SettingsProvider](#settingsprovider) | layout | `shared/src/components/layout/SettingsProvider.tsx` | Shares Admin → Settings values with client components (delivery fee, UPI %, contact). Filled by StoreShell. | – | 1 |
 | [StoreShell](#storeshell) | layout | `shared/src/components/layout/StoreShell.tsx` | Storefront chrome (skip link, TopBar, Header, Footer, CartDrawer, Organization + WebSite JSON-LD). | – | 2 |
-| [TopBar](#topbar) | layout | `shared/src/components/layout/TopBar.tsx` | Promo strip with socials, Track order and Login. | – | 1 |
-| [WhatsAppButton](#whatsappbutton) | layout | `shared/src/components/layout/WhatsAppButton.tsx` | Floating chat button that opens WhatsApp with a pre-filled message; sits above the mobile buy bar. | – | 1 |
 | [AdminShell](#adminshell) | admin | `admin/src/components/admin/AdminShell.tsx` | Admin layout: sidebar (desktop) / scrolling nav (mobile), pending-orders badge, sign-out, dev-mode banner. | – | 1 |
 | [BlockEditor](#blockeditor) | admin | `admin/src/components/admin/BlockEditor.tsx` | Structured text editor for pages and guides: headings, paragraphs, bullet lists, product picks (plain text, no HTML). | h2, p, ul, products | 2 |
 | [CategoryForm](#categoryform) | admin | `admin/src/components/admin/CategoryForm.tsx` | Add/edit a category or subcategory: name, slug, parent, intro answer, blurb, image, order, visibility, SEO, FAQs; guarded delete. | – | 1 |
@@ -126,24 +133,26 @@ Total entries: **151**
 | [StatCard](#statcard) | admin | `admin/src/components/admin/AdminBits.tsx` | Dashboard KPI card. | default, warning, success | 1 |
 | [TeamManager](#teammanager) | admin | `admin/src/components/admin/TeamManager.tsx` | Super Admin team page: add admins, set role and permissions, remove access. | – | 1 |
 | [TextField](#textfield) | admin | `admin/src/components/admin/EditorKit.tsx` | Compact controlled text input / textarea with label, hint and character counter for CMS forms. | – | 6 |
-| [cartTotals](#carttotals) | hook | `shared/src/hooks/useCart.ts` | Derives count, subtotal, MRP total, savings, shipping and total from cart lines. | – | 4 |
-| [useCart](#usecart) | hook | `shared/src/hooks/useCart.ts` | Zustand cart store persisted to localStorage (items, drawer state, add/setQuantity/remove/clear). | – | 6 |
-| [useHydrated](#usehydrated) | hook | `shared/src/hooks/useHydrated.ts` | True after client hydration (guards localStorage-backed UI). | – | 4 |
+| [cartTotals](#carttotals) | hook | `shared/src/hooks/useCart.ts` | Derives count, subtotal, MRP total, savings, shipping and total from cart lines. | – | 5 |
+| [useCart](#usecart) | hook | `shared/src/hooks/useCart.ts` | Zustand cart store persisted to localStorage (items, drawer state, add/setQuantity/remove/clear). | – | 7 |
+| [useHydrated](#usehydrated) | hook | `shared/src/hooks/useHydrated.ts` | True after client hydration (guards localStorage-backed UI). | – | 5 |
+| [usePincode](#usepincode) | hook | `shared/src/hooks/usePincode.ts` | Shopper's remembered delivery PIN (localStorage), shared live across header, product page and PIN checker. | – | 2 |
 | [useRazorpay](#userazorpay) | hook | `shared/src/hooks/useRazorpay.ts` | Loads Razorpay Checkout.js on demand and opens it; resolves with the signed success payload or rejects (PaymentDismissedError on close). | – | 1 |
-| [useSettings](#usesettings) | hook | `shared/src/components/layout/SettingsProvider.tsx` | Current store settings in client components (defaults outside a provider). | – | 7 |
-| [buildCategoryTree](#buildcategorytree) | util | `shared/src/components/layout/MegaMenu.tsx` | Turns flat categories into a top-level tree with children. | – | 4 |
+| [useSettings](#usesettings) | hook | `shared/src/components/layout/SettingsProvider.tsx` | Current store settings in client components (defaults outside a provider). | – | 10 |
+| [buildCategoryTree](#buildcategorytree) | util | `shared/src/components/layout/MegaMenu.tsx` | Turns flat categories into a top-level tree with children. | – | 5 |
 | [calcDiscount](#calcdiscount) | util | `shared/src/lib/utils/format.ts` | Whole-number discount % from MRP and price. | – | 3 |
 | [calcMargin](#calcmargin) | util | `shared/src/lib/utils/format.ts` | Margin amount and % of price between selling price and supplier cost. | – | 2 |
 | [cleanBlocks](#cleanblocks) | util | `admin/src/components/admin/BlockEditor.tsx` | Removes empty bullet lines from blocks before saving. | – | 1 |
-| [cn](#cn) | util | `shared/src/lib/utils/cn.ts` | clsx + tailwind-merge configured for token class names. | – | 44 |
+| [cn](#cn) | util | `shared/src/lib/utils/cn.ts` | clsx + tailwind-merge configured for token class names. | – | 54 |
 | [daysSince](#dayssince) | util | `shared/src/lib/utils/format.ts` | Whole days since an ISO date (stale Meesho price checks). | – | 3 |
-| [estimateDelivery](#estimatedelivery) | util | `shared/src/lib/utils/delivery.ts` | PIN-zone delivery window (dates + region); SHIPPING constant in the same file. | – | 2 |
+| [estimateDelivery](#estimatedelivery) | util | `shared/src/lib/utils/delivery.ts` | PIN-zone delivery window (dates + region); SHIPPING constant in the same file. | – | 3 |
+| [formatBought](#formatbought) | util | `shared/src/lib/utils/format.ts` | Honest 'bought' label from the real paid-order count (10+, 200+, 1.5k+); null below 10. | – | 2 |
 | [formatDate](#formatdate) | util | `shared/src/lib/utils/format.ts` | ISO date → '12 Nov 2026' (en-IN). | – | 14 |
-| [formatINR](#formatinr) | util | `shared/src/lib/utils/format.ts` | Formats rupees with Indian grouping: 1299 → ₹1,299. | – | 20 |
+| [formatINR](#formatinr) | util | `shared/src/lib/utils/format.ts` | Formats rupees with Indian grouping: 1299 → ₹1,299. | – | 22 |
 | [getBudgetTier](#getbudgettier) | util | `shared/src/lib/utils/budget.ts` | Looks up a BUDGET_TIERS entry by slug (BUDGET_TIERS constant lives in the same file). | – | 1 |
 | [inBudget](#inbudget) | util | `shared/src/lib/utils/budget.ts` | Whether a price falls inside a budget tier. | – | 0 |
 | [isProductNew](#isproductnew) | util | `shared/src/lib/utils/product.ts` | New badge rule: manual override wins; otherwise automatic for 30 days after the product is added. | – | 4 |
-| [paths](#paths) | util | `shared/src/lib/utils/paths.ts` | Canonical URL builders (the only place URL shapes are defined). | – | 61 |
+| [paths](#paths) | util | `shared/src/lib/utils/paths.ts` | Canonical URL builders (the only place URL shapes are defined). | – | 62 |
 | [shippingFor](#shippingfor) | util | `shared/src/lib/utils/delivery.ts` | Delivery fee for a subtotal (free above threshold). | – | 3 |
 | [slugify](#slugify) | util | `shared/src/lib/utils/format.ts` | Text → URL slug. | – | 7 |
 | [telHref](#telhref) | util | `shared/src/lib/utils/contact.ts` | Phone number → tel: link. | – | 2 |
@@ -151,12 +160,12 @@ Total entries: **151**
 | [tokenStyle](#tokenstyle) | util | `shared/src/lib/utils/token-style.ts` | Maps token names to inline CSS-variable styles for width/height/colour props. | – | 2 |
 | [track](#track) | util | `shared/src/lib/utils/analytics.ts` | GA4 ecommerce event helper (add_to_cart, begin_checkout, purchase, view_item); no-op when GA is not loaded. | – | 3 |
 | [validators](#validators) | util | `shared/src/lib/utils/validators.ts` | Zod schemas: pincodeSchema, phoneSchema, addressSchema, checkoutSchema, trackOrderSchema, INDIAN_STATES. | – | 0 |
-| [whatsappHref](#whatsapphref) | util | `shared/src/lib/utils/contact.ts` | WhatsApp click-to-chat link with optional prefilled text. | – | 4 |
+| [whatsappHref](#whatsapphref) | util | `shared/src/lib/utils/contact.ts` | WhatsApp click-to-chat link with optional prefilled text. | – | 1 |
 | [buildArticleJsonLd](#buildarticlejsonld) | seo | `shared/src/lib/seo/jsonld.ts` | Article JSON-LD for guides. | – | 1 |
 | [buildBreadcrumbJsonLd](#buildbreadcrumbjsonld) | seo | `shared/src/lib/seo/jsonld.ts` | BreadcrumbList JSON-LD. | – | 1 |
 | [buildFaqJsonLd](#buildfaqjsonld) | seo | `shared/src/lib/seo/jsonld.ts` | FAQPage JSON-LD. | – | 1 |
 | [buildItemListJsonLd](#builditemlistjsonld) | seo | `shared/src/lib/seo/jsonld.ts` | ItemList JSON-LD for listing pages. | – | 1 |
-| [buildMetadata](#buildmetadata) | seo | `shared/src/lib/seo/metadata.ts` | Unique title/description, canonical, OG and Twitter metadata with DB overrides. | – | 24 |
+| [buildMetadata](#buildmetadata) | seo | `shared/src/lib/seo/metadata.ts` | Unique title/description, canonical, OG and Twitter metadata with DB overrides. | – | 25 |
 | [buildOrganizationJsonLd](#buildorganizationjsonld) | seo | `shared/src/lib/seo/jsonld.ts` | OnlineStore/Organization JSON-LD. | – | 1 |
 | [buildProductJsonLd](#buildproductjsonld) | seo | `shared/src/lib/seo/jsonld.ts` | Product + Offer (shipping, returns) + AggregateRating JSON-LD. | – | 1 |
 | [buildWebSiteJsonLd](#buildwebsitejsonld) | seo | `shared/src/lib/seo/jsonld.ts` | WebSite JSON-LD with SearchAction. | – | 1 |
@@ -193,7 +202,7 @@ Primary action button used for Add to Cart, Buy Now, forms and links styled as b
 
 **Accessibility:** Focus ring (shadow-focus); aria-busy while loading; md/lg/icon sizes meet 44px touch target; primary colour reserved for buy actions.
 
-**Used in:** AddToCartButton, AddressBook, CartDrawer, CartView, CategoryForm, CategoryListing, CheckoutForm, CustomerAuthForm, DeleteProductCard, HomeEditor, ImageManager, LoginForm, MfaForm, MobileNav, NotFoundContent, OrderActions, OrderSelfService, PincodeChecker, PostForm, ProductForm, ProductQuickActions, ProfileForm, SaleBanner, SetPasswordForm, TeamManager, TrackOrderForm, admin/BlockEditor, admin/EditorKit, admin/PageEditors, admin:/, admin:/categories, admin:/content/home, admin:/guides, admin:/orders/[id], admin:/products, admin:/reviews, sections/InfoSections, shop:/account, shop:/account (layout), shop:/order/[id]
+**Used in:** AddToCartButton, AddressBook, CartDrawer, CartView, CategoryForm, CategoryListing, CheckoutForm, CustomerAuthForm, DeleteProductCard, HomeEditor, ImageManager, LoginForm, MfaForm, MobileNav, NotFoundContent, OrderActions, OrderSelfService, PincodeChecker, PostForm, ProductForm, ProductQuickActions, ProfileForm, ReviewForm, SaleBanner, SetPasswordForm, TeamManager, TrackOrderForm, admin/BlockEditor, admin/EditorKit, admin/PageEditors, admin:/, admin:/categories, admin:/content/home, admin:/guides, admin:/orders/[id], admin:/products, admin:/reviews, sections/InfoSections, shop:/account, shop:/account (layout), shop:/order/[id]
 
 ```tsx
 <Button variant="primary" size="lg" icon={<ShoppingBag/>}>Add to Cart</Button>
@@ -396,7 +405,7 @@ Imperative function to show a toast from client code.
 
 **Accessibility:** Announced politely.
 
-**Used in:** AddToCartButton, CheckoutForm, Toaster
+**Used in:** AddToCartButton, CheckoutForm, CustomerAuthForm, Toaster
 
 ```tsx
 toast({ title: "Added to cart" })
@@ -464,7 +473,7 @@ Label + control + hint/error wrapper for all form controls.
 
 **Accessibility:** Visible label bound with htmlFor; error rendered with role=alert at `${id}-desc` for aria-describedby.
 
-**Used in:** AddressBook, CategoryForm, CheckoutForm, CustomerAuthForm, LoginForm, MfaForm, OrderActions, OrderSelfService, PostForm, ProductForm, ProfileForm, SectionEditor, SetPasswordForm, TeamManager, TrackOrderForm, admin/EditorKit
+**Used in:** AddressBook, CategoryForm, CheckoutForm, CustomerAuthForm, LoginForm, MfaForm, OrderActions, OrderSelfService, PostForm, ProductForm, ProfileForm, ReviewForm, SectionEditor, SetPasswordForm, TeamManager, TrackOrderForm, admin/EditorKit
 
 ```tsx
 <FormField id="phone" label="Mobile" error={err}><Input id="phone" /></FormField>
@@ -492,7 +501,7 @@ Text input sharing fieldVariants with Textarea and Select; optional leading icon
 
 **Accessibility:** aria-invalid when invalid; pair with FormField for label and described-by error.
 
-**Used in:** AddressBook, CategoryForm, CheckoutForm, CustomerAuthForm, ImageManager, LoginForm, MfaForm, OrderActions, PasswordInput, PincodeChecker, PostForm, ProductForm, ProductPicker, ProfileForm, SearchBox, TeamManager, TrackOrderForm, admin/EditorKit, admin:/products
+**Used in:** AddressBook, CategoryForm, CheckoutForm, CustomerAuthForm, ImageManager, LoginForm, MfaForm, OrderActions, PasswordInput, PincodeChecker, PostForm, ProductForm, ProductPicker, ProfileForm, ReviewForm, SearchBox, TeamManager, TrackOrderForm, admin/EditorKit, admin:/products
 
 ```tsx
 <Input id="pin" inputMode="numeric" invalid={!!error} />
@@ -615,7 +624,7 @@ Multi-line text field with the same look as Input.
 
 **Accessibility:** aria-invalid; use inside FormField.
 
-**Used in:** CategoryForm, OrderActions, OrderSelfService, PostForm, ProductForm, admin/EditorKit
+**Used in:** CategoryForm, OrderActions, OrderSelfService, PostForm, ProductForm, ReviewForm, admin/EditorKit, admin:/reviews
 
 ```tsx
 <Textarea id="msg" rows={4} />
@@ -660,7 +669,7 @@ Inline brand marks (Instagram, Facebook, YouTube, WhatsApp).
 
 **Accessibility:** Decorative; the wrapping link carries aria-label.
 
-**Used in:** Footer, MobileNav, TopBar, WhatsAppButton
+**Used in:** Footer, MobileNav
 
 ```tsx
 <a aria-label="Instagram" href={…}><SocialIcon brand="instagram" /></a>
@@ -692,6 +701,28 @@ Surface container with padding/elevation variants; polymorphic `as`.
 
 ```tsx
 <Card padding="md" elevation="raised">…</Card>
+```
+
+## ScrollRail
+
+`shared/src/components/ui/ScrollRail.tsx` · ui/layout · updated 2026-11-19
+
+Sideways-scrolling list with snap and previous/next arrows on larger screens (hidden at the ends).
+
+**Props**
+
+- `label`: string (list name)
+- `children`: <li> items
+- `className`: string
+
+**Tokens:** `color.background` `color.border` `color.surface` `color.text` `duration.fast` `radius.full` `shadow.focus` `shadow.md` `space.0` `space.1` `space.11` `space.2` `space.3` `space.4` `space.5` `zIndex.raised`
+
+**Accessibility:** Labelled list; arrow buttons have aria-labels; swipe and keyboard scroll work.
+
+**Used in:** CategoryTiles, ProductGrid
+
+```tsx
+<ScrollRail label="Bestsellers">{items}</ScrollRail>
 ```
 
 ## Separator
@@ -840,7 +871,7 @@ Heading with semantic level independent from visual size (keeps one H1 and logic
 
 ## SectionHeader
 
-`shared/src/components/ui/SectionHeader.tsx` · ui/typography · updated 2026-11-12
+`shared/src/components/ui/SectionHeader.tsx` · ui/typography · updated 2026-11-19
 
 Section title row with eyebrow, subtitle and View all link.
 
@@ -857,7 +888,7 @@ Section title row with eyebrow, subtitle and View all link.
 
 **Variants:** left, center
 
-**Tokens:** `color.primary` `color.text` `color.textMuted` `font.size.base` `font.size.sm` `font.tracking.wider` `font.weight.semibold` `maxWidth.prose` `space.1` `space.11` `space.2` `space.4` `space.6` `space.8`
+**Tokens:** `color.primary` `color.text` `color.textMuted` `font.size.base` `font.size.sm` `font.tracking.wider` `font.weight.semibold` `maxWidth.prose` `space.1` `space.11` `space.2` `space.4` `space.6`
 
 **Accessibility:** View all link includes sr-only section name for unique link text.
 
@@ -869,7 +900,7 @@ Section title row with eyebrow, subtitle and View all link.
 
 ## AddToCartButton
 
-`shared/src/components/commerce/AddToCartButton.tsx` · commerce · updated 2026-11-12
+`shared/src/components/commerce/AddToCartButton.tsx` · commerce · updated 2026-11-19
 
 Adds a product to the cart (opens drawer) or Buy Now (goes to checkout); renders Sold out when unavailable.
 
@@ -886,7 +917,7 @@ Adds a product to the cart (opens drawer) or Buy Now (goes to checkout); renders
 
 **Variants:** add, buy, sold-out
 
-**Tokens:** `space.4`
+**Tokens:** `color.border` `color.primary` `color.surface` `duration.fast` `radius.full` `shadow.focus` `shadow.md` `space.11` `space.4` `space.5`
 
 **Accessibility:** aria-label includes product title; disabled Sold out state.
 
@@ -898,11 +929,11 @@ Adds a product to the cart (opens drawer) or Buy Now (goes to checkout); renders
 
 ## CartButton
 
-`shared/src/components/commerce/CartButton.tsx` · commerce · updated 2026-11-12
+`shared/src/components/commerce/CartButton.tsx` · commerce · updated 2026-11-19
 
 Header cart icon with live count; opens CartDrawer.
 
-**Tokens:** `color.primary` `color.secondary` `color.text` `color.textInverse` `font.size.xs` `font.weight.bold` `radius.full` `radius.md` `shadow.focus` `space.0.5` `space.1` `space.11` `space.5` `space.6`
+**Tokens:** `color.primary` `color.secondary` `color.text` `color.textInverse` `font.size.xs` `font.weight.bold` `radius.full` `radius.md` `shadow.focus` `space.1` `space.11` `space.5` `space.6`
 
 **Accessibility:** aria-label includes item count.
 
@@ -914,7 +945,7 @@ Header cart icon with live count; opens CartDrawer.
 
 ## CartDrawer
 
-`shared/src/components/commerce/CartDrawer.tsx` · commerce · updated 2026-11-12
+`shared/src/components/commerce/CartDrawer.tsx` · commerce · updated 2026-11-19
 
 Slide-in mini cart mounted once in StoreShell.
 
@@ -930,7 +961,7 @@ Slide-in mini cart mounted once in StoreShell.
 
 ## CartLineItem
 
-`shared/src/components/commerce/CartLineItem.tsx` · commerce · updated 2026-11-12
+`shared/src/components/commerce/CartLineItem.tsx` · commerce · updated 2026-11-19
 
 Cart row with thumbnail, price, quantity stepper and remove.
 
@@ -953,7 +984,7 @@ Cart row with thumbnail, price, quantity stepper and remove.
 
 ## CartView
 
-`shared/src/components/commerce/CartView.tsx` · commerce · updated 2026-11-12
+`shared/src/components/commerce/CartView.tsx` · commerce · updated 2026-11-19
 
 Full cart page body.
 
@@ -967,9 +998,29 @@ Full cart page body.
 <CartView />
 ```
 
+## CategoryBrowser
+
+`shared/src/components/commerce/CategoryBrowser.tsx` · commerce · updated 2026-11-19
+
+All-categories browser (app style): category list on the left, compact picture tiles on the right (subcategories, then products with price); remembers the choice in ?c=.
+
+**Props**
+
+- `categories`: BrowserCategory[]
+
+**Tokens:** `aspect.square` `color.background` `color.primary` `color.surface` `color.text` `color.textMuted` `duration.slow` `font.lineHeight.tight` `font.size.base` `font.size.sm` `font.size.xs` `font.weight.semibold` `radius.md` `shadow.focus` `space.0` `space.1` `space.11` `space.14` `space.2` `space.24` `space.3` `space.32` `space.4`
+
+**Accessibility:** Category list is a labelled nav of buttons with aria-current; tiles are links with visible names.
+
+**Used in:** shop:/categories
+
+```tsx
+<CategoryBrowser categories={data} />
+```
+
 ## CategoryListing
 
-`shared/src/components/commerce/CategoryListing.tsx` · commerce · updated 2026-11-12
+`shared/src/components/commerce/CategoryListing.tsx` · commerce · updated 2026-11-19
 
 Client filters (budget, material, colour, rating), sort and pagination with URL state.
 
@@ -979,7 +1030,7 @@ Client filters (budget, material, colour, rating), sort and pagination with URL 
 - `hideBudget`: boolean
 - `emptyMessage`: string
 
-**Tokens:** `color.border` `color.surface` `color.textMuted` `font.weight.semibold` `radius.lg` `space.1` `space.2` `space.3` `space.4` `space.6` `space.8`
+**Tokens:** `color.border` `color.borderStrong` `color.ink` `color.surface` `color.text` `color.textInverse` `color.textMuted` `duration.fast` `font.size.sm` `font.weight.semibold` `radius.lg` `radius.md` `shadow.focus` `space.1` `space.11` `space.2` `space.3` `space.4` `space.6` `space.8`
 
 **Accessibility:** Fieldsets with legends; result count is aria-live; filters in Drawer on mobile.
 
@@ -991,7 +1042,7 @@ Client filters (budget, material, colour, rating), sort and pagination with URL 
 
 ## CheckoutForm
 
-`shared/src/components/commerce/CheckoutForm.tsx` · commerce · updated 2026-11-16
+`shared/src/components/commerce/CheckoutForm.tsx` · commerce · updated 2026-11-19
 
 Contact + address form (RHF + Zod Indian PIN/phone) and prepaid pay button.
 
@@ -1007,7 +1058,7 @@ Contact + address form (RHF + Zod Indian PIN/phone) and prepaid pay button.
 
 ## CustomerAuthForm
 
-`shared/src/components/commerce/CustomerAuthForm.tsx` · commerce · updated 2026-11-14
+`shared/src/components/commerce/CustomerAuthForm.tsx` · commerce · updated 2026-11-17
 
 Shopper sign in / create account / forgot password form (email + password).
 
@@ -1026,6 +1077,48 @@ Shopper sign in / create account / forgot password form (email + password).
 
 ```tsx
 <CustomerAuthForm signIn={a} signUp={b} forgot={c} next="/checkout" />
+```
+
+## DeliveryPromise
+
+`shared/src/components/commerce/DeliveryPromise.tsx` · commerce · updated 2026-11-19
+
+Product-page delivery line: 'Get it by <date>' for the saved PIN, plus free delivery or the fee.
+
+**Props**
+
+- `price`: number
+- `className`: string
+
+**Tokens:** `color.success` `color.text` `color.textMuted` `font.size.sm` `space.0.5` `space.2` `space.5`
+
+**Accessibility:** Plain text; updates when the shopper changes their PIN.
+
+**Used in:** shop:/[category]/[sub]/[product]
+
+```tsx
+<DeliveryPromise price={p.price} />
+```
+
+## FreeDeliveryTag
+
+`shared/src/components/commerce/FreeDeliveryTag.tsx` · commerce · updated 2026-11-19
+
+'Free delivery' note on product cards when the price reaches the free-delivery threshold from Settings.
+
+**Props**
+
+- `price`: number
+- `className`: string
+
+**Tokens:** `color.success` `font.size.xs` `font.weight.medium` `space.1` `space.4`
+
+**Accessibility:** Plain text with a decorative icon.
+
+**Used in:** ProductCard
+
+```tsx
+<FreeDeliveryTag price={499} />
 ```
 
 ## FreeShippingProgress
@@ -1120,7 +1213,7 @@ Subtotal / delivery / savings / total breakdown.
 
 ## PincodeChecker
 
-`shared/src/components/commerce/PincodeChecker.tsx` · commerce · updated 2026-11-12
+`shared/src/components/commerce/PincodeChecker.tsx` · commerce · updated 2026-11-19
 
 PIN-code delivery estimate (zone table) with remembered PIN.
 
@@ -1183,7 +1276,7 @@ Sale price, struck MRP and % off.
 
 ## ProductBuyBox
 
-`shared/src/components/commerce/ProductBuyBox.tsx` · commerce · updated 2026-11-12
+`shared/src/components/commerce/ProductBuyBox.tsx` · commerce · updated 2026-11-19
 
 Quantity + Add to Cart + Buy Now; drives the mobile StickyBuyBar.
 
@@ -1191,7 +1284,7 @@ Quantity + Add to Cart + Buy Now; drives the mobile StickyBuyBar.
 
 - `product`: CardProduct
 
-**Tokens:** `color.border` `color.surface` `color.textMuted` `duration.base` `font.size.lg` `font.size.sm` `font.weight.bold` `font.weight.medium` `shadow.lg` `space.0` `space.3` `space.4` `zIndex.sticky`
+**Tokens:** `color.border` `color.borderStrong` `color.error` `color.ink` `color.surface` `color.text` `color.textInverse` `color.textMuted` `duration.base` `duration.fast` `font.size.lg` `font.size.sm` `font.weight.bold` `font.weight.medium` `font.weight.semibold` `radius.md` `shadow.focus` `shadow.lg` `space.0` `space.11` `space.2` `space.20` `space.3` `space.4` `zIndex.sticky`
 
 **Accessibility:** Stepper labelled; buttons 48px.
 
@@ -1203,7 +1296,7 @@ Quantity + Add to Cart + Buy Now; drives the mobile StickyBuyBar.
 
 ## ProductCard
 
-`shared/src/components/commerce/ProductCard.tsx` · commerce · updated 2026-11-12
+`shared/src/components/commerce/ProductCard.tsx` · commerce · updated 2026-11-19
 
 Product tile: hover second image, discount/sold-out/bestseller badges, title, rating, price, Add to Cart.
 
@@ -1216,7 +1309,7 @@ Product tile: hover second image, discount/sold-out/bestseller badges, title, ra
 
 **Variants:** default, plain
 
-**Tokens:** `aspect.product` `color.background` `color.border` `color.surface` `color.text` `duration.slow` `font.lineHeight.snug` `font.size.base` `font.weight.medium` `radius.lg` `shadow.focus` `space.0` `space.1` `space.2` `space.3` `space.4` `zIndex.base` `zIndex.raised`
+**Tokens:** `aspect.product` `color.background` `color.border` `color.success` `color.successSoft` `color.surface` `color.text` `color.textMuted` `duration.base` `duration.slow` `font.lineHeight.snug` `font.size.base` `font.size.sm` `font.size.xs` `font.weight.medium` `font.weight.semibold` `radius.lg` `radius.sm` `shadow.focus` `shadow.lg` `space.0` `space.1` `space.2` `space.3` `zIndex.base` `zIndex.raised`
 
 **Accessibility:** Stretched title link makes the card clickable; button sits above it; hover image is aria-hidden.
 
@@ -1287,15 +1380,38 @@ Read-only star rating with fractional fill.
 
 **Accessibility:** role=img with text label 'Rated x out of 5 from n reviews'.
 
-**Used in:** ProductCard, ReviewList, admin:/reviews, shop:/[category]/[sub]/[product]
+**Used in:** ReviewList, admin:/reviews, shop:/[category]/[sub]/[product]
 
 ```tsx
 <RatingStars value={4.4} count={318} />
 ```
 
+## ReviewForm
+
+`shared/src/components/commerce/ReviewForm.tsx` · commerce · updated 2026-11-19
+
+Verified-purchase review for one delivered item: tappable 1–5 stars, optional title, review text; held for admin approval.
+
+**Props**
+
+- `orderId`: string
+- `productId`: string
+- `productTitle`: string
+- `action`: server action
+
+**Tokens:** `color.borderStrong` `color.error` `color.success` `color.successSoft` `color.textMuted` `color.warning` `font.size.sm` `font.weight.medium` `radius.md` `shadow.focus` `space.1` `space.11` `space.2` `space.3` `space.8`
+
+**Accessibility:** Stars are a labelled radio group (keyboard and screen-reader friendly); field errors and result announced.
+
+**Used in:** shop:/order/[id]
+
+```tsx
+<ReviewForm orderId={o.id} productId={i.productId} productTitle={i.title} action={submitReviewAction} />
+```
+
 ## ReviewList
 
-`shared/src/components/commerce/ReviewList.tsx` · commerce · updated 2026-11-12
+`shared/src/components/commerce/ReviewList.tsx` · commerce · updated 2026-11-19
 
 Rating summary with distribution plus reviews with photos.
 
@@ -1306,7 +1422,7 @@ Rating summary with distribution plus reviews with photos.
 - `reviewCount`: number
 - `productTitle`: string
 
-**Tokens:** `color.background` `color.border` `color.rating` `color.secondary` `color.success` `color.text` `color.textMuted` `font.family.heading` `font.size.5xl` `font.size.base` `font.size.sm` `font.weight.medium` `font.weight.semibold` `radius.full` `radius.md` `space.1` `space.1.5` `space.2` `space.20` `space.3` `space.4` `space.6` `space.8`
+**Tokens:** `color.background` `color.border` `color.primary` `color.rating` `color.secondary` `color.success` `color.text` `color.textMuted` `font.family.heading` `font.size.5xl` `font.size.base` `font.size.sm` `font.weight.medium` `font.weight.semibold` `radius.full` `radius.md` `space.1` `space.1.5` `space.2` `space.20` `space.3` `space.4` `space.6` `space.8`
 
 **Accessibility:** Review photos have descriptive alt text.
 
@@ -1363,7 +1479,7 @@ Choose a new password after a reset link.
 
 ## StickyBuyBar
 
-`shared/src/components/commerce/ProductBuyBox.tsx` · commerce · updated 2026-11-12
+`shared/src/components/commerce/ProductBuyBox.tsx` · commerce · updated 2026-11-19
 
 Mobile-only fixed bottom bar with price and buy actions.
 
@@ -1373,7 +1489,7 @@ Mobile-only fixed bottom bar with price and buy actions.
 - `quantity`: number
 - `visible`: boolean
 
-**Tokens:** `color.border` `color.surface` `color.textMuted` `duration.base` `font.size.lg` `font.size.sm` `font.weight.bold` `font.weight.medium` `shadow.lg` `space.0` `space.3` `space.4` `zIndex.sticky`
+**Tokens:** `color.border` `color.borderStrong` `color.error` `color.ink` `color.surface` `color.text` `color.textInverse` `color.textMuted` `duration.base` `duration.fast` `font.size.lg` `font.size.sm` `font.weight.bold` `font.weight.medium` `font.weight.semibold` `radius.md` `shadow.focus` `shadow.lg` `space.0` `space.11` `space.2` `space.20` `space.3` `space.4` `zIndex.sticky`
 
 **Accessibility:** aria-hidden when off-screen.
 
@@ -1492,7 +1608,7 @@ My account → Profile: edit name and mobile; email shown read-only.
 
 ## AnswerIntro
 
-`shared/src/components/sections/InfoSections.tsx` · section · updated 2026-11-12
+`shared/src/components/sections/InfoSections.tsx` · section · updated 2026-11-19
 
 H1 + 1–2 sentence direct answer for AEO at the top of listing and info pages.
 
@@ -1506,7 +1622,7 @@ H1 + 1–2 sentence direct answer for AEO at the top of listing and info pages.
 
 **Accessibility:** Provides the page's single H1.
 
-**Used in:** ContentPage, ListingTemplate, shop:/account (layout), shop:/contact, shop:/faq, shop:/track-order
+**Used in:** ContentPage, shop:/account (layout), shop:/contact, shop:/faq, shop:/track-order
 
 ```tsx
 <AnswerIntro title="Kitchen & Dining" answer="…" />
@@ -1514,7 +1630,7 @@ H1 + 1–2 sentence direct answer for AEO at the top of listing and info pages.
 
 ## BrandStory
 
-`shared/src/components/sections/InfoSections.tsx` · section · updated 2026-11-12
+`shared/src/components/sections/InfoSections.tsx` · section · updated 2026-11-19
 
 'Why choose City Seller?' story with category blurbs.
 
@@ -1537,7 +1653,7 @@ H1 + 1–2 sentence direct answer for AEO at the top of listing and info pages.
 
 ## CategoryTiles
 
-`shared/src/components/sections/CategoryTiles.tsx` · section · updated 2026-11-12
+`shared/src/components/sections/CategoryTiles.tsx` · section · updated 2026-11-19
 
 Navigational tiles for categories, featured collections and budget tiers.
 
@@ -1552,7 +1668,7 @@ Navigational tiles for categories, featured collections and budget tiers.
 
 **Variants:** circle, card, price
 
-**Tokens:** `aspect.square` `aspect.tile` `color.border` `color.primary` `color.surface` `color.text` `color.textMuted` `duration.base` `duration.slow` `font.family.heading` `font.size.2xl` `font.size.base` `font.size.sm` `font.weight.medium` `font.weight.semibold` `radius.full` `radius.lg` `shadow.focus` `shadow.md` `space.1` `space.2` `space.24` `space.4`
+**Tokens:** `aspect.square` `aspect.tile` `color.border` `color.primary` `color.secondary` `color.surface` `color.text` `color.textMuted` `duration.base` `duration.slow` `font.lineHeight.tight` `font.size.2xl` `font.size.base` `font.size.sm` `font.weight.medium` `font.weight.semibold` `radius.full` `radius.lg` `shadow.focus` `shadow.md` `space.1` `space.2` `space.20` `space.24` `space.4`
 
 **Accessibility:** Tiles are links with visible text.
 
@@ -1585,7 +1701,7 @@ Policy/info page template from ContentPage data.
 
 ## CustomerCare
 
-`shared/src/components/sections/InfoSections.tsx` · section · updated 2026-11-12
+`shared/src/components/sections/InfoSections.tsx` · section · updated 2026-11-19
 
 Care block: phone, WhatsApp, email, hours + Track order.
 
@@ -1608,7 +1724,7 @@ Care block: phone, WhatsApp, email, hours + Track order.
 
 ## FAQSection
 
-`shared/src/components/sections/InfoSections.tsx` · section · updated 2026-11-12
+`shared/src/components/sections/InfoSections.tsx` · section · updated 2026-11-19
 
 FAQ accordion with FAQPage JSON-LD.
 
@@ -1625,7 +1741,7 @@ FAQ accordion with FAQPage JSON-LD.
 
 **Accessibility:** Questions are h3 buttons.
 
-**Used in:** ContentPage, HomeSections, ListingTemplate, shop:/[category]/[sub]/[product], shop:/faq, shop:/guides/[slug]
+**Used in:** ContentPage, HomeSections, shop:/[category]/[sub]/[product], shop:/faq, shop:/guides/[slug]
 
 ```tsx
 <FAQSection faqs={category.faqs} />
@@ -1701,7 +1817,7 @@ Rotating hero for 2–5 slides: auto-advance (paused on hover, focus or the paus
 
 ## HomeSections
 
-`shared/src/components/sections/HomeSections.tsx` · section · updated 2026-11-15
+`shared/src/components/sections/HomeSections.tsx` · section · updated 2026-11-19
 
 Renders the homepage from Admin → Homepage content: sections in order, skipping hidden or out-of-schedule items, each mapped to an existing section component.
 
@@ -1722,7 +1838,7 @@ Renders the homepage from Admin → Homepage content: sections in order, skippin
 
 ## ListingTemplate
 
-`shared/src/components/sections/ListingTemplate.tsx` · section · updated 2026-11-12
+`shared/src/components/sections/ListingTemplate.tsx` · section · updated 2026-11-19
 
 Shared listing body: breadcrumbs, AnswerIntro, chips, CategoryListing (static fallback grid), FAQs, ItemList JSON-LD.
 
@@ -1737,7 +1853,7 @@ Shared listing body: breadcrumbs, AnswerIntro, chips, CategoryListing (static fa
 - `hideBudget`: boolean
 - `emptyMessage`: string
 
-**Tokens:** `space.3` `space.6`
+**Tokens:** `font.size.2xl` `font.size.3xl` `font.tracking.tight` `font.weight.semibold` `space.3` `space.4` `space.6`
 
 **Accessibility:** Single H1; chips nav labelled Refine.
 
@@ -1765,7 +1881,7 @@ Shared listing body: breadcrumbs, AnswerIntro, chips, CategoryListing (static fa
 
 ## ProductGrid
 
-`shared/src/components/sections/ProductGrid.tsx` · section · updated 2026-11-12
+`shared/src/components/sections/ProductGrid.tsx` · section · updated 2026-11-19
 
 Titled product section; grid or mobile carousel (Bestsellers, Flash sale, Related).
 
@@ -1784,7 +1900,7 @@ Titled product section; grid or mobile carousel (Bestsellers, Flash sale, Relate
 
 **Variants:** grid, carousel
 
-**Tokens:** `space.0` `space.2` `space.3` `space.4` `space.6` `space.64`
+**Tokens:** `space.0` `space.3` `space.4` `space.40` `space.48`
 
 **Accessibility:** Section labelled by its heading.
 
@@ -1824,7 +1940,7 @@ Promo banner with live text over decorative art.
 
 ## ValueProps
 
-`shared/src/components/sections/InfoSections.tsx` · section · updated 2026-11-12
+`shared/src/components/sections/InfoSections.tsx` · section · updated 2026-11-19
 
 Five value propositions (range, pricing, shipping, returns, secure prepaid).
 
@@ -1883,11 +1999,11 @@ Breadcrumb trail with BreadcrumbList JSON-LD; Home auto-prepended.
 
 ## BudgetMenu
 
-`shared/src/components/layout/MegaMenu.tsx` · layout · updated 2026-11-12
+`shared/src/components/layout/MegaMenu.tsx` · layout · updated 2026-11-19
 
 'Shop by Budget' dropdown of five price tiers.
 
-**Tokens:** `color.background` `color.primary` `color.text` `color.textMuted` `font.family.heading` `font.size.base` `font.size.lg` `font.size.sm` `font.weight.semibold` `radius.md` `space.1` `space.11` `space.2` `space.3` `space.8` `space.9`
+**Tokens:** `aspect.tile` `color.background` `color.border` `color.ink` `color.primary` `color.secondary` `color.text` `color.textInverse` `color.textMuted` `duration.slow` `font.size.base` `font.size.lg` `font.size.sm` `font.size.xl` `font.weight.medium` `font.weight.semibold` `radius.lg` `radius.md` `shadow.focus` `space.0` `space.1` `space.11` `space.2` `space.3` `space.4` `space.6` `space.8` `space.9`
 
 **Accessibility:** Links in list.
 
@@ -1897,9 +2013,50 @@ Breadcrumb trail with BreadcrumbList JSON-LD; Home auto-prepended.
 <BudgetMenu />
 ```
 
+## CategoryNav
+
+`shared/src/components/layout/MegaMenu.tsx` · layout · updated 2026-11-19
+
+Marketplace-style category bar: one hover menu per top category (subcategory columns, View all, category picture); plain link when a category has no subcategories; 4 on laptops, 6 on wide screens, then All categories.
+
+**Props**
+
+- `tree`: NavCategory[]
+
+**Tokens:** `aspect.tile` `color.background` `color.border` `color.ink` `color.primary` `color.secondary` `color.text` `color.textInverse` `color.textMuted` `duration.slow` `font.size.base` `font.size.lg` `font.size.sm` `font.size.xl` `font.weight.medium` `font.weight.semibold` `radius.lg` `radius.md` `shadow.focus` `space.0` `space.1` `space.11` `space.2` `space.3` `space.4` `space.6` `space.8` `space.9`
+
+**Accessibility:** Each menu is a disclosure button (aria-expanded); closes on Escape, outside click and focus leaving.
+
+**Used in:** Header
+
+```tsx
+<CategoryNav tree={tree} />
+```
+
+## CategoryStrip
+
+`shared/src/components/layout/CategoryStrip.tsx` · layout · updated 2026-11-19
+
+Phone/tablet header row of sideways-scrolling category bubbles (Flash Sale, Bestsellers, New, then categories).
+
+**Props**
+
+- `tree`: NavCategory[]
+- `className`: string
+
+**Tokens:** `color.border` `color.primary` `color.text` `font.lineHeight.tight` `font.size.xs` `font.weight.medium` `font.weight.semibold` `radius.full` `shadow.focus` `space.0` `space.1` `space.2` `space.20`
+
+**Accessibility:** nav landmark 'Categories'; each bubble is a labelled link.
+
+**Used in:** Header
+
+```tsx
+<CategoryStrip tree={tree} />
+```
+
 ## Container
 
-`shared/src/components/layout/Container.tsx` · layout · updated 2026-11-12
+`shared/src/components/layout/Container.tsx` · layout · updated 2026-11-19
 
 Centred page-width wrapper with standard gutters.
 
@@ -1910,11 +2067,11 @@ Centred page-width wrapper with standard gutters.
 
 **Variants:** default, narrow, prose, full
 
-**Tokens:** `color.background` `color.ink` `color.primarySoft` `color.secondary` `color.surface` `color.textInverse` `maxWidth.container` `maxWidth.narrow` `maxWidth.prose` `space.0` `space.10` `space.16` `space.24` `space.4` `space.6` `space.8`
+**Tokens:** `color.background` `color.ink` `color.primarySoft` `color.secondary` `color.surface` `color.textInverse` `maxWidth.container` `maxWidth.narrow` `maxWidth.prose` `space.0` `space.10` `space.16` `space.4` `space.6`
 
 **Accessibility:** Neutral.
 
-**Used in:** ContentPage, Footer, Header, HeroCarousel, ListingTemplate, PageSkeleton, Section, TopBar, layout/MegaMenu, shop:/[category]/[sub]/[product], shop:/account (layout), shop:/cart, shop:/checkout, shop:/contact, shop:/faq, shop:/guides, shop:/guides/[slug], shop:/login, shop:/order/[id], shop:/track-order
+**Used in:** ContentPage, Footer, Header, HeroCarousel, ListingTemplate, PageSkeleton, Section, layout/MegaMenu, shop:/[category]/[sub]/[product], shop:/account (layout), shop:/cart, shop:/checkout, shop:/contact, shop:/faq, shop:/guides, shop:/guides/[slug], shop:/login, shop:/order/[id], shop:/track-order
 
 ```tsx
 <Container>…</Container>
@@ -1922,7 +2079,7 @@ Centred page-width wrapper with standard gutters.
 
 ## Footer
 
-`shared/src/components/layout/Footer.tsx` · layout · updated 2026-11-12
+`shared/src/components/layout/Footer.tsx` · layout · updated 2026-11-19
 
 Footer: care hours/phone/email, shop, help, policies, socials, business name.
 
@@ -1943,7 +2100,7 @@ Footer: care hours/phone/email, shop, help, policies, socials, business name.
 
 ## Header
 
-`shared/src/components/layout/Header.tsx` · layout · updated 2026-11-16
+`shared/src/components/layout/Header.tsx` · layout · updated 2026-11-19
 
 Sticky header: logo, search, account, cart, desktop nav row.
 
@@ -1952,7 +2109,7 @@ Sticky header: logo, search, account, cart, desktop nav row.
 - `tree`: NavCategory[]
 - `settings`: Settings
 
-**Tokens:** `color.border` `color.primary` `color.secondary` `color.surface` `color.text` `font.size.base` `font.weight.medium` `maxWidth.narrow` `radius.md` `shadow.focus` `space.0` `space.1` `space.11` `space.2` `space.3` `space.4` `zIndex.sticky`
+**Tokens:** `color.border` `color.secondary` `color.surface` `color.text` `font.size.base` `font.weight.medium` `maxWidth.narrow` `radius.md` `shadow.focus` `space.0` `space.1` `space.11` `space.2` `space.3` `space.4` `zIndex.sticky`
 
 **Accessibility:** Main nav landmark; mobile search row.
 
@@ -1986,7 +2143,7 @@ City Seller wordmark link to home.
 
 ## MegaMenu
 
-`shared/src/components/layout/MegaMenu.tsx` · layout · updated 2026-11-12
+`shared/src/components/layout/MegaMenu.tsx` · layout · updated 2026-11-19
 
 Data-driven 'Shop by Category' mega-menu (category → subcategory links with thumbnails).
 
@@ -1994,11 +2151,9 @@ Data-driven 'Shop by Category' mega-menu (category → subcategory links with th
 
 - `tree`: NavCategory[]
 
-**Tokens:** `color.background` `color.primary` `color.text` `color.textMuted` `font.family.heading` `font.size.base` `font.size.lg` `font.size.sm` `font.weight.semibold` `radius.md` `space.1` `space.11` `space.2` `space.3` `space.8` `space.9`
+**Tokens:** `aspect.tile` `color.background` `color.border` `color.ink` `color.primary` `color.secondary` `color.text` `color.textInverse` `color.textMuted` `duration.slow` `font.size.base` `font.size.lg` `font.size.sm` `font.size.xl` `font.weight.medium` `font.weight.semibold` `radius.lg` `radius.md` `shadow.focus` `space.0` `space.1` `space.11` `space.2` `space.3` `space.4` `space.6` `space.8` `space.9`
 
 **Accessibility:** Links in lists.
-
-**Used in:** Header
 
 ```tsx
 <MegaMenu tree={tree} />
@@ -2025,9 +2180,41 @@ Hamburger + left drawer with category accordion, budget tiers, links and socials
 <MobileNav tree={tree} />
 ```
 
+## MobileTabBar
+
+`shared/src/components/layout/MobileTabBar.tsx` · layout · updated 2026-11-19
+
+App-style bottom bar on phones: Home, Categories, Account, Cart (opens the cart drawer with a live count).
+
+**Tokens:** `color.border` `color.primary` `color.primarySoft` `color.surface` `color.textInverse` `color.textMuted` `duration.fast` `font.size.xs` `font.weight.bold` `font.weight.medium` `font.weight.semibold` `radius.full` `radius.lg` `radius.xl` `shadow.focus` `shadow.lg` `space.1` `space.14` `space.2` `space.5` `space.6` `space.8` `zIndex.sticky`
+
+**Accessibility:** nav landmark 'Shortcuts'; active tab marked aria-current; cart button announces the item count.
+
+**Used in:** StoreShell
+
+```tsx
+<MobileTabBar />
+```
+
+## MoreMenu
+
+`shared/src/components/layout/MegaMenu.tsx` · layout · updated 2026-11-19
+
+'More' dropdown at the end of the category bar: Bestsellers, New arrivals, Buying guides, All categories.
+
+**Tokens:** `aspect.tile` `color.background` `color.border` `color.ink` `color.primary` `color.secondary` `color.text` `color.textInverse` `color.textMuted` `duration.slow` `font.size.base` `font.size.lg` `font.size.sm` `font.size.xl` `font.weight.medium` `font.weight.semibold` `radius.lg` `radius.md` `shadow.focus` `space.0` `space.1` `space.11` `space.2` `space.3` `space.4` `space.6` `space.8` `space.9`
+
+**Accessibility:** Disclosure button; right-aligned panel of links.
+
+**Used in:** Header
+
+```tsx
+<MoreMenu />
+```
+
 ## NavDropdown
 
-`shared/src/components/layout/NavDropdown.tsx` · layout · updated 2026-11-12
+`shared/src/components/layout/NavDropdown.tsx` · layout · updated 2026-11-19
 
 Disclosure dropdown used by MegaMenu and BudgetMenu (hover + click + Escape).
 
@@ -2051,7 +2238,7 @@ Disclosure dropdown used by MegaMenu and BudgetMenu (hover + click + Escape).
 
 ## Section
 
-`shared/src/components/layout/Container.tsx` · layout · updated 2026-11-12
+`shared/src/components/layout/Container.tsx` · layout · updated 2026-11-19
 
 Full-bleed band with background token and vertical rhythm.
 
@@ -2065,7 +2252,7 @@ Full-bleed band with background token and vertical rhythm.
 
 **Sizes:** none (`py-0`), sm (`py-6 md:py-8`), md (`py-10 md:py-16`), lg (`py-16 md:py-24`)
 
-**Tokens:** `color.background` `color.ink` `color.primarySoft` `color.secondary` `color.surface` `color.textInverse` `maxWidth.container` `maxWidth.narrow` `maxWidth.prose` `space.0` `space.10` `space.16` `space.24` `space.4` `space.6` `space.8`
+**Tokens:** `color.background` `color.ink` `color.primarySoft` `color.secondary` `color.surface` `color.textInverse` `maxWidth.container` `maxWidth.narrow` `maxWidth.prose` `space.0` `space.10` `space.16` `space.4` `space.6`
 
 **Accessibility:** Pass aria-labelledby to name the region.
 
@@ -2096,7 +2283,7 @@ Shares Admin → Settings values with client components (delivery fee, UPI %, co
 
 ## StoreShell
 
-`shared/src/components/layout/StoreShell.tsx` · layout · updated 2026-11-14
+`shared/src/components/layout/StoreShell.tsx` · layout · updated 2026-11-19
 
 Storefront chrome (skip link, TopBar, Header, Footer, CartDrawer, Organization + WebSite JSON-LD).
 
@@ -2104,7 +2291,7 @@ Storefront chrome (skip link, TopBar, Header, Footer, CartDrawer, Organization +
 
 - `children`: ReactNode
 
-**Tokens:** `color.surface` `radius.md` `shadow.lg` `space.2` `space.4` `zIndex.toast`
+**Tokens:** `color.surface` `radius.md` `shadow.lg` `space.2` `space.20` `space.4` `zIndex.toast`
 
 **Accessibility:** Skip-to-content link; main landmark.
 
@@ -2114,50 +2301,9 @@ Storefront chrome (skip link, TopBar, Header, Footer, CartDrawer, Organization +
 <StoreShell>{children}</StoreShell>
 ```
 
-## TopBar
-
-`shared/src/components/layout/TopBar.tsx` · layout · updated 2026-11-16
-
-Promo strip with socials, Track order and Login.
-
-**Props**
-
-- `settings`: Settings (promo strip, socials)
-
-**Tokens:** `color.ink` `color.surface` `color.textInverse` `font.size.sm` `font.weight.semibold` `radius.md` `space.1` `space.2` `space.4` `space.9`
-
-**Accessibility:** Social links labelled.
-
-**Used in:** StoreShell
-
-```tsx
-<TopBar />
-```
-
-## WhatsAppButton
-
-`shared/src/components/layout/WhatsAppButton.tsx` · layout · updated 2026-11-14
-
-Floating chat button that opens WhatsApp with a pre-filled message; sits above the mobile buy bar.
-
-**Props**
-
-- `number`: string (digits)
-- `message`: string
-
-**Tokens:** `color.success` `color.textInverse` `duration.fast` `font.size.base` `font.weight.semibold` `radius.full` `shadow.focus` `shadow.lg` `space.14` `space.2` `space.24` `space.4` `space.6` `zIndex.sticky`
-
-**Accessibility:** Link with aria-label 'Chat with us on WhatsApp'; opens in a new tab.
-
-**Used in:** StoreShell
-
-```tsx
-<WhatsAppButton number="919000000000" message="Hi" />
-```
-
 ## AdminShell
 
-`admin/src/components/admin/AdminShell.tsx` · admin · updated 2026-11-14
+`admin/src/components/admin/AdminShell.tsx` · admin · updated 2026-11-19
 
 Admin layout: sidebar (desktop) / scrolling nav (mobile), pending-orders badge, sign-out, dev-mode banner.
 
@@ -2169,7 +2315,7 @@ Admin layout: sidebar (desktop) / scrolling nav (mobile), pending-orders badge, 
 - `signOut`: server action
 - `children`: ReactNode
 
-**Tokens:** `color.background` `color.border` `color.ink` `color.primary` `color.secondary` `color.surface` `color.text` `color.textInverse` `color.textMuted` `color.warning` `color.warningSoft` `font.size.base` `font.size.sm` `font.size.xs` `font.tracking.wide` `font.weight.bold` `font.weight.medium` `font.weight.semibold` `maxWidth.container` `radius.full` `radius.md` `radius.sm` `shadow.focus` `space.0` `space.0.5` `space.1` `space.11` `space.2` `space.3` `space.4` `space.5` `space.6` `space.8`
+**Tokens:** `color.background` `color.border` `color.error` `color.errorSoft` `color.ink` `color.primary` `color.secondary` `color.surface` `color.text` `color.textInverse` `color.textMuted` `color.warning` `color.warningSoft` `font.size.base` `font.size.sm` `font.size.xs` `font.tracking.wide` `font.weight.bold` `font.weight.medium` `font.weight.semibold` `maxWidth.container` `radius.full` `radius.md` `radius.sm` `shadow.focus` `space.0` `space.0.5` `space.1` `space.11` `space.2` `space.3` `space.4` `space.5` `space.6` `space.8`
 
 **Accessibility:** nav aria-label=Admin, aria-current on active link, main landmark.
 
@@ -2205,7 +2351,7 @@ Structured text editor for pages and guides: headings, paragraphs, bullet lists,
 
 ## CategoryForm
 
-`admin/src/components/admin/CategoryForm.tsx` · admin · updated 2026-11-12
+`admin/src/components/admin/CategoryForm.tsx` · admin · updated 2026-11-19
 
 Add/edit a category or subcategory: name, slug, parent, intro answer, blurb, image, order, visibility, SEO, FAQs; guarded delete.
 
@@ -2591,7 +2737,7 @@ Write/edit a buying guide: title, slug, summary, cover, content blocks with prod
 
 ## ProductForm
 
-`admin/src/components/admin/ProductForm.tsx` · admin · updated 2026-11-15
+`admin/src/components/admin/ProductForm.tsx` · admin · updated 2026-11-19
 
 Create/edit product: basics, pricing with live margin and discount, Meesho link/price + checked flag, photos, content, visibility, SEO.
 
@@ -2603,7 +2749,7 @@ Create/edit product: basics, pricing with live margin and discount, Meesho link/
 - `upload`: server action
 - `notice`: string
 
-**Tokens:** `color.background` `color.border` `color.error` `color.errorSoft` `color.success` `color.successSoft` `color.surface` `color.textMuted` `color.warning` `font.family.heading` `font.size.sm` `font.size.xl` `font.weight.semibold` `radius.lg` `radius.md` `space.0` `space.3` `space.4` `space.6` `zIndex.sticky`
+**Tokens:** `color.background` `color.border` `color.borderStrong` `color.error` `color.errorSoft` `color.ink` `color.success` `color.successSoft` `color.surface` `color.text` `color.textInverse` `color.textMuted` `color.warning` `duration.fast` `font.family.heading` `font.size.sm` `font.size.xl` `font.weight.semibold` `radius.lg` `radius.md` `shadow.focus` `space.0` `space.11` `space.2` `space.20` `space.3` `space.4` `space.6` `zIndex.sticky`
 
 **Accessibility:** Fieldsets with legends, inline errors, live margin region, sticky save bar.
 
@@ -2687,7 +2833,7 @@ Optional show-from / hide-after date-times in IST for offers, slides and section
 
 ## SectionEditor
 
-`admin/src/components/admin/SectionEditor.tsx` · admin · updated 2026-11-15
+`admin/src/components/admin/SectionEditor.tsx` · admin · updated 2026-11-19
 
 Edit form for one homepage section; fields depend on the type (hero slides, product row, banners, tiles, value props, story, guides, FAQ).
 
@@ -2709,7 +2855,7 @@ Edit form for one homepage section; fields depend on the type (hero slides, prod
 
 ## SettingsForm
 
-`admin/src/components/admin/SettingsForm.tsx` · admin · updated 2026-11-14
+`admin/src/components/admin/SettingsForm.tsx` · admin · updated 2026-11-19
 
 Admin → Settings: promo strip, customer care, social links, delivery fee and threshold, return days, UPI discount text. Secrets are not editable.
 
@@ -2801,7 +2947,7 @@ Compact controlled text input / textarea with label, hint and character counter 
 
 ## cartTotals
 
-`shared/src/hooks/useCart.ts` · hook · updated 2026-11-12
+`shared/src/hooks/useCart.ts` · hook · updated 2026-11-19
 
 Derives count, subtotal, MRP total, savings, shipping and total from cart lines.
 
@@ -2809,7 +2955,7 @@ Derives count, subtotal, MRP total, savings, shipping and total from cart lines.
 
 - `items`: CartLine[]
 
-**Used in:** CartButton, CartDrawer, CartView, CheckoutForm
+**Used in:** CartButton, CartDrawer, CartView, CheckoutForm, MobileTabBar
 
 ```tsx
 const { total } = cartTotals(items)
@@ -2817,7 +2963,7 @@ const { total } = cartTotals(items)
 
 ## useCart
 
-`shared/src/hooks/useCart.ts` · hook · updated 2026-11-12
+`shared/src/hooks/useCart.ts` · hook · updated 2026-11-19
 
 Zustand cart store persisted to localStorage (items, drawer state, add/setQuantity/remove/clear).
 
@@ -2825,7 +2971,7 @@ Zustand cart store persisted to localStorage (items, drawer state, add/setQuanti
 
 - `returns`: {items,isOpen,add,setQuantity,remove,clear,open,close,setOpen}
 
-**Used in:** AddToCartButton, CartButton, CartDrawer, CartLineItem, CartView, CheckoutForm
+**Used in:** AddToCartButton, CartButton, CartDrawer, CartLineItem, CartView, CheckoutForm, MobileTabBar
 
 ```tsx
 const add = useCart((s) => s.add)
@@ -2841,10 +2987,22 @@ True after client hydration (guards localStorage-backed UI).
 
 - `returns`: boolean
 
-**Used in:** CartButton, CartDrawer, CartView, CheckoutForm
+**Used in:** CartButton, CartDrawer, CartView, CheckoutForm, MobileTabBar
 
 ```tsx
 const hydrated = useHydrated()
+```
+
+## usePincode
+
+`shared/src/hooks/usePincode.ts` · hook · updated 2026-11-19
+
+Shopper's remembered delivery PIN (localStorage), shared live across header, product page and PIN checker.
+
+**Used in:** DeliveryPromise, PincodeChecker
+
+```tsx
+const [pin, setPin] = usePincode();
 ```
 
 ## useRazorpay
@@ -2875,7 +3033,7 @@ Current store settings in client components (defaults outside a provider).
 
 - `returns`: Settings
 
-**Used in:** CartButton, CartDrawer, CartView, CheckoutForm, PincodeChecker, PrepaidNotice, commerce/OrderSummary
+**Used in:** CartButton, CartDrawer, CartView, CheckoutForm, DeliveryPromise, FreeDeliveryTag, MobileTabBar, PincodeChecker, PrepaidNotice, commerce/OrderSummary
 
 ```tsx
 const { delivery } = useSettings()
@@ -2883,7 +3041,7 @@ const { delivery } = useSettings()
 
 ## buildCategoryTree
 
-`shared/src/components/layout/MegaMenu.tsx` · util · updated 2026-11-12
+`shared/src/components/layout/MegaMenu.tsx` · util · updated 2026-11-19
 
 Turns flat categories into a top-level tree with children.
 
@@ -2891,9 +3049,9 @@ Turns flat categories into a top-level tree with children.
 
 - `categories`: Category[]
 
-**Tokens:** `color.background` `color.primary` `color.text` `color.textMuted` `font.family.heading` `font.size.base` `font.size.lg` `font.size.sm` `font.weight.semibold` `radius.md` `space.1` `space.11` `space.2` `space.3` `space.8` `space.9`
+**Tokens:** `aspect.tile` `color.background` `color.border` `color.ink` `color.primary` `color.secondary` `color.text` `color.textInverse` `color.textMuted` `duration.slow` `font.size.base` `font.size.lg` `font.size.sm` `font.size.xl` `font.weight.medium` `font.weight.semibold` `radius.lg` `radius.md` `shadow.focus` `space.0` `space.1` `space.11` `space.2` `space.3` `space.4` `space.6` `space.8` `space.9`
 
-**Used in:** HomeSections, StoreShell, lib/admin/product-values, shop:/llms.txt (route)
+**Used in:** HomeSections, StoreShell, lib/admin/product-values, shop:/categories, shop:/llms.txt (route)
 
 ```tsx
 buildCategoryTree(await repo.listCategories())
@@ -2901,7 +3059,7 @@ buildCategoryTree(await repo.listCategories())
 
 ## calcDiscount
 
-`shared/src/lib/utils/format.ts` · util · updated 2026-11-12
+`shared/src/lib/utils/format.ts` · util · updated 2026-11-19
 
 Whole-number discount % from MRP and price.
 
@@ -2918,7 +3076,7 @@ calcDiscount(899, 449) // 50
 
 ## calcMargin
 
-`shared/src/lib/utils/format.ts` · util · updated 2026-11-12
+`shared/src/lib/utils/format.ts` · util · updated 2026-11-19
 
 Margin amount and % of price between selling price and supplier cost.
 
@@ -2961,7 +3119,7 @@ clsx + tailwind-merge configured for token class names.
 
 - `inputs`: ClassValue[]
 
-**Used in:** AccountMenu, AccountNav, AdminShell, Badge, Breadcrumbs, Button, Card, CartLineItem, CategoryListing, CategoryTiles, ChipNav, CopyButton, CustomerAuthForm, DataTable, FormField, Heading, HeroCarousel, HomeEditor, Logo, NavDropdown, PasswordInput, PrepaidNotice, PriceBlock, ProductCard, ProductGallery, ProductGrid, RatingStars, SaleBanner, SearchBox, SectionHeader, TrackOrderForm, admin/AdminBits, admin/EditorKit, commerce/OrderSummary, commerce/ProductBuyBox, layout/Container, sections/InfoSections, ui/Checkbox, ui/Disclosure, ui/Icon, ui/Input, ui/Misc, ui/Modal, ui/Toast
+**Used in:** AccountMenu, AccountNav, AddToCartButton, AdminShell, Badge, Breadcrumbs, Button, Card, CartLineItem, CategoryBrowser, CategoryListing, CategoryStrip, CategoryTiles, ChipNav, CopyButton, CustomerAuthForm, DataTable, DeliveryPromise, FormField, FreeDeliveryTag, Heading, HeroCarousel, HomeEditor, Logo, MobileTabBar, NavDropdown, PasswordInput, PrepaidNotice, PriceBlock, ProductCard, ProductForm, ProductGallery, ProductGrid, RatingStars, ReviewForm, SaleBanner, ScrollRail, SearchBox, SectionHeader, TrackOrderForm, admin/AdminBits, admin/EditorKit, commerce/OrderSummary, commerce/ProductBuyBox, layout/Container, layout/MegaMenu, sections/InfoSections, ui/Checkbox, ui/Disclosure, ui/Icon, ui/Input, ui/Misc, ui/Modal, ui/Toast
 
 ```tsx
 cn("p-4", active && "bg-ink")
@@ -2969,7 +3127,7 @@ cn("p-4", active && "bg-ink")
 
 ## daysSince
 
-`shared/src/lib/utils/format.ts` · util · updated 2026-11-12
+`shared/src/lib/utils/format.ts` · util · updated 2026-11-19
 
 Whole days since an ISO date (stale Meesho price checks).
 
@@ -2995,15 +3153,31 @@ PIN-zone delivery window (dates + region); SHIPPING constant in the same file.
 - `pincode`: string
 - `now`: Date
 
-**Used in:** PincodeChecker, shop:/order/[id]
+**Used in:** DeliveryPromise, PincodeChecker, shop:/order/[id]
 
 ```tsx
 estimateDelivery("411001")
 ```
 
+## formatBought
+
+`shared/src/lib/utils/format.ts` · util · updated 2026-11-19
+
+Honest 'bought' label from the real paid-order count (10+, 200+, 1.5k+); null below 10.
+
+**Props**
+
+- `count`: number
+
+**Used in:** ProductCard, shop:/[category]/[sub]/[product]
+
+```tsx
+formatBought(37) // "30+ bought"
+```
+
 ## formatDate
 
-`shared/src/lib/utils/format.ts` · util · updated 2026-11-12
+`shared/src/lib/utils/format.ts` · util · updated 2026-11-19
 
 ISO date → '12 Nov 2026' (en-IN).
 
@@ -3019,7 +3193,7 @@ formatDate(order.createdAt)
 
 ## formatINR
 
-`shared/src/lib/utils/format.ts` · util · updated 2026-11-12
+`shared/src/lib/utils/format.ts` · util · updated 2026-11-19
 
 Formats rupees with Indian grouping: 1299 → ₹1,299.
 
@@ -3027,7 +3201,7 @@ Formats rupees with Indian grouping: 1299 → ₹1,299.
 
 - `amount`: number
 
-**Used in:** CartLineItem, CheckoutForm, PincodeChecker, PriceBlock, ProductForm, TrackOrderForm, admin/AdminBits, admin:/, admin:/orders, admin:/orders/[id], admin:/products, commerce/OrderSummary, commerce/ProductBuyBox, lib/admin/whatsapp, lib/orders/service, shop:/[category]/[sub]/[product], shop:/account, shop:/faq, shop:/llms.txt (route), shop:/order/[id]
+**Used in:** CartLineItem, CategoryBrowser, CheckoutForm, DeliveryPromise, PincodeChecker, PriceBlock, ProductForm, TrackOrderForm, admin/AdminBits, admin:/, admin:/orders, admin:/orders/[id], admin:/products, commerce/OrderSummary, commerce/ProductBuyBox, lib/admin/whatsapp, lib/orders/service, shop:/[category]/[sub]/[product], shop:/account, shop:/faq, shop:/llms.txt (route), shop:/order/[id]
 
 ```tsx
 formatINR(1299)
@@ -3066,7 +3240,7 @@ inBudget(449, tier)
 
 ## isProductNew
 
-`shared/src/lib/utils/product.ts` · util · updated 2026-11-15
+`shared/src/lib/utils/product.ts` · util · updated 2026-11-19
 
 New badge rule: manual override wins; otherwise automatic for 30 days after the product is added.
 
@@ -3095,7 +3269,7 @@ Canonical URL builders (the only place URL shapes are defined).
 - `…`: see file
 - `admin(path)`: string (clean URL on the admin host, /admin/… locally)
 
-**Used in:** AccountMenu, AccountNav, AddToCartButton, AdminShell, CartDrawer, CartView, CheckoutForm, Footer, GuideCards, Header, HomeSections, MobileNav, NotFoundContent, SectionEditor, TopBar, admin:/, admin:/actions.ts, admin:/categories, admin:/categories/[id], admin:/cms-actions.ts, admin:/content/faqs, admin:/content/pages, admin:/content/pages/[slug], admin:/guides, admin:/guides/[slug], admin:/orders, admin:/orders/[id], admin:/products, admin:/products/[id], admin:/products/new, admin:/reviews, layout/MegaMenu, lib/admin/product-values, lib/data/admin-content, lib/data/seed-repo, lib/seo/jsonld, lib/utils/product, sections/InfoSections, shop:/[category], shop:/[category]/[sub], shop:/[category]/[sub]/[product], shop:/about, shop:/account, shop:/account (layout), shop:/bestsellers, shop:/budget/[tier], shop:/cart, shop:/checkout, shop:/contact, shop:/faq, shop:/feeds/google.xml (route), shop:/flash-sale, shop:/guides, shop:/guides/[slug], shop:/llms.txt (route), shop:/new-arrivals, shop:/order/[id], shop:/policies/[slug], shop:/search, shop:/sitemap.ts, shop:/track-order
+**Used in:** AccountMenu, AccountNav, AddToCartButton, AdminShell, CartDrawer, CartView, CategoryStrip, CheckoutForm, Footer, GuideCards, Header, HomeSections, MobileNav, NotFoundContent, SectionEditor, admin:/, admin:/actions.ts, admin:/categories, admin:/categories/[id], admin:/cms-actions.ts, admin:/content/faqs, admin:/content/pages, admin:/content/pages/[slug], admin:/guides, admin:/guides/[slug], admin:/orders, admin:/orders/[id], admin:/products, admin:/products/[id], admin:/products/new, admin:/reviews, layout/MegaMenu, lib/admin/product-values, lib/data/admin-content, lib/data/seed-repo, lib/seo/jsonld, lib/utils/product, sections/InfoSections, shop:/[category], shop:/[category]/[sub], shop:/[category]/[sub]/[product], shop:/about, shop:/account, shop:/account (layout), shop:/bestsellers, shop:/budget/[tier], shop:/cart, shop:/categories, shop:/checkout, shop:/contact, shop:/faq, shop:/feeds/google.xml (route), shop:/flash-sale, shop:/guides, shop:/guides/[slug], shop:/llms.txt (route), shop:/new-arrivals, shop:/order/[id], shop:/policies/[slug], shop:/search, shop:/sitemap.ts, shop:/track-order
 
 ```tsx
 paths.product(p)
@@ -3119,7 +3293,7 @@ shippingFor(399) // 49
 
 ## slugify
 
-`shared/src/lib/utils/format.ts` · util · updated 2026-11-12
+`shared/src/lib/utils/format.ts` · util · updated 2026-11-19
 
 Text → URL slug.
 
@@ -3151,7 +3325,7 @@ telHref("+91 90000 00000") // tel:+919000000000
 
 ## toCardProduct
 
-`shared/src/lib/utils/product.ts` · util · updated 2026-11-15
+`shared/src/lib/utils/product.ts` · util · updated 2026-11-19
 
 Product → serializable CardProduct for client components.
 
@@ -3203,7 +3377,7 @@ track("add_to_cart", { value: 449, items: [...] })
 
 ## validators
 
-`shared/src/lib/utils/validators.ts` · util · updated 2026-11-12
+`shared/src/lib/utils/validators.ts` · util · updated 2026-11-19
 
 Zod schemas: pincodeSchema, phoneSchema, addressSchema, checkoutSchema, trackOrderSchema, INDIAN_STATES.
 
@@ -3222,7 +3396,7 @@ WhatsApp click-to-chat link with optional prefilled text.
 - `number`: string (digits)
 - `text`: string
 
-**Used in:** Footer, WhatsAppButton, lib/admin/whatsapp, sections/InfoSections
+**Used in:** lib/admin/whatsapp
 
 ```tsx
 whatsappHref("919876543210", "Hi")
@@ -3310,7 +3484,7 @@ Unique title/description, canonical, OG and Twitter metadata with DB overrides.
 - `type`: website|article
 - `noindex`: boolean
 
-**Used in:** shop:/, shop:/[category], shop:/[category]/[sub], shop:/[category]/[sub]/[product], shop:/about, shop:/account, shop:/account/addresses, shop:/account/password, shop:/account/profile, shop:/bestsellers, shop:/budget/[tier], shop:/cart, shop:/checkout, shop:/contact, shop:/faq, shop:/flash-sale, shop:/guides, shop:/guides/[slug], shop:/login, shop:/new-arrivals, shop:/order/[id], shop:/policies/[slug], shop:/search, shop:/track-order
+**Used in:** shop:/, shop:/[category], shop:/[category]/[sub], shop:/[category]/[sub]/[product], shop:/about, shop:/account, shop:/account/addresses, shop:/account/password, shop:/account/profile, shop:/bestsellers, shop:/budget/[tier], shop:/cart, shop:/categories, shop:/checkout, shop:/contact, shop:/faq, shop:/flash-sale, shop:/guides, shop:/guides/[slug], shop:/login, shop:/new-arrivals, shop:/order/[id], shop:/policies/[slug], shop:/search, shop:/track-order
 
 ```tsx
 export const metadata = buildMetadata({ title, description, path: "/" })

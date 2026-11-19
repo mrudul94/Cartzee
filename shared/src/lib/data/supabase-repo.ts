@@ -10,12 +10,12 @@ import { CACHE_TAGS, cached } from "@/lib/cache";
 
 type CategoryRow = {
   id: string; slug: string; name: string; parent_id: string | null; intro: string; blurb: string; image: string;
-  sort_order: number; seo_title: string | null; seo_description: string | null; faqs: Faq[];
+  sort_order: number; seo_title: string | null; seo_description: string | null; faqs: Faq[]; has_sizes?: boolean;
 };
 export type ProductRow = {
   id: string; slug: string; category_id: string; subcategory_id: string; title: string; summary: string; description: string;
   how_to_use: string[]; specs: Spec[]; material: string; colour: string; price: number; mrp: number; rating: number;
-  review_count: number; stock: number; is_bestseller: boolean; is_flash_sale: boolean; is_new: boolean | null; faqs: Faq[];
+  review_count: number; bought_count?: number; sizes?: string[] | null; stock: number; is_bestseller: boolean; is_flash_sale: boolean; is_new: boolean | null; faqs: Faq[];
   seo_title: string | null; seo_description: string | null; created_at: string;
   product_images: { src: string; alt: string; sort_order: number }[];
 };
@@ -23,12 +23,12 @@ export type OrderRow = {
   id: string; number: string; status: OrderStatus; address: Order["address"]; subtotal: number; shipping: number; discount: number;
   total: number; razorpay_order_id: string | null; razorpay_payment_id: string | null; meesho_order_id: string | null;
   meesho_cost: number | null; tracking_url: string | null; created_at: string; user_id: string | null;
-  order_items: { product_id: string; slug: string; path: string; title: string; image: string; quantity: number; unit_price: number; unit_mrp: number; meesho_price: number; meesho_url: string }[];
+  order_items: { product_id: string; slug: string; path: string; title: string; image: string; quantity: number; size?: string | null; unit_price: number; unit_mrp: number; meesho_price: number; meesho_url: string }[];
   order_events: { status: OrderStatus; note: string | null; created_at: string }[];
 };
 
 export const PRODUCT_COLUMNS =
-  "id, slug, category_id, subcategory_id, title, summary, description, how_to_use, specs, material, colour, price, mrp, rating, review_count, stock, is_bestseller, is_flash_sale, is_new, faqs, seo_title, seo_description, created_at, product_images(src, alt, sort_order)";
+  "id, slug, category_id, subcategory_id, title, summary, description, how_to_use, specs, material, colour, price, mrp, rating, review_count, bought_count, sizes, stock, is_bestseller, is_flash_sale, is_new, faqs, seo_title, seo_description, created_at, product_images(src, alt, sort_order)";
 export const ORDER_COLUMNS = "*, order_items(*), order_events(status, note, created_at)";
 export const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
@@ -48,6 +48,7 @@ const fetchCategories = async (): Promise<Category[]> => {
     slug: r.slug,
     name: r.name,
     parentSlug: r.parent_id ? (slugById.get(r.parent_id) ?? null) : null,
+    hasSizes: r.has_sizes ?? false,
     intro: r.intro,
     blurb: r.blurb,
     image: r.image,
@@ -80,6 +81,8 @@ export async function toProducts(rows: ProductRow[]): Promise<Product[]> {
     mrp: Number(r.mrp),
     rating: Number(r.rating),
     reviewCount: r.review_count,
+    boughtCount: r.bought_count ?? 0,
+    sizes: r.sizes ?? [],
     stock: r.stock,
     isBestseller: r.is_bestseller,
     isFlashSale: r.is_flash_sale,
@@ -91,6 +94,19 @@ export async function toProducts(rows: ProductRow[]): Promise<Product[]> {
     seoDescription: r.seo_description ?? undefined,
   }));
 }
+
+/**
+ * Every active product (RLS hides inactive ones), oldest first. One query serves all the product lists on
+ * a page (bestsellers, category rows, related items…), deduped per request and cached across requests
+ * (tag "catalog": cleared by admin saves and when an order is paid). Fine for catalogues up to a few
+ * thousand products.
+ */
+const fetchAllProducts = async (): Promise<Product[]> => {
+  const { data, error } = await pub().from("products").select(PRODUCT_COLUMNS).order("created_at", { ascending: true });
+  if (error) fail("products", error);
+  return toProducts(data as unknown as ProductRow[]);
+};
+export const loadAllProducts = cache(cached(fetchAllProducts, ["all-products"], CACHE_TAGS.catalog));
 
 export function toOrder(r: OrderRow): Order {
   return {
@@ -105,6 +121,7 @@ export function toOrder(r: OrderRow): Order {
       title: i.title,
       image: i.image,
       quantity: i.quantity,
+      size: i.size || undefined,
       unitPrice: Number(i.unit_price),
       unitMrp: Number(i.unit_mrp),
       meeshoPrice: Number(i.meesho_price),
@@ -146,55 +163,81 @@ export const supabaseRepo: Repo = {
   },
 
   async listProducts(query: ProductQuery = {}) {
-    const cats = await loadCategories();
-    const idOf = (slug: string) => cats.find((c) => c.slug === slug)?.id ?? "00000000-0000-0000-0000-000000000000";
+    // Search ranking comes from Postgres; everything else filters the cached catalogue in memory.
+    const [all, rankedIds] = await Promise.all([
+      loadAllProducts(),
+      query.q
+        ? pub()
+            .rpc("search_products", { q: query.q })
+            .then(({ data, error }) => {
+              if (error) fail("search", error);
+              return (data as { id: string }[]).map((r) => r.id);
+            })
+        : Promise.resolve(undefined),
+    ]);
+    if (rankedIds && rankedIds.length === 0) return [];
 
-    let rankedIds: string[] | undefined;
-    if (query.q) {
-      const { data, error } = await pub().rpc("search_products", { q: query.q });
-      if (error) fail("search", error);
-      rankedIds = (data as { id: string }[]).map((r) => r.id);
-      if (rankedIds.length === 0) return [];
+    let list = all.filter(
+      (p) =>
+        (!query.category || p.categorySlug === query.category) &&
+        (!query.subcategory || p.subcategorySlug === query.subcategory) &&
+        (query.minPrice === undefined || p.price >= query.minPrice) &&
+        (query.maxPrice === undefined || p.price <= query.maxPrice) &&
+        (!query.bestseller || p.isBestseller) &&
+        (!query.flashSale || p.isFlashSale) &&
+        (!query.ids || query.ids.includes(p.id)),
+    );
+    if (rankedIds) {
+      const byId = new Map(list.map((p) => [p.id, p]));
+      list = rankedIds.map((id) => byId.get(id)).filter((p) => p !== undefined);
     }
-
-    let req = pub().from("products").select(PRODUCT_COLUMNS).order("created_at", { ascending: true });
-    if (query.category) req = req.eq("category_id", idOf(query.category));
-    if (query.subcategory) req = req.eq("subcategory_id", idOf(query.subcategory));
-    if (query.minPrice !== undefined) req = req.gte("price", query.minPrice);
-    if (query.maxPrice !== undefined) req = req.lte("price", query.maxPrice);
-    if (query.bestseller) req = req.eq("is_bestseller", true);
-    if (query.flashSale) req = req.eq("is_flash_sale", true);
-    if (query.slugs) req = req.in("slug", query.slugs);
-    const ids = rankedIds ?? query.ids;
-    if (ids) req = req.in("id", ids.filter((i) => UUID.test(i)));
-    if (query.limit && !rankedIds && !query.slugs && !query.newArrivals) req = req.limit(query.limit);
-
-    const { data, error } = await req;
-    if (error) fail("products", error);
-    let list = await toProducts(data as unknown as ProductRow[]);
-    if (rankedIds) list = rankedIds.map((id) => list.find((p) => p.id === id)).filter((p) => p !== undefined);
-    if (query.slugs) list = query.slugs.map((s) => list.find((p) => p.slug === s)).filter((p) => p !== undefined);
+    if (query.slugs) {
+      const bySlug = new Map(list.map((p) => [p.slug, p]));
+      list = query.slugs.map((s) => bySlug.get(s)).filter((p) => p !== undefined);
+    }
     if (query.newArrivals) list = list.filter((p) => isProductNew(p)).sort((a, b) => b.createdAt.localeCompare(a.createdAt));
     return query.limit ? list.slice(0, query.limit) : list;
   },
 
   async getProductBySlug(slug) {
-    const { data, error } = await pub().from("products").select(PRODUCT_COLUMNS).eq("slug", slug).maybeSingle();
-    if (error) fail("product", error);
-    return data ? ((await toProducts([data as unknown as ProductRow]))[0] ?? null) : null;
+    return (await loadAllProducts()).find((p) => p.slug === slug) ?? null;
   },
 
   async listReviews(productId) {
     if (!UUID.test(productId)) return [];
     const { data, error } = await pub()
       .from("reviews")
-      .select("id, product_id, author, city, rating, title, body, photos, verified, created_at")
+      .select("id, product_id, author, city, rating, title, body, photos, verified, reply, created_at")
       .eq("product_id", productId)
       .order("created_at", { ascending: false });
     if (error) fail("reviews", error);
-    return (data as { id: string; product_id: string; author: string; city: string; rating: number; title: string; body: string; photos: string[]; verified: boolean; created_at: string }[]).map(
-      (r): Review => ({ id: r.id, productId: r.product_id, author: r.author, city: r.city, rating: r.rating, title: r.title, body: r.body, photos: r.photos ?? [], verified: r.verified, createdAt: r.created_at }),
+    return (data as { id: string; product_id: string; author: string; city: string; rating: number; title: string; body: string; photos: string[]; verified: boolean; reply: string | null; created_at: string }[]).map(
+      (r): Review => ({ id: r.id, productId: r.product_id, author: r.author, city: r.city, rating: r.rating, title: r.title, body: r.body, photos: r.photos ?? [], verified: r.verified, reply: r.reply || undefined, createdAt: r.created_at }),
     );
+  },
+
+  async submitReview(input) {
+    const { error } = await svc().from("reviews").insert({
+      product_id: input.productId,
+      order_id: input.orderId,
+      user_id: input.userId,
+      author: input.author,
+      city: input.city,
+      rating: input.rating,
+      title: input.title,
+      body: input.body,
+      verified: true,
+      is_approved: false,
+    });
+    if (error?.code === "23505") throw new OrderError("You've already reviewed this item.");
+    if (error) fail("submit review", error);
+  },
+
+  async reviewedProductIds(orderId) {
+    if (!UUID.test(orderId)) return [];
+    const { data, error } = await svc().from("reviews").select("product_id").eq("order_id", orderId);
+    if (error) fail("order reviews", error);
+    return (data as { product_id: string }[]).map((r) => r.product_id);
   },
 
   async listPosts() {
@@ -213,7 +256,7 @@ export const supabaseRepo: Repo = {
     const { data, error } = await svc().rpc("create_order", {
       p_customer: { name: address.name, phone: address.phone, email: address.email },
       p_address: address,
-      p_items: items.map((i) => ({ product_id: i.productId, quantity: i.quantity })),
+      p_items: items.map((i) => ({ product_id: i.productId, quantity: i.quantity, size: i.size ?? "" })),
       p_free_above: delivery.freeAbove,
       p_shipping_fee: delivery.fee,
     });

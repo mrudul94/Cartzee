@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { getCustomer } from "@/lib/customer";
-import { repo } from "@/lib/data";
+import { OrderError, repo } from "@/lib/data";
 import { getSettings } from "@/lib/data/content-repo";
 import { notifyAdmins } from "@/lib/notify";
 import { changeOrderStatus, refundOrder } from "@/lib/orders/service";
@@ -81,4 +81,54 @@ export async function requestReturnAction(_prev: SelfServiceState, fd: FormData)
   await changeOrderStatus(order.id, "return_requested", {}, `Return requested by customer: ${describe(parsed.data.reason, parsed.data.details)}`);
   await alert(`↩️ Order ${order.number}: customer requested a RETURN. Reason: ${describe(parsed.data.reason, parsed.data.details)}`);
   return done(order.id, "Return requested. We'll contact you within 1 working day; keep the item and its packaging, and have photos ready.");
+}
+
+/* ------------------------------------------------------------------ reviews */
+
+/** Orders that reached the shopper can be reviewed. */
+const REVIEWABLE = new Set(["delivered", "return_requested", "returned_refunded"]);
+
+const reviewInput = z.object({
+  orderId: z.string().min(1).max(64),
+  productId: z.string().min(1).max(64),
+  rating: z.coerce.number().int().min(1, "Choose a star rating").max(5),
+  title: z.string().trim().max(120).default(""),
+  body: z.string().trim().min(10, "Tell other shoppers a little more (at least 10 characters)").max(2000),
+});
+
+export type ReviewState = { ok?: boolean; message?: string; errors?: Record<string, string> };
+
+/** Verified-purchase review by the signed-in shopper who received this order. Held until an admin approves it. */
+export async function submitReviewAction(_prev: ReviewState, fd: FormData): Promise<ReviewState> {
+  const parsed = reviewInput.safeParse(Object.fromEntries(fd));
+  if (!parsed.success) return { errors: Object.fromEntries(parsed.error.issues.map((i) => [String(i.path[0]), i.message])) };
+  const customer = await getCustomer();
+  const order = await ownOrder(parsed.data.orderId);
+  if (!customer || !order) return { message: "Order not found." };
+  if (!REVIEWABLE.has(order.status)) return { message: "You can review items once your order is delivered." };
+  const item = order.items.find((i) => i.productId === parsed.data.productId);
+  if (!item) return { message: "That item isn't in this order." };
+
+  // Public name: first name + last initial (e.g. "Asha R."), and the delivery city.
+  const parts = (customer.name || order.address.name).trim().split(/\s+/);
+  const author = parts.length > 1 ? `${parts[0]} ${parts[parts.length - 1]![0]!.toUpperCase()}.` : parts[0] || "Customer";
+  try {
+    await repo.submitReview({
+      orderId: order.id,
+      productId: item.productId,
+      userId: customer.id,
+      author: author.slice(0, 80),
+      city: order.address.city.slice(0, 60),
+      rating: parsed.data.rating,
+      title: parsed.data.title,
+      body: parsed.data.body,
+    });
+  } catch (e) {
+    if (e instanceof OrderError) return { message: e.message };
+    console.error("[review] submit failed", e);
+    return { message: "Could not save your review. Please try again." };
+  }
+  await alert(`⭐ New ${parsed.data.rating}-star review for "${item.title}" (order ${order.number}). Approve it in Admin → Reviews.`);
+  revalidatePath(`/order/${order.id}`);
+  return { ok: true, message: "Thank you! Your review will appear on the product page after a quick check." };
 }

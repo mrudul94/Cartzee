@@ -155,7 +155,7 @@ export function SectionEditor({ section: s, onChange, categories, products, uplo
                   { value: "manual", label: "Hand-picked" },
                 ]}
               />
-              <SelectField id={id("layout")} label="Layout" value={s.layout} onChange={(v) => set({ layout: v as typeof s.layout })} options={[{ value: "grid", label: "Grid" }, { value: "carousel", label: "Swipe row on mobile" }]} />
+              <SelectField id={id("layout")} label="Layout" value={s.layout} onChange={(v) => set({ layout: v as typeof s.layout })} options={[{ value: "grid", label: "Grid" }, { value: "carousel", label: "Sideways scrolling row" }]} />
             </Row>
             {s.source === "category" && (
               <SelectField

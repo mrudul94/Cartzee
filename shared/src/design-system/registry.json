@@ -91,6 +91,7 @@
         "ProductForm",
         "ProductQuickActions",
         "ProfileForm",
+        "ReviewForm",
         "SaleBanner",
         "SetPasswordForm",
         "TeamManager",
@@ -173,6 +174,7 @@
         "ProductForm",
         "ProductPicker",
         "ProfileForm",
+        "ReviewForm",
         "SearchBox",
         "TeamManager",
         "TrackOrderForm",
@@ -226,7 +228,9 @@
         "OrderSelfService",
         "PostForm",
         "ProductForm",
-        "admin/EditorKit"
+        "ReviewForm",
+        "admin/EditorKit",
+        "admin:/reviews"
       ],
       "accessibility": "aria-invalid; use inside FormField.",
       "example": "<Textarea id=\"msg\" rows={4} />",
@@ -326,6 +330,7 @@
         "PostForm",
         "ProductForm",
         "ProfileForm",
+        "ReviewForm",
         "SectionEditor",
         "SetPasswordForm",
         "TeamManager",
@@ -621,8 +626,7 @@
         "space.11",
         "space.2",
         "space.4",
-        "space.6",
-        "space.8"
+        "space.6"
       ],
       "usedIn": [
         "CategoryTiles",
@@ -635,7 +639,7 @@
       ],
       "accessibility": "View all link includes sr-only section name for unique link text.",
       "example": "<SectionHeader title=\"Bestsellers\" viewAllHref=\"/bestsellers\" />",
-      "lastUpdated": "2026-11-12"
+      "lastUpdated": "2026-11-19"
     },
     {
       "name": "Icon",
@@ -691,9 +695,7 @@
       ],
       "usedIn": [
         "Footer",
-        "MobileNav",
-        "TopBar",
-        "WhatsAppButton"
+        "MobileNav"
       ],
       "accessibility": "Decorative; the wrapping link carries aria-label.",
       "example": "<a aria-label=\"Instagram\" href={…}><SocialIcon brand=\"instagram\" /></a>",
@@ -979,6 +981,7 @@
       "usedIn": [
         "AddToCartButton",
         "CheckoutForm",
+        "CustomerAuthForm",
         "Toaster"
       ],
       "accessibility": "Announced politely.",
@@ -1250,7 +1253,6 @@
         "space.6"
       ],
       "usedIn": [
-        "ProductCard",
         "ReviewList",
         "admin:/reviews",
         "shop:/[category]/[sub]/[product]"
@@ -1320,7 +1322,16 @@
         "variant": "Button variant override"
       },
       "tokensUsed": [
-        "space.4"
+        "color.border",
+        "color.primary",
+        "color.surface",
+        "duration.fast",
+        "radius.full",
+        "shadow.focus",
+        "shadow.md",
+        "space.11",
+        "space.4",
+        "space.5"
       ],
       "usedIn": [
         "ProductCard",
@@ -1328,7 +1339,7 @@
       ],
       "accessibility": "aria-label includes product title; disabled Sold out state.",
       "example": "<AddToCartButton product={card} mode=\"buy\" size=\"lg\" fullWidth />",
-      "lastUpdated": "2026-11-12"
+      "lastUpdated": "2026-11-19"
     },
     {
       "name": "ProductCard",
@@ -1349,19 +1360,27 @@
         "aspect.product",
         "color.background",
         "color.border",
+        "color.success",
+        "color.successSoft",
         "color.surface",
         "color.text",
+        "color.textMuted",
+        "duration.base",
         "duration.slow",
         "font.lineHeight.snug",
         "font.size.base",
+        "font.size.sm",
+        "font.size.xs",
         "font.weight.medium",
+        "font.weight.semibold",
         "radius.lg",
+        "radius.sm",
         "shadow.focus",
+        "shadow.lg",
         "space.0",
         "space.1",
         "space.2",
         "space.3",
-        "space.4",
         "zIndex.base",
         "zIndex.raised"
       ],
@@ -1373,7 +1392,7 @@
       ],
       "accessibility": "Stretched title link makes the card clickable; button sits above it; hover image is aria-hidden.",
       "example": "<ProductCard product={toCardProduct(p)} />",
-      "lastUpdated": "2026-11-12"
+      "lastUpdated": "2026-11-19"
     },
     {
       "name": "PrepaidNotice",
@@ -1435,7 +1454,7 @@
       ],
       "accessibility": "Labelled input, aria-live result, inline error.",
       "example": "<PincodeChecker />",
-      "lastUpdated": "2026-11-12"
+      "lastUpdated": "2026-11-19"
     },
     {
       "name": "ProductGallery",
@@ -1498,6 +1517,7 @@
       "tokensUsed": [
         "color.background",
         "color.border",
+        "color.primary",
         "color.rating",
         "color.secondary",
         "color.success",
@@ -1525,7 +1545,7 @@
       ],
       "accessibility": "Review photos have descriptive alt text.",
       "example": "<ReviewList reviews={r} rating={4.4} reviewCount={318} productTitle={t} />",
-      "lastUpdated": "2026-11-12"
+      "lastUpdated": "2026-11-19"
     },
     {
       "name": "CartLineItem",
@@ -1566,7 +1586,7 @@
       ],
       "accessibility": "Remove button labelled with product title.",
       "example": "<CartLineItem line={l} />",
-      "lastUpdated": "2026-11-12"
+      "lastUpdated": "2026-11-19"
     },
     {
       "name": "OrderSummary",
@@ -1669,7 +1689,7 @@
       ],
       "accessibility": "Drawer semantics; empty state with next action.",
       "example": "<CartDrawer />",
-      "lastUpdated": "2026-11-12"
+      "lastUpdated": "2026-11-19"
     },
     {
       "name": "CartButton",
@@ -1688,7 +1708,6 @@
         "radius.full",
         "radius.md",
         "shadow.focus",
-        "space.0.5",
         "space.1",
         "space.11",
         "space.5",
@@ -1699,7 +1718,7 @@
       ],
       "accessibility": "aria-label includes item count.",
       "example": "<CartButton />",
-      "lastUpdated": "2026-11-12"
+      "lastUpdated": "2026-11-19"
     },
     {
       "name": "CartView",
@@ -1725,7 +1744,7 @@
       ],
       "accessibility": "Headings and lists.",
       "example": "<CartView />",
-      "lastUpdated": "2026-11-12"
+      "lastUpdated": "2026-11-19"
     },
     {
       "name": "ProductBuyBox",
@@ -1738,15 +1757,27 @@
       },
       "tokensUsed": [
         "color.border",
+        "color.borderStrong",
+        "color.error",
+        "color.ink",
         "color.surface",
+        "color.text",
+        "color.textInverse",
         "color.textMuted",
         "duration.base",
+        "duration.fast",
         "font.size.lg",
         "font.size.sm",
         "font.weight.bold",
         "font.weight.medium",
+        "font.weight.semibold",
+        "radius.md",
+        "shadow.focus",
         "shadow.lg",
         "space.0",
+        "space.11",
+        "space.2",
+        "space.20",
         "space.3",
         "space.4",
         "zIndex.sticky"
@@ -1756,7 +1787,7 @@
       ],
       "accessibility": "Stepper labelled; buttons 48px.",
       "example": "<ProductBuyBox product={card} />",
-      "lastUpdated": "2026-11-12"
+      "lastUpdated": "2026-11-19"
     },
     {
       "name": "StickyBuyBar",
@@ -1771,15 +1802,27 @@
       },
       "tokensUsed": [
         "color.border",
+        "color.borderStrong",
+        "color.error",
+        "color.ink",
         "color.surface",
+        "color.text",
+        "color.textInverse",
         "color.textMuted",
         "duration.base",
+        "duration.fast",
         "font.size.lg",
         "font.size.sm",
         "font.weight.bold",
         "font.weight.medium",
+        "font.weight.semibold",
+        "radius.md",
+        "shadow.focus",
         "shadow.lg",
         "space.0",
+        "space.11",
+        "space.2",
+        "space.20",
         "space.3",
         "space.4",
         "zIndex.sticky"
@@ -1789,7 +1832,7 @@
       ],
       "accessibility": "aria-hidden when off-screen.",
       "example": "<StickyBuyBar product={card} quantity={1} visible />",
-      "lastUpdated": "2026-11-12"
+      "lastUpdated": "2026-11-19"
     },
     {
       "name": "SearchBox",
@@ -1834,11 +1877,20 @@
       },
       "tokensUsed": [
         "color.border",
+        "color.borderStrong",
+        "color.ink",
         "color.surface",
+        "color.text",
+        "color.textInverse",
         "color.textMuted",
+        "duration.fast",
+        "font.size.sm",
         "font.weight.semibold",
         "radius.lg",
+        "radius.md",
+        "shadow.focus",
         "space.1",
+        "space.11",
         "space.2",
         "space.3",
         "space.4",
@@ -1850,7 +1902,7 @@
       ],
       "accessibility": "Fieldsets with legends; result count is aria-live; filters in Drawer on mobile.",
       "example": "<CategoryListing products={cards} />",
-      "lastUpdated": "2026-11-12"
+      "lastUpdated": "2026-11-19"
     },
     {
       "name": "CheckoutForm",
@@ -1885,7 +1937,7 @@
       ],
       "accessibility": "Labels, autocomplete tokens, inline errors, fieldset legends.",
       "example": "<CheckoutForm />",
-      "lastUpdated": "2026-11-16"
+      "lastUpdated": "2026-11-19"
     },
     {
       "name": "TrackOrderForm",
@@ -1970,11 +2022,10 @@
       },
       "tokensUsed": [
         "space.0",
-        "space.2",
         "space.3",
         "space.4",
-        "space.6",
-        "space.64"
+        "space.40",
+        "space.48"
       ],
       "usedIn": [
         "HomeSections",
@@ -1982,7 +2033,7 @@
       ],
       "accessibility": "Section labelled by its heading.",
       "example": "<ProductGrid title=\"Bestsellers\" products={cards} viewAllHref=\"/bestsellers\" />",
-      "lastUpdated": "2026-11-12"
+      "lastUpdated": "2026-11-19"
     },
     {
       "name": "CategoryTiles",
@@ -2007,12 +2058,13 @@
         "aspect.tile",
         "color.border",
         "color.primary",
+        "color.secondary",
         "color.surface",
         "color.text",
         "color.textMuted",
         "duration.base",
         "duration.slow",
-        "font.family.heading",
+        "font.lineHeight.tight",
         "font.size.2xl",
         "font.size.base",
         "font.size.sm",
@@ -2024,6 +2076,7 @@
         "shadow.md",
         "space.1",
         "space.2",
+        "space.20",
         "space.24",
         "space.4"
       ],
@@ -2032,7 +2085,7 @@
       ],
       "accessibility": "Tiles are links with visible text.",
       "example": "<CategoryTiles title=\"Shop by category\" items={…} />",
-      "lastUpdated": "2026-11-12"
+      "lastUpdated": "2026-11-19"
     },
     {
       "name": "SaleBanner",
@@ -2127,7 +2180,7 @@
       ],
       "accessibility": "Section has aria-label.",
       "example": "<ValueProps />",
-      "lastUpdated": "2026-11-12"
+      "lastUpdated": "2026-11-19"
     },
     {
       "name": "CustomerCare",
@@ -2175,7 +2228,7 @@
       ],
       "accessibility": "Contact links are real tel:/mailto:.",
       "example": "<CustomerCare />",
-      "lastUpdated": "2026-11-12"
+      "lastUpdated": "2026-11-19"
     },
     {
       "name": "BrandStory",
@@ -2221,7 +2274,7 @@
       ],
       "accessibility": "H2 + H3 blurbs.",
       "example": "<BrandStory title=\"Why choose City Seller?\" paragraphs={…} blurbs={…} />",
-      "lastUpdated": "2026-11-12"
+      "lastUpdated": "2026-11-19"
     },
     {
       "name": "FAQSection",
@@ -2267,14 +2320,13 @@
       "usedIn": [
         "ContentPage",
         "HomeSections",
-        "ListingTemplate",
         "shop:/[category]/[sub]/[product]",
         "shop:/faq",
         "shop:/guides/[slug]"
       ],
       "accessibility": "Questions are h3 buttons.",
       "example": "<FAQSection faqs={category.faqs} />",
-      "lastUpdated": "2026-11-12"
+      "lastUpdated": "2026-11-19"
     },
     {
       "name": "AnswerIntro",
@@ -2316,7 +2368,6 @@
       ],
       "usedIn": [
         "ContentPage",
-        "ListingTemplate",
         "shop:/account (layout)",
         "shop:/contact",
         "shop:/faq",
@@ -2324,7 +2375,7 @@
       ],
       "accessibility": "Provides the page's single H1.",
       "example": "<AnswerIntro title=\"Kitchen & Dining\" answer=\"…\" />",
-      "lastUpdated": "2026-11-12"
+      "lastUpdated": "2026-11-19"
     },
     {
       "name": "GuideCards",
@@ -2381,7 +2432,12 @@
         "emptyMessage": "string"
       },
       "tokensUsed": [
+        "font.size.2xl",
+        "font.size.3xl",
+        "font.tracking.tight",
+        "font.weight.semibold",
         "space.3",
+        "space.4",
         "space.6"
       ],
       "usedIn": [
@@ -2395,7 +2451,7 @@
       ],
       "accessibility": "Single H1; chips nav labelled Refine.",
       "example": "<ListingTemplate crumbs={…} title=\"Cleaning\" answer={…} products={cards} />",
-      "lastUpdated": "2026-11-12"
+      "lastUpdated": "2026-11-19"
     },
     {
       "name": "ContentPage",
@@ -2471,10 +2527,8 @@
         "space.0",
         "space.10",
         "space.16",
-        "space.24",
         "space.4",
-        "space.6",
-        "space.8"
+        "space.6"
       ],
       "usedIn": [
         "ContentPage",
@@ -2484,7 +2538,6 @@
         "ListingTemplate",
         "PageSkeleton",
         "Section",
-        "TopBar",
         "layout/MegaMenu",
         "shop:/[category]/[sub]/[product]",
         "shop:/account (layout)",
@@ -2500,7 +2553,7 @@
       ],
       "accessibility": "Neutral.",
       "example": "<Container>…</Container>",
-      "lastUpdated": "2026-11-12"
+      "lastUpdated": "2026-11-19"
     },
     {
       "name": "Section",
@@ -2538,10 +2591,8 @@
         "space.0",
         "space.10",
         "space.16",
-        "space.24",
         "space.4",
-        "space.6",
-        "space.8"
+        "space.6"
       ],
       "usedIn": [
         "CategoryTiles",
@@ -2554,7 +2605,7 @@
       ],
       "accessibility": "Pass aria-labelledby to name the region.",
       "example": "<Section background=\"surface\">…</Section>",
-      "lastUpdated": "2026-11-12"
+      "lastUpdated": "2026-11-19"
     },
     {
       "name": "Breadcrumbs",
@@ -2629,34 +2680,6 @@
       "lastUpdated": "2026-11-15"
     },
     {
-      "name": "TopBar",
-      "path": "shared/src/components/layout/TopBar.tsx",
-      "category": "layout",
-      "description": "Promo strip with socials, Track order and Login.",
-      "variants": [],
-      "props": {
-        "settings": "Settings (promo strip, socials)"
-      },
-      "tokensUsed": [
-        "color.ink",
-        "color.surface",
-        "color.textInverse",
-        "font.size.sm",
-        "font.weight.semibold",
-        "radius.md",
-        "space.1",
-        "space.2",
-        "space.4",
-        "space.9"
-      ],
-      "usedIn": [
-        "StoreShell"
-      ],
-      "accessibility": "Social links labelled.",
-      "example": "<TopBar />",
-      "lastUpdated": "2026-11-16"
-    },
-    {
       "name": "NavDropdown",
       "path": "shared/src/components/layout/NavDropdown.tsx",
       "category": "layout",
@@ -2694,7 +2717,7 @@
       ],
       "accessibility": "Button with aria-expanded/aria-controls; Escape and outside click close.",
       "example": "<NavDropdown label=\"Shop by Budget\">…</NavDropdown>",
-      "lastUpdated": "2026-11-12"
+      "lastUpdated": "2026-11-19"
     },
     {
       "name": "MegaMenu",
@@ -2706,29 +2729,39 @@
         "tree": "NavCategory[]"
       },
       "tokensUsed": [
+        "aspect.tile",
         "color.background",
+        "color.border",
+        "color.ink",
         "color.primary",
+        "color.secondary",
         "color.text",
+        "color.textInverse",
         "color.textMuted",
-        "font.family.heading",
+        "duration.slow",
         "font.size.base",
         "font.size.lg",
         "font.size.sm",
+        "font.size.xl",
+        "font.weight.medium",
         "font.weight.semibold",
+        "radius.lg",
         "radius.md",
+        "shadow.focus",
+        "space.0",
         "space.1",
         "space.11",
         "space.2",
         "space.3",
+        "space.4",
+        "space.6",
         "space.8",
         "space.9"
       ],
-      "usedIn": [
-        "Header"
-      ],
+      "usedIn": [],
       "accessibility": "Links in lists.",
       "example": "<MegaMenu tree={tree} />",
-      "lastUpdated": "2026-11-12"
+      "lastUpdated": "2026-11-19"
     },
     {
       "name": "BudgetMenu",
@@ -2738,20 +2771,32 @@
       "variants": [],
       "props": {},
       "tokensUsed": [
+        "aspect.tile",
         "color.background",
+        "color.border",
+        "color.ink",
         "color.primary",
+        "color.secondary",
         "color.text",
+        "color.textInverse",
         "color.textMuted",
-        "font.family.heading",
+        "duration.slow",
         "font.size.base",
         "font.size.lg",
         "font.size.sm",
+        "font.size.xl",
+        "font.weight.medium",
         "font.weight.semibold",
+        "radius.lg",
         "radius.md",
+        "shadow.focus",
+        "space.0",
         "space.1",
         "space.11",
         "space.2",
         "space.3",
+        "space.4",
+        "space.6",
         "space.8",
         "space.9"
       ],
@@ -2760,7 +2805,7 @@
       ],
       "accessibility": "Links in list.",
       "example": "<BudgetMenu />",
-      "lastUpdated": "2026-11-12"
+      "lastUpdated": "2026-11-19"
     },
     {
       "name": "buildCategoryTree",
@@ -2772,20 +2817,32 @@
         "categories": "Category[]"
       },
       "tokensUsed": [
+        "aspect.tile",
         "color.background",
+        "color.border",
+        "color.ink",
         "color.primary",
+        "color.secondary",
         "color.text",
+        "color.textInverse",
         "color.textMuted",
-        "font.family.heading",
+        "duration.slow",
         "font.size.base",
         "font.size.lg",
         "font.size.sm",
+        "font.size.xl",
+        "font.weight.medium",
         "font.weight.semibold",
+        "radius.lg",
         "radius.md",
+        "shadow.focus",
+        "space.0",
         "space.1",
         "space.11",
         "space.2",
         "space.3",
+        "space.4",
+        "space.6",
         "space.8",
         "space.9"
       ],
@@ -2793,11 +2850,12 @@
         "HomeSections",
         "StoreShell",
         "lib/admin/product-values",
+        "shop:/categories",
         "shop:/llms.txt (route)"
       ],
       "accessibility": "",
       "example": "buildCategoryTree(await repo.listCategories())",
-      "lastUpdated": "2026-11-12"
+      "lastUpdated": "2026-11-19"
     },
     {
       "name": "MobileNav",
@@ -2844,7 +2902,6 @@
       },
       "tokensUsed": [
         "color.border",
-        "color.primary",
         "color.secondary",
         "color.surface",
         "color.text",
@@ -2866,7 +2923,7 @@
       ],
       "accessibility": "Main nav landmark; mobile search row.",
       "example": "<Header tree={tree} />",
-      "lastUpdated": "2026-11-16"
+      "lastUpdated": "2026-11-19"
     },
     {
       "name": "Footer",
@@ -2902,7 +2959,7 @@
       ],
       "accessibility": "Contentinfo landmark; headings per column.",
       "example": "<Footer tree={tree} />",
-      "lastUpdated": "2026-11-12"
+      "lastUpdated": "2026-11-19"
     },
     {
       "name": "StoreShell",
@@ -2918,6 +2975,7 @@
         "radius.md",
         "shadow.lg",
         "space.2",
+        "space.20",
         "space.4",
         "zIndex.toast"
       ],
@@ -2927,7 +2985,7 @@
       ],
       "accessibility": "Skip-to-content link; main landmark.",
       "example": "<StoreShell>{children}</StoreShell>",
-      "lastUpdated": "2026-11-14"
+      "lastUpdated": "2026-11-19"
     },
     {
       "name": "useCart",
@@ -2945,11 +3003,12 @@
         "CartDrawer",
         "CartLineItem",
         "CartView",
-        "CheckoutForm"
+        "CheckoutForm",
+        "MobileTabBar"
       ],
       "accessibility": "",
       "example": "const add = useCart((s) => s.add)",
-      "lastUpdated": "2026-11-12"
+      "lastUpdated": "2026-11-19"
     },
     {
       "name": "cartTotals",
@@ -2965,11 +3024,12 @@
         "CartButton",
         "CartDrawer",
         "CartView",
-        "CheckoutForm"
+        "CheckoutForm",
+        "MobileTabBar"
       ],
       "accessibility": "",
       "example": "const { total } = cartTotals(items)",
-      "lastUpdated": "2026-11-12"
+      "lastUpdated": "2026-11-19"
     },
     {
       "name": "useHydrated",
@@ -2985,7 +3045,8 @@
         "CartButton",
         "CartDrawer",
         "CartView",
-        "CheckoutForm"
+        "CheckoutForm",
+        "MobileTabBar"
       ],
       "accessibility": "",
       "example": "const hydrated = useHydrated()",
@@ -3004,32 +3065,41 @@
       "usedIn": [
         "AccountMenu",
         "AccountNav",
+        "AddToCartButton",
         "AdminShell",
         "Badge",
         "Breadcrumbs",
         "Button",
         "Card",
         "CartLineItem",
+        "CategoryBrowser",
         "CategoryListing",
+        "CategoryStrip",
         "CategoryTiles",
         "ChipNav",
         "CopyButton",
         "CustomerAuthForm",
         "DataTable",
+        "DeliveryPromise",
         "FormField",
+        "FreeDeliveryTag",
         "Heading",
         "HeroCarousel",
         "HomeEditor",
         "Logo",
+        "MobileTabBar",
         "NavDropdown",
         "PasswordInput",
         "PrepaidNotice",
         "PriceBlock",
         "ProductCard",
+        "ProductForm",
         "ProductGallery",
         "ProductGrid",
         "RatingStars",
+        "ReviewForm",
         "SaleBanner",
+        "ScrollRail",
         "SearchBox",
         "SectionHeader",
         "TrackOrderForm",
@@ -3038,6 +3108,7 @@
         "commerce/OrderSummary",
         "commerce/ProductBuyBox",
         "layout/Container",
+        "layout/MegaMenu",
         "sections/InfoSections",
         "ui/Checkbox",
         "ui/Disclosure",
@@ -3063,7 +3134,9 @@
       "tokensUsed": [],
       "usedIn": [
         "CartLineItem",
+        "CategoryBrowser",
         "CheckoutForm",
+        "DeliveryPromise",
         "PincodeChecker",
         "PriceBlock",
         "ProductForm",
@@ -3085,7 +3158,7 @@
       ],
       "accessibility": "",
       "example": "formatINR(1299)",
-      "lastUpdated": "2026-11-12"
+      "lastUpdated": "2026-11-19"
     },
     {
       "name": "calcDiscount",
@@ -3105,7 +3178,7 @@
       ],
       "accessibility": "",
       "example": "calcDiscount(899, 449) // 50",
-      "lastUpdated": "2026-11-12"
+      "lastUpdated": "2026-11-19"
     },
     {
       "name": "formatDate",
@@ -3135,7 +3208,7 @@
       ],
       "accessibility": "",
       "example": "formatDate(order.createdAt)",
-      "lastUpdated": "2026-11-12"
+      "lastUpdated": "2026-11-19"
     },
     {
       "name": "slugify",
@@ -3158,7 +3231,7 @@
       ],
       "accessibility": "",
       "example": "slugify(\"Airtight Jar Set (6 pc)\")",
-      "lastUpdated": "2026-11-12"
+      "lastUpdated": "2026-11-19"
     },
     {
       "name": "getBudgetTier",
@@ -3205,6 +3278,7 @@
       },
       "tokensUsed": [],
       "usedIn": [
+        "DeliveryPromise",
         "PincodeChecker",
         "shop:/order/[id]"
       ],
@@ -3252,6 +3326,7 @@
         "AdminShell",
         "CartDrawer",
         "CartView",
+        "CategoryStrip",
         "CheckoutForm",
         "Footer",
         "GuideCards",
@@ -3260,7 +3335,6 @@
         "MobileNav",
         "NotFoundContent",
         "SectionEditor",
-        "TopBar",
         "admin:/",
         "admin:/actions.ts",
         "admin:/categories",
@@ -3293,6 +3367,7 @@
         "shop:/bestsellers",
         "shop:/budget/[tier]",
         "shop:/cart",
+        "shop:/categories",
         "shop:/checkout",
         "shop:/contact",
         "shop:/faq",
@@ -3357,7 +3432,7 @@
       ],
       "accessibility": "",
       "example": "products.map(toCardProduct)",
-      "lastUpdated": "2026-11-15"
+      "lastUpdated": "2026-11-19"
     },
     {
       "name": "validators",
@@ -3370,7 +3445,7 @@
       "usedIn": [],
       "accessibility": "",
       "example": "addressSchema.safeParse(body)",
-      "lastUpdated": "2026-11-12"
+      "lastUpdated": "2026-11-19"
     },
     {
       "name": "buildMetadata",
@@ -3402,6 +3477,7 @@
         "shop:/bestsellers",
         "shop:/budget/[tier]",
         "shop:/cart",
+        "shop:/categories",
         "shop:/checkout",
         "shop:/contact",
         "shop:/faq",
@@ -3713,6 +3789,8 @@
       "tokensUsed": [
         "color.background",
         "color.border",
+        "color.error",
+        "color.errorSoft",
         "color.ink",
         "color.primary",
         "color.secondary",
@@ -3748,7 +3826,7 @@
       "usedIn": [
         "admin: (layout)"
       ],
-      "lastUpdated": "2026-11-14",
+      "lastUpdated": "2026-11-19",
       "accessibility": "nav aria-label=Admin, aria-current on active link, main landmark.",
       "name": "AdminShell",
       "path": "admin/src/components/admin/AdminShell.tsx",
@@ -3865,20 +3943,29 @@
       "tokensUsed": [
         "color.background",
         "color.border",
+        "color.borderStrong",
         "color.error",
         "color.errorSoft",
+        "color.ink",
         "color.success",
         "color.successSoft",
         "color.surface",
+        "color.text",
+        "color.textInverse",
         "color.textMuted",
         "color.warning",
+        "duration.fast",
         "font.family.heading",
         "font.size.sm",
         "font.size.xl",
         "font.weight.semibold",
         "radius.lg",
         "radius.md",
+        "shadow.focus",
         "space.0",
+        "space.11",
+        "space.2",
+        "space.20",
         "space.3",
         "space.4",
         "space.6",
@@ -3888,7 +3975,7 @@
         "admin:/products/[id]",
         "admin:/products/new"
       ],
-      "lastUpdated": "2026-11-15",
+      "lastUpdated": "2026-11-19",
       "accessibility": "Fieldsets with legends, inline errors, live margin region, sticky save bar.",
       "name": "ProductForm",
       "path": "admin/src/components/admin/ProductForm.tsx",
@@ -4120,7 +4207,7 @@
         "ProductForm",
         "admin/AdminBits"
       ],
-      "lastUpdated": "2026-11-12",
+      "lastUpdated": "2026-11-19",
       "accessibility": "",
       "name": "calcMargin",
       "path": "shared/src/lib/utils/format.ts",
@@ -4140,7 +4227,7 @@
         "admin:/",
         "admin:/products"
       ],
-      "lastUpdated": "2026-11-12",
+      "lastUpdated": "2026-11-19",
       "accessibility": "",
       "name": "daysSince",
       "path": "shared/src/lib/utils/format.ts",
@@ -4503,7 +4590,7 @@
       "usedIn": [
         "HomeEditor"
       ],
-      "lastUpdated": "2026-11-15",
+      "lastUpdated": "2026-11-19",
       "accessibility": "",
       "props": {
         "section": "HomeSection",
@@ -4687,7 +4774,7 @@
       "usedIn": [
         "admin:/categories/[id]"
       ],
-      "lastUpdated": "2026-11-12",
+      "lastUpdated": "2026-11-19",
       "accessibility": "",
       "props": {
         "values": "CategoryFormValues",
@@ -4788,7 +4875,7 @@
       "usedIn": [
         "admin:/settings"
       ],
-      "lastUpdated": "2026-11-14",
+      "lastUpdated": "2026-11-19",
       "accessibility": "",
       "props": {
         "initial": "Settings",
@@ -4826,6 +4913,9 @@
         "CartDrawer",
         "CartView",
         "CheckoutForm",
+        "DeliveryPromise",
+        "FreeDeliveryTag",
+        "MobileTabBar",
         "PincodeChecker",
         "PrepaidNotice",
         "commerce/OrderSummary"
@@ -4885,7 +4975,7 @@
       "usedIn": [
         "shop:/"
       ],
-      "lastUpdated": "2026-11-15",
+      "lastUpdated": "2026-11-19",
       "accessibility": "Guarantees one H1 (screen-reader-only fallback when no hero is live).",
       "props": {
         "sections": "HomeSection[]",
@@ -4919,10 +5009,7 @@
       "variants": [],
       "tokensUsed": [],
       "usedIn": [
-        "Footer",
-        "WhatsAppButton",
-        "lib/admin/whatsapp",
-        "sections/InfoSections"
+        "lib/admin/whatsapp"
       ],
       "lastUpdated": "2026-11-12",
       "accessibility": "",
@@ -4945,7 +5032,7 @@
         "lib/data/supabase-repo",
         "toCardProduct"
       ],
-      "lastUpdated": "2026-11-15",
+      "lastUpdated": "2026-11-19",
       "accessibility": "",
       "props": {
         "p": "{isNew, createdAt}",
@@ -5052,39 +5139,6 @@
       "lastUpdated": "2026-11-16"
     },
     {
-      "name": "WhatsAppButton",
-      "path": "shared/src/components/layout/WhatsAppButton.tsx",
-      "category": "layout",
-      "description": "Floating chat button that opens WhatsApp with a pre-filled message; sits above the mobile buy bar.",
-      "variants": [],
-      "props": {
-        "number": "string (digits)",
-        "message": "string"
-      },
-      "tokensUsed": [
-        "color.success",
-        "color.textInverse",
-        "duration.fast",
-        "font.size.base",
-        "font.weight.semibold",
-        "radius.full",
-        "shadow.focus",
-        "shadow.lg",
-        "space.14",
-        "space.2",
-        "space.24",
-        "space.4",
-        "space.6",
-        "zIndex.sticky"
-      ],
-      "usedIn": [
-        "StoreShell"
-      ],
-      "accessibility": "Link with aria-label 'Chat with us on WhatsApp'; opens in a new tab.",
-      "example": "<WhatsAppButton number=\"919000000000\" message=\"Hi\" />",
-      "lastUpdated": "2026-11-14"
-    },
-    {
       "name": "CustomerAuthForm",
       "path": "shared/src/components/commerce/CustomerAuthForm.tsx",
       "category": "commerce",
@@ -5120,7 +5174,7 @@
       ],
       "accessibility": "Tabs are buttons with aria-pressed; errors announced via role=alert.",
       "example": "<CustomerAuthForm signIn={a} signUp={b} forgot={c} next=\"/checkout\" />",
-      "lastUpdated": "2026-11-14"
+      "lastUpdated": "2026-11-17"
     },
     {
       "name": "SetPasswordForm",
@@ -5415,6 +5469,365 @@
       "accessibility": "Reason select is labelled and required; results announced via role=status/alert; instant cancel asks for confirmation.",
       "example": "<OrderSelfService orderId={id} options={opts} cancel={a} requestCancel={b} requestReturn={c} />",
       "lastUpdated": "2026-11-16"
+    },
+    {
+      "name": "CategoryStrip",
+      "path": "shared/src/components/layout/CategoryStrip.tsx",
+      "category": "layout",
+      "description": "Phone/tablet header row of sideways-scrolling category bubbles (Flash Sale, Bestsellers, New, then categories).",
+      "variants": [],
+      "props": {
+        "tree": "NavCategory[]",
+        "className": "string"
+      },
+      "tokensUsed": [
+        "color.border",
+        "color.primary",
+        "color.text",
+        "font.lineHeight.tight",
+        "font.size.xs",
+        "font.weight.medium",
+        "font.weight.semibold",
+        "radius.full",
+        "shadow.focus",
+        "space.0",
+        "space.1",
+        "space.2",
+        "space.20"
+      ],
+      "usedIn": [
+        "Header"
+      ],
+      "accessibility": "nav landmark 'Categories'; each bubble is a labelled link.",
+      "example": "<CategoryStrip tree={tree} />",
+      "lastUpdated": "2026-11-19"
+    },
+    {
+      "name": "MobileTabBar",
+      "path": "shared/src/components/layout/MobileTabBar.tsx",
+      "category": "layout",
+      "description": "App-style bottom bar on phones: Home, Categories, Account, Cart (opens the cart drawer with a live count).",
+      "variants": [],
+      "props": {},
+      "tokensUsed": [
+        "color.border",
+        "color.primary",
+        "color.primarySoft",
+        "color.surface",
+        "color.textInverse",
+        "color.textMuted",
+        "duration.fast",
+        "font.size.xs",
+        "font.weight.bold",
+        "font.weight.medium",
+        "font.weight.semibold",
+        "radius.full",
+        "radius.lg",
+        "radius.xl",
+        "shadow.focus",
+        "shadow.lg",
+        "space.1",
+        "space.14",
+        "space.2",
+        "space.5",
+        "space.6",
+        "space.8",
+        "zIndex.sticky"
+      ],
+      "usedIn": [
+        "StoreShell"
+      ],
+      "accessibility": "nav landmark 'Shortcuts'; active tab marked aria-current; cart button announces the item count.",
+      "example": "<MobileTabBar />",
+      "lastUpdated": "2026-11-19"
+    },
+    {
+      "name": "ScrollRail",
+      "path": "shared/src/components/ui/ScrollRail.tsx",
+      "category": "ui/layout",
+      "description": "Sideways-scrolling list with snap and previous/next arrows on larger screens (hidden at the ends).",
+      "variants": [],
+      "props": {
+        "label": "string (list name)",
+        "children": "<li> items",
+        "className": "string"
+      },
+      "tokensUsed": [
+        "color.background",
+        "color.border",
+        "color.surface",
+        "color.text",
+        "duration.fast",
+        "radius.full",
+        "shadow.focus",
+        "shadow.md",
+        "space.0",
+        "space.1",
+        "space.11",
+        "space.2",
+        "space.3",
+        "space.4",
+        "space.5",
+        "zIndex.raised"
+      ],
+      "usedIn": [
+        "CategoryTiles",
+        "ProductGrid"
+      ],
+      "accessibility": "Labelled list; arrow buttons have aria-labels; swipe and keyboard scroll work.",
+      "example": "<ScrollRail label=\"Bestsellers\">{items}</ScrollRail>",
+      "lastUpdated": "2026-11-19"
+    },
+    {
+      "name": "FreeDeliveryTag",
+      "path": "shared/src/components/commerce/FreeDeliveryTag.tsx",
+      "category": "commerce",
+      "description": "'Free delivery' note on product cards when the price reaches the free-delivery threshold from Settings.",
+      "variants": [],
+      "props": {
+        "price": "number",
+        "className": "string"
+      },
+      "tokensUsed": [
+        "color.success",
+        "font.size.xs",
+        "font.weight.medium",
+        "space.1",
+        "space.4"
+      ],
+      "usedIn": [
+        "ProductCard"
+      ],
+      "accessibility": "Plain text with a decorative icon.",
+      "example": "<FreeDeliveryTag price={499} />",
+      "lastUpdated": "2026-11-19"
+    },
+    {
+      "name": "DeliveryPromise",
+      "path": "shared/src/components/commerce/DeliveryPromise.tsx",
+      "category": "commerce",
+      "description": "Product-page delivery line: 'Get it by <date>' for the saved PIN, plus free delivery or the fee.",
+      "variants": [],
+      "props": {
+        "price": "number",
+        "className": "string"
+      },
+      "tokensUsed": [
+        "color.success",
+        "color.text",
+        "color.textMuted",
+        "font.size.sm",
+        "space.0.5",
+        "space.2",
+        "space.5"
+      ],
+      "usedIn": [
+        "shop:/[category]/[sub]/[product]"
+      ],
+      "accessibility": "Plain text; updates when the shopper changes their PIN.",
+      "example": "<DeliveryPromise price={p.price} />",
+      "lastUpdated": "2026-11-19"
+    },
+    {
+      "name": "usePincode",
+      "path": "shared/src/hooks/usePincode.ts",
+      "category": "hook",
+      "description": "Shopper's remembered delivery PIN (localStorage), shared live across header, product page and PIN checker.",
+      "variants": [],
+      "props": {},
+      "tokensUsed": [],
+      "usedIn": [
+        "DeliveryPromise",
+        "PincodeChecker"
+      ],
+      "accessibility": "",
+      "example": "const [pin, setPin] = usePincode();",
+      "lastUpdated": "2026-11-19"
+    },
+    {
+      "name": "CategoryNav",
+      "path": "shared/src/components/layout/MegaMenu.tsx",
+      "category": "layout",
+      "description": "Marketplace-style category bar: one hover menu per top category (subcategory columns, View all, category picture); plain link when a category has no subcategories; 4 on laptops, 6 on wide screens, then All categories.",
+      "variants": [],
+      "props": {
+        "tree": "NavCategory[]"
+      },
+      "tokensUsed": [
+        "aspect.tile",
+        "color.background",
+        "color.border",
+        "color.ink",
+        "color.primary",
+        "color.secondary",
+        "color.text",
+        "color.textInverse",
+        "color.textMuted",
+        "duration.slow",
+        "font.size.base",
+        "font.size.lg",
+        "font.size.sm",
+        "font.size.xl",
+        "font.weight.medium",
+        "font.weight.semibold",
+        "radius.lg",
+        "radius.md",
+        "shadow.focus",
+        "space.0",
+        "space.1",
+        "space.11",
+        "space.2",
+        "space.3",
+        "space.4",
+        "space.6",
+        "space.8",
+        "space.9"
+      ],
+      "usedIn": [
+        "Header"
+      ],
+      "accessibility": "Each menu is a disclosure button (aria-expanded); closes on Escape, outside click and focus leaving.",
+      "example": "<CategoryNav tree={tree} />",
+      "lastUpdated": "2026-11-19"
+    },
+    {
+      "name": "MoreMenu",
+      "path": "shared/src/components/layout/MegaMenu.tsx",
+      "category": "layout",
+      "description": "'More' dropdown at the end of the category bar: Bestsellers, New arrivals, Buying guides, All categories.",
+      "variants": [],
+      "props": {},
+      "tokensUsed": [
+        "aspect.tile",
+        "color.background",
+        "color.border",
+        "color.ink",
+        "color.primary",
+        "color.secondary",
+        "color.text",
+        "color.textInverse",
+        "color.textMuted",
+        "duration.slow",
+        "font.size.base",
+        "font.size.lg",
+        "font.size.sm",
+        "font.size.xl",
+        "font.weight.medium",
+        "font.weight.semibold",
+        "radius.lg",
+        "radius.md",
+        "shadow.focus",
+        "space.0",
+        "space.1",
+        "space.11",
+        "space.2",
+        "space.3",
+        "space.4",
+        "space.6",
+        "space.8",
+        "space.9"
+      ],
+      "usedIn": [
+        "Header"
+      ],
+      "accessibility": "Disclosure button; right-aligned panel of links.",
+      "example": "<MoreMenu />",
+      "lastUpdated": "2026-11-19"
+    },
+    {
+      "name": "ReviewForm",
+      "path": "shared/src/components/commerce/ReviewForm.tsx",
+      "category": "commerce",
+      "description": "Verified-purchase review for one delivered item: tappable 1–5 stars, optional title, review text; held for admin approval.",
+      "variants": [],
+      "props": {
+        "orderId": "string",
+        "productId": "string",
+        "productTitle": "string",
+        "action": "server action"
+      },
+      "tokensUsed": [
+        "color.borderStrong",
+        "color.error",
+        "color.success",
+        "color.successSoft",
+        "color.textMuted",
+        "color.warning",
+        "font.size.sm",
+        "font.weight.medium",
+        "radius.md",
+        "shadow.focus",
+        "space.1",
+        "space.11",
+        "space.2",
+        "space.3",
+        "space.8"
+      ],
+      "usedIn": [
+        "shop:/order/[id]"
+      ],
+      "accessibility": "Stars are a labelled radio group (keyboard and screen-reader friendly); field errors and result announced.",
+      "example": "<ReviewForm orderId={o.id} productId={i.productId} productTitle={i.title} action={submitReviewAction} />",
+      "lastUpdated": "2026-11-19"
+    },
+    {
+      "name": "formatBought",
+      "path": "shared/src/lib/utils/format.ts",
+      "category": "util",
+      "description": "Honest 'bought' label from the real paid-order count (10+, 200+, 1.5k+); null below 10.",
+      "variants": [],
+      "props": {
+        "count": "number"
+      },
+      "tokensUsed": [],
+      "usedIn": [
+        "ProductCard",
+        "shop:/[category]/[sub]/[product]"
+      ],
+      "accessibility": "",
+      "example": "formatBought(37) // \"30+ bought\"",
+      "lastUpdated": "2026-11-19"
+    },
+    {
+      "name": "CategoryBrowser",
+      "path": "shared/src/components/commerce/CategoryBrowser.tsx",
+      "category": "commerce",
+      "description": "All-categories browser (app style): category list on the left, compact picture tiles on the right (subcategories, then products with price); remembers the choice in ?c=.",
+      "variants": [],
+      "props": {
+        "categories": "BrowserCategory[]"
+      },
+      "tokensUsed": [
+        "aspect.square",
+        "color.background",
+        "color.primary",
+        "color.surface",
+        "color.text",
+        "color.textMuted",
+        "duration.slow",
+        "font.lineHeight.tight",
+        "font.size.base",
+        "font.size.sm",
+        "font.size.xs",
+        "font.weight.semibold",
+        "radius.md",
+        "shadow.focus",
+        "space.0",
+        "space.1",
+        "space.11",
+        "space.14",
+        "space.2",
+        "space.24",
+        "space.3",
+        "space.32",
+        "space.4"
+      ],
+      "usedIn": [
+        "shop:/categories"
+      ],
+      "accessibility": "Category list is a labelled nav of buttons with aria-current; tiles are links with visible names.",
+      "example": "<CategoryBrowser categories={data} />",
+      "lastUpdated": "2026-11-19"
     }
   ]
 }

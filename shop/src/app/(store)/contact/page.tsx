@@ -13,7 +13,7 @@ export async function generateMetadata(): Promise<Metadata> {
   const { care } = await getSettings();
   return buildMetadata({
     title: "Contact customer care",
-    description: `Contact ${site.name} by phone, WhatsApp or email, ${care.hours}.`,
+    description: `Contact ${site.name} by phone or email, ${care.hours}.`,
     path: paths.contact(),
   });
 }
@@ -26,7 +26,7 @@ export default async function ContactPage() {
         <Breadcrumbs items={[{ label: "Contact us" }]} />
         <AnswerIntro
           title="Contact us"
-          answer={`Reach ${site.name} customer care on ${care.phone}, on WhatsApp or at ${care.email}, ${care.hours}. Keep your order number handy for faster help.`}
+          answer={`Reach ${site.name} customer care on ${care.phone} or at ${care.email}, ${care.hours}. Keep your order number handy for faster help.`}
         />
       </Container>
       <CustomerCare care={care} />

@@ -5,7 +5,7 @@ import type { Category, Order, Post, Product, Review } from "@/lib/types";
 export type StoredProduct = Product & { isActive: boolean };
 export type StoredCategory = Category & { isActive: boolean };
 export type StoredPost = Post & { isPublished: boolean };
-export type StoredReview = Review & { isApproved: boolean };
+export type StoredReview = Review & { isApproved: boolean; orderId?: string; userId?: string };
 export type ActivityEntry = { id: number; actor: string; action: string; target: string; at: string };
 
 type Store = {

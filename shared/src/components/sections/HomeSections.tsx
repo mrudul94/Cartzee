@@ -162,10 +162,36 @@ export async function HomeSections({ sections, ctx }: { sections: HomeSection[];
     }),
   );
 
+  // One row per top category (up to 7 of its products), placed after the shop sections and before the
+  // trust/info sections (value props, customer care, brand story, guides, FAQ). Empty categories are skipped.
+  const categoryRows = (
+    await Promise.all(
+      tree.map(async (c) => {
+        const products = await repo.listProducts({ category: c.slug, limit: 7 });
+        if (products.length === 0) return null;
+        return (
+          <ProductGrid
+            key={`category-row-${c.slug}`}
+            title={c.name}
+            products={products.map(toCardProduct)}
+            viewAllHref={paths.category(c)}
+            layout="row"
+            spacing="sm"
+          />
+        );
+      }),
+    )
+  ).filter(Boolean);
+  const INFO_TYPES = new Set<HomeSection["type"]>(["valueProps", "customerCare", "brandStory", "guides", "faq"]);
+  const firstInfo = live.findIndex((s) => INFO_TYPES.has(s.type));
+  const at = firstInfo < 0 ? rendered.length : firstInfo;
+
   return (
     <>
       {!h1Used && <h1 className="sr-only">City Seller: everyday home needs, honestly priced</h1>}
-      {rendered}
+      {rendered.slice(0, at)}
+      {categoryRows}
+      {rendered.slice(at)}
     </>
   );
 }

@@ -1,4 +1,5 @@
 import "server-only";
+import { OUTBOUND_TIMEOUT_MS } from "@/lib/background";
 import { site } from "@/lib/site";
 
 /**
@@ -13,13 +14,20 @@ export async function sendEmail(msg: { to: string; subject: string; html: string
     console.info(`[email:mock] to=${msg.to} subject="${msg.subject}"\n${msg.text}`);
     return { ok: true, mock: true };
   }
-  const res = await fetch("https://api.resend.com/emails", {
-    method: "POST",
-    headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json" },
-    body: JSON.stringify({ from, to: [msg.to], subject: msg.subject, html: msg.html, text: msg.text }),
-  });
-  if (!res.ok) console.error("[email] Resend error", res.status, await res.text());
-  return { ok: res.ok, mock: false };
+  try {
+    const res = await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json" },
+      body: JSON.stringify({ from, to: [msg.to], subject: msg.subject, html: msg.html, text: msg.text }),
+      signal: AbortSignal.timeout(OUTBOUND_TIMEOUT_MS),
+    });
+    if (!res.ok) console.error("[email] Resend error", res.status, await res.text());
+    return { ok: res.ok, mock: false };
+  } catch (e) {
+    // Network failure or timeout: never hang the caller.
+    console.error("[email] Resend unreachable", e);
+    return { ok: false, mock: false };
+  }
 }
 
 /** New-order alert to the admin Telegram chat (target: within 1 minute of payment). */
@@ -30,11 +38,17 @@ export async function notifyAdmins(text: string) {
     console.info(`[telegram:mock] ${text}`);
     return { ok: true, mock: true };
   }
-  const res = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ chat_id: chatId, text, disable_web_page_preview: true }),
-  });
-  if (!res.ok) console.error("[telegram] error", res.status, await res.text());
-  return { ok: res.ok, mock: false };
+  try {
+    const res = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ chat_id: chatId, text, disable_web_page_preview: true }),
+      signal: AbortSignal.timeout(OUTBOUND_TIMEOUT_MS),
+    });
+    if (!res.ok) console.error("[telegram] error", res.status, await res.text());
+    return { ok: res.ok, mock: false };
+  } catch (e) {
+    console.error("[telegram] unreachable", e);
+    return { ok: false, mock: false };
+  }
 }

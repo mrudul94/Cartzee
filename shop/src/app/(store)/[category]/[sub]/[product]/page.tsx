@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { RotateCcw, ShieldCheck, Truck } from "lucide-react";
+import { DeliveryPromise } from "@/components/commerce/DeliveryPromise";
 import { PincodeChecker } from "@/components/commerce/PincodeChecker";
 import { PrepaidNotice } from "@/components/commerce/PrepaidNotice";
 import { PriceBlock } from "@/components/commerce/PriceBlock";
@@ -20,7 +21,7 @@ import { buildProductJsonLd } from "@/lib/seo/jsonld";
 import { JsonLd } from "@/lib/seo/JsonLdScript";
 import { buildMetadata } from "@/lib/seo/metadata";
 import { getSettings } from "@/lib/data/content-repo";
-import { formatINR } from "@/lib/utils/format";
+import { formatBought, formatINR } from "@/lib/utils/format";
 import { paths } from "@/lib/utils/paths";
 import { toCardProduct } from "@/lib/utils/product";
 
@@ -85,20 +86,33 @@ export default async function ProductPage({ params }: Props) {
           ]}
         />
         <div className="grid gap-8 pb-10 md:grid-cols-2 lg:gap-12">
-          <ProductGallery images={p.images} title={p.title} />
+          {/* Photos stay in view on larger screens while the buy options and details scroll. */}
+          <div className="md:sticky md:top-32 md:self-start">
+            <ProductGallery images={p.images} title={p.title} />
+          </div>
 
           <div className="flex flex-col gap-5">
             <div className="flex flex-col gap-2">
               {p.isBestseller && <Badge variant="outline" className="self-start">Bestseller</Badge>}
               <h1 className="font-heading text-2xl font-semibold tracking-tight md:text-3xl">{p.title}</h1>
-              <a href="#reviews" className="self-start hover:underline">
-                <RatingStars value={p.rating} count={p.reviewCount} size="md" showValue />
-              </a>
+              <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
+                {p.reviewCount > 0 ? (
+                  <a href="#reviews" className="hover:underline">
+                    <RatingStars value={p.rating} count={p.reviewCount} size="md" showValue />
+                  </a>
+                ) : (
+                  <p className="text-sm text-text-muted">No reviews yet</p>
+                )}
+                {formatBought(p.boughtCount ?? 0) && <p className="text-sm font-medium text-text-muted">{formatBought(p.boughtCount ?? 0)} so far</p>}
+              </div>
             </div>
             <p className="text-lg text-text">{p.summary}</p>
             <PriceBlock price={p.price} mrp={p.mrp} size="lg" showTaxNote />
             {inStock ? (
-              <p className="text-sm font-medium text-success">In stock, ready to ship</p>
+              <>
+                <p className="text-sm font-medium text-success">In stock, ready to ship</p>
+                <DeliveryPromise price={p.price} />
+              </>
             ) : (
               <p className="text-sm font-medium text-error">Sold out. Contact us to be notified when it is back.</p>
             )}

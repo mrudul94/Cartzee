@@ -5,30 +5,25 @@ import { MapPin, Truck } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { useSettings } from "@/components/layout/SettingsProvider";
+import { usePincode } from "@/hooks/usePincode";
 import { estimateDelivery, type DeliveryEstimate } from "@/lib/utils/delivery";
 import { formatINR } from "@/lib/utils/format";
 
-const KEY = "city-seller-pincode";
-
-/** Delivery estimate by PIN code; remembers the last PIN for convenience. */
+/** Delivery estimate by PIN code; uses and updates the shopper's remembered PIN (shared with the header). */
 export function PincodeChecker({ className }: { className?: string }) {
   const id = useId();
   const { freeAbove } = useSettings().delivery;
+  const [savedPin, savePin] = usePincode();
   const [pin, setPin] = useState("");
   const [result, setResult] = useState<DeliveryEstimate | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    try {
-      const saved = localStorage.getItem(KEY);
-      if (saved) {
-        setPin(saved);
-        setResult(estimateDelivery(saved));
-      }
-    } catch {
-      /* storage unavailable */
-    }
-  }, []);
+    if (!savedPin) return;
+    setPin(savedPin);
+    setResult(estimateDelivery(savedPin));
+    setError(null);
+  }, [savedPin]);
 
   const check = (e: FormEvent) => {
     e.preventDefault();
@@ -40,11 +35,7 @@ export function PincodeChecker({ className }: { className?: string }) {
     }
     setError(null);
     setResult(est);
-    try {
-      localStorage.setItem(KEY, pin.trim());
-    } catch {
-      /* ignore */
-    }
+    savePin(pin);
   };
 
   return (

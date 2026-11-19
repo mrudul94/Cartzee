@@ -10,6 +10,10 @@ export type NavDropdownProps = {
   children: ReactNode;
   /** "mega" spans the header width; "menu" anchors under the trigger. */
   panel?: "mega" | "menu";
+  /** "menu" panels: open from the trigger's left edge (default) or right edge (items near the screen's right). */
+  align?: "left" | "right";
+  /** Extra classes for the trigger button (e.g. a highlighted item). */
+  triggerClassName?: string;
   className?: string;
 };
 
@@ -17,7 +21,7 @@ export type NavDropdownProps = {
  * Disclosure-pattern nav dropdown: opens on hover (pointer) or click/Enter, closes on
  * Escape, outside click, focus leaving, or route change. Panel content is regular links.
  */
-export function NavDropdown({ label, children, panel = "menu", className }: NavDropdownProps) {
+export function NavDropdown({ label, children, panel = "menu", align = "left", triggerClassName, className }: NavDropdownProps) {
   const [open, setOpen] = useState(false);
   const id = useId();
   const root = useRef<HTMLDivElement>(null);
@@ -58,7 +62,11 @@ export function NavDropdown({ label, children, panel = "menu", className }: NavD
         aria-expanded={open}
         aria-controls={id}
         onClick={() => setOpen((o) => !o)}
-        className="inline-flex min-h-11 items-center gap-1 rounded-md px-3 text-base font-medium text-text hover:bg-secondary/60 focus-visible:outline-none focus-visible:shadow-focus"
+        className={cn(
+          "inline-flex min-h-11 items-center gap-1 whitespace-nowrap rounded-md px-3 text-base font-medium text-text hover:bg-secondary/60 focus-visible:outline-none focus-visible:shadow-focus",
+          open && panel === "mega" && "bg-secondary/60",
+          triggerClassName,
+        )}
       >
         {label}
         <ChevronDown aria-hidden className={cn("h-4 w-4 transition-transform duration-fast", open && "rotate-180")} />
@@ -68,7 +76,7 @@ export function NavDropdown({ label, children, panel = "menu", className }: NavD
         hidden={!open}
         className={cn(
           "absolute z-dropdown border border-border bg-surface shadow-lg",
-          panel === "mega" ? "inset-x-0 top-full border-x-0" : "left-0 top-full mt-1 min-w-64 rounded-md",
+          panel === "mega" ? "inset-x-0 top-full border-x-0" : cn("top-full mt-1 min-w-64 rounded-md", align === "right" ? "right-0" : "left-0"),
         )}
       >
         {children}

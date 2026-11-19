@@ -22,6 +22,8 @@ processEnv(
 /** Shop website (cityseller.in). Shared code lives in ../shared and is compiled by this app. */
 const nextConfig: NextConfig = {
   outputFileTracingRoot: root,
+  // Turbopack (fast dev compiler) needs the monorepo root so it can compile ../shared.
+  turbopack: { root },
   experimental: { externalDir: true },
   images: {
     formats: ["image/avif", "image/webp"],

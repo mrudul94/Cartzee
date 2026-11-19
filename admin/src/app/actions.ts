@@ -6,7 +6,7 @@ import { z } from "zod";
 import { fieldErrors, formObject, orderUpdateSchema, productFormSchema, type ActionState } from "@/lib/admin/forms";
 import { headers } from "next/headers";
 import { getAdmin, getSessionState, hasPermission, isAdminUser, requirePermission, supabaseAuthClient } from "@/lib/auth/admin";
-import { clearLoginCodes, sendLoginCode, verifyLoginCode, type SendResult } from "@/lib/auth/email-code";
+import { clearLoginCodes, emailCodePaused, sendLoginCode, verifyLoginCode, type SendResult } from "@/lib/auth/email-code";
 import { clientIpHash, isLocked, recordAttempt, WINDOW_MIN } from "@/lib/auth/rate-limit";
 import { isSupabaseConfigured } from "@/lib/config";
 import { repo } from "@/lib/data";
@@ -49,6 +49,10 @@ export async function signInAction(_prev: ActionState, fd: FormData): Promise<Ac
   await recordAttempt(key, ip, true);
   const sessionId = sessionIdOf(data.session?.access_token);
   if (!sessionId) return { message: "Sign-in failed. Please try again." };
+  if (emailCodePaused()) {
+    await logActivity(email, "Admin signed in (email code PAUSED for testing)", "auth");
+    redirect("/");
+  }
   const sent = await sendLoginCode(sessionId, data.user.id, email);
   await logActivity(email, "Admin password accepted, sign-in code emailed", "auth");
   redirect(sent.ok ? "/mfa" : "/mfa?send=failed");

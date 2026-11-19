@@ -12,7 +12,7 @@ import { Card } from "@/components/ui/Card";
 import { FormField } from "@/components/ui/FormField";
 import { Input, Select } from "@/components/ui/Input";
 import { toast } from "@/components/ui/Toast";
-import { cartTotals, useCart } from "@/hooks/useCart";
+import { cartTotals, lineKey, useCart } from "@/hooks/useCart";
 import { useHydrated } from "@/hooks/useHydrated";
 import { useSettings } from "@/components/layout/SettingsProvider";
 import { PaymentDismissedError, useRazorpay } from "@/hooks/useRazorpay";
@@ -88,7 +88,7 @@ export function CheckoutForm({ defaultName = "", defaultEmail = "", defaultPhone
       const res = await fetch("/api/checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ address, items: items.map((i) => ({ productId: i.productId, quantity: i.quantity })) }),
+        body: JSON.stringify({ address, items: items.map((i) => ({ productId: i.productId, quantity: i.quantity, ...(i.size ? { size: i.size } : {}) })) }),
       });
       const data = await res.json();
       if (res.status === 401 && data.login) {
@@ -217,12 +217,12 @@ export function CheckoutForm({ defaultName = "", defaultEmail = "", defaultPhone
           <h2 className="font-heading text-xl font-semibold">Your order</h2>
           <ul className="flex flex-col gap-3">
             {items.map((i) => (
-              <li key={i.productId} className="flex items-center gap-3">
+              <li key={lineKey(i)} className="flex items-center gap-3">
                 <span className="relative h-14 w-14 shrink-0 overflow-hidden rounded-md bg-background">
-                  <Image src={i.image} alt="" fill sizes="56px" className="object-cover" />
+                  <Image src={i.image || "/logo/mark.png"} alt="" fill sizes="56px" className="object-cover" />
                 </span>
                 <span className="flex-1 text-sm">
-                  {i.title} <span className="text-text-muted">× {i.quantity}</span>
+                  {i.title}{i.size && <span className="text-text-muted"> · Size {i.size}</span>} <span className="text-text-muted">× {i.quantity}</span>
                 </span>
                 <span className="text-sm font-semibold">{formatINR(i.price * i.quantity)}</span>
               </li>

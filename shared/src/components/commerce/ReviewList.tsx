@@ -53,10 +53,16 @@ export function ReviewList({ reviews, rating, reviewCount, productTitle }: Revie
               <time dateTime={r.createdAt}>{formatDate(r.createdAt)}</time>
               {r.verified && (
                 <span className="inline-flex items-center gap-1 text-success">
-                  <BadgeCheck aria-hidden className="h-4 w-4" /> Verified buyer
+                  <BadgeCheck aria-hidden className="h-4 w-4" /> Verified purchase
                 </span>
               )}
             </p>
+            {r.reply && (
+              <div className="mt-3 rounded-md border-l-4 border-primary bg-background p-3 text-sm">
+                <p className="font-semibold text-text">Reply from City Seller</p>
+                <p className="mt-1 text-text">{r.reply}</p>
+              </div>
+            )}
           </li>
         ))}
       </ul>

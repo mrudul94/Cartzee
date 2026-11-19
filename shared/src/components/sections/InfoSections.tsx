@@ -1,6 +1,6 @@
 import Link from "next/link";
 import type { LucideIcon } from "lucide-react";
-import { Clock, Gift, Heart, Layers, Mail, MessageCircle, Package, Phone, RotateCcw, ShieldCheck, Sparkles, Star, Tag, Truck } from "lucide-react";
+import { Clock, Gift, Heart, Layers, Mail, Package, Phone, RotateCcw, ShieldCheck, Sparkles, Star, Tag, Truck } from "lucide-react";
 import { Section, type SectionProps } from "@/components/layout/Container";
 import { Button } from "@/components/ui/Button";
 import { Accordion } from "@/components/ui/Disclosure";
@@ -8,7 +8,7 @@ import { SectionHeader } from "@/components/ui/SectionHeader";
 import { buildFaqJsonLd } from "@/lib/seo/jsonld";
 import { JsonLd } from "@/lib/seo/JsonLdScript";
 import type { Settings, VALUE_PROP_ICONS } from "@/lib/content/schema";
-import { telHref, whatsappHref } from "@/lib/utils/contact";
+import { telHref } from "@/lib/utils/contact";
 import type { Faq } from "@/lib/types";
 import { cn } from "@/lib/utils/cn";
 import { slugify } from "@/lib/utils/format";
@@ -62,7 +62,7 @@ export type CustomerCareProps = {
   background?: SectionProps["background"];
 };
 
-/** Contact block: phone, WhatsApp, email and hours from Admin → Settings. */
+/** Contact block: phone, email and hours from Admin → Settings. */
 export function CustomerCare({
   care,
   title = "We're here to help",
@@ -71,7 +71,6 @@ export function CustomerCare({
 }: CustomerCareProps) {
   const items = [
     { icon: Phone, label: "Call us", value: care.phone, href: telHref(care.phone) },
-    { icon: MessageCircle, label: "WhatsApp", value: "Chat with us", href: whatsappHref(care.whatsapp) },
     { icon: Mail, label: "Email", value: care.email, href: `mailto:${care.email}` },
     { icon: Clock, label: "Hours", value: care.hours },
   ];

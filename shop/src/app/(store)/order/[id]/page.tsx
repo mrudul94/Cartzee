@@ -4,6 +4,7 @@ import { CheckCircle2 } from "lucide-react";
 import { OrderStatusPoller } from "@/components/commerce/OrderStatusPoller";
 import { PurchaseTracker } from "@/components/commerce/PurchaseTracker";
 import { OrderSelfService } from "@/components/commerce/OrderSelfService";
+import { ReviewForm } from "@/components/commerce/ReviewForm";
 import { OrderSummary } from "@/components/commerce/OrderSummary";
 import { Container } from "@/components/layout/Container";
 import { Button } from "@/components/ui/Button";
@@ -11,7 +12,7 @@ import { Card } from "@/components/ui/Card";
 import { repo } from "@/lib/data";
 import { getCustomer } from "@/lib/customer";
 import { customerOrderOptions, STATUS_LABEL } from "@/lib/orders/status";
-import { cancelOrderAction, requestCancellationAction, requestReturnAction } from "./actions";
+import { cancelOrderAction, requestCancellationAction, requestReturnAction, submitReviewAction } from "./actions";
 import { buildMetadata } from "@/lib/seo/metadata";
 import { getSettings } from "@/lib/data/content-repo";
 import { estimateDelivery } from "@/lib/utils/delivery";
@@ -31,7 +32,11 @@ export default async function OrderPage({ params }: Props) {
   const paid = order.status !== "pending_payment";
   const closed = order.status === "cancelled_refunded" || order.status === "returned_refunded";
   // Cancel/return buttons only for the signed-in shopper who placed this order.
-  const options = customer && order.customerUserId === customer.id ? customerOrderOptions(order, delivery.returnWindowDays) : null;
+  const isOwner = Boolean(customer && order.customerUserId === customer.id);
+  const options = isOwner ? customerOrderOptions(order, delivery.returnWindowDays) : null;
+  // Reviews: the shopper who received this order can rate each item once.
+  const canReview = isOwner && ["delivered", "return_requested", "returned_refunded"].includes(order.status);
+  const reviewed = canReview ? new Set(await repo.reviewedProductIds(order.id)) : new Set<string>();
   const eta = estimateDelivery(order.address.pincode, new Date(order.createdAt));
 
   return (
@@ -70,12 +75,12 @@ export default async function OrderPage({ params }: Props) {
         <h2 className="mb-3 font-heading text-xl font-semibold">Items</h2>
         <ul className="mb-4 flex flex-col gap-3">
           {order.items.map((i) => (
-            <li key={i.productId} className="flex items-center gap-3">
+            <li key={`${i.productId}-${i.size ?? ""}`} className="flex items-center gap-3">
               <span className="relative h-14 w-14 shrink-0 overflow-hidden rounded-md bg-background">
                 <Image src={i.image || "/logo/mark.png"} alt="" fill sizes="56px" className="object-cover" />
               </span>
               <span className="flex-1">
-                {i.title} <span className="text-text-muted">× {i.quantity}</span>
+                {i.title}{i.size && <span className="text-text-muted"> · Size {i.size}</span>} <span className="text-text-muted">× {i.quantity}</span>
               </span>
               <span className="font-semibold">{formatINR(i.unitPrice * i.quantity)}</span>
             </li>
@@ -83,6 +88,32 @@ export default async function OrderPage({ params }: Props) {
         </ul>
         <OrderSummary subtotal={order.subtotal} shipping={order.shipping} total={order.total} />
       </Card>
+
+      {canReview && (
+        <Card padding="md" id="review" className="flex flex-col gap-4 scroll-mt-32">
+          <div>
+            <h2 className="font-heading text-xl font-semibold">Rate your purchase</h2>
+            <p className="text-sm text-text-muted">Your review helps other shoppers. It appears with a &quot;Verified purchase&quot; badge after a quick check.</p>
+          </div>
+          <ul className="flex flex-col gap-6">
+            {order.items.filter((i, n, all) => all.findIndex((x) => x.productId === i.productId) === n).map((i) => (
+              <li key={i.productId} className="flex flex-col gap-3 border-t border-border pt-4 first:border-0 first:pt-0">
+                <p className="flex items-center gap-3 font-semibold">
+                  <span className="relative h-12 w-12 shrink-0 overflow-hidden rounded-md bg-background">
+                    <Image src={i.image || "/logo/mark.png"} alt="" fill sizes="48px" className="object-cover" />
+                  </span>
+                  {i.title}
+                </p>
+                {reviewed.has(i.productId) ? (
+                  <p className="text-sm text-success">✓ Thanks for your review!</p>
+                ) : (
+                  <ReviewForm orderId={order.id} productId={i.productId} productTitle={i.title} action={submitReviewAction} />
+                )}
+              </li>
+            ))}
+          </ul>
+        </Card>
+      )}
 
       {options && (
         <OrderSelfService

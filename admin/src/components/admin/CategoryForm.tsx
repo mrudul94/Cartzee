@@ -22,6 +22,7 @@ export type CategoryFormValues = {
   image: string;
   sortOrder: number;
   isActive: boolean;
+  hasSizes?: boolean;
   seoTitle?: string;
   seoDescription?: string;
   faqs: Faq[];
@@ -98,6 +99,12 @@ export function CategoryForm({
           </FormField>
           <ImageField id="cat-image-src" label="Image" value={image} onChange={setImage} upload={upload} folder="categories" slug={v.slug || slugify(name)} error={e.image} optional />
           <Checkbox id="cat-isActive" name="isActive" defaultChecked={v.isActive} label="Visible in the shop" />
+          <Checkbox
+            id="cat-hasSizes"
+            name="hasSizes"
+            defaultChecked={v.hasSizes}
+            label="Clothing: products come in sizes (Admin → Products then asks for sizes, and shoppers pick one)"
+          />
         </Card>
 
         <Card padding="md" className="flex flex-col gap-4">

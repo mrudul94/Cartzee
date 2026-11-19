@@ -39,7 +39,10 @@ export default async function AccountOrdersPage() {
                       {formatDate(o.createdAt)} · {o.items.reduce((n, i) => n + i.quantity, 0)} item(s) · {formatINR(o.total)}
                     </span>
                   </span>
-                  <Badge variant={o.status === "delivered" ? "success" : o.status === "pending_payment" ? "neutral" : "outline"}>{STATUS_LABEL[o.status]}</Badge>
+                  <span className="flex flex-wrap items-center gap-2">
+                    {o.status === "delivered" && <span className="text-sm font-semibold text-primary">★ Rate your items</span>}
+                    <Badge variant={o.status === "delivered" ? "success" : o.status === "pending_payment" ? "neutral" : "outline"}>{STATUS_LABEL[o.status]}</Badge>
+                  </span>
                 </Card>
               </Link>
             </li>

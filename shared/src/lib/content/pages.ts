@@ -36,7 +36,7 @@ export const policies: Record<"shipping" | "returns" | "privacy" | "terms", Cont
       { type: "ul", items: ["Items damaged in transit", "Defective items", "Wrong item, colour or size delivered", "Items missing from the package"] },
       { type: "p", text: "Change-of-mind returns are not accepted on hygiene products (bathroom accessories in contact with the body, cleaning cloths once used)." },
       { type: "h2", text: "How to request a return" },
-      { type: "ul", items: [`Email ${DEFAULT_SETTINGS.care.email} or WhatsApp us within ${DEFAULT_SETTINGS.delivery.returnWindowDays} days of delivery.`, "Share your order number and a clear photo or unboxing video of the issue.", "We confirm within 2 working days and arrange a pickup or replacement."] },
+      { type: "ul", items: [`Email ${DEFAULT_SETTINGS.care.email} within ${DEFAULT_SETTINGS.delivery.returnWindowDays} days of delivery.`, "Share your order number and a clear photo or unboxing video of the issue.", "We confirm within 2 working days and arrange a pickup or replacement."] },
       { type: "h2", text: "Refunds" },
       { type: "p", text: "Approved refunds go back to your original payment method (UPI, card or bank) within 5 to 7 working days of approval." },
     ],

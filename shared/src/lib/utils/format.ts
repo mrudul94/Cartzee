@@ -37,3 +37,15 @@ export function slugify(input: string): string {
     .replace(/[\s_]+/g, "-")
     .replace(/-+/g, "-");
 }
+
+/**
+ * Honest "bought" label from the real order count, rounded down: 10+, 20+ … 90+, 100+ … 900+, 1k+, 1.5k+.
+ * Returns null below 10 orders (small numbers aren't shown).
+ */
+export function formatBought(count: number): string | null {
+  if (!Number.isFinite(count) || count < 10) return null;
+  if (count < 100) return `${Math.floor(count / 10) * 10}+ bought`;
+  if (count < 1000) return `${Math.floor(count / 100) * 100}+ bought`;
+  const k = Math.floor(count / 100) / 10;
+  return `${Number.isInteger(k) ? k : k.toFixed(1)}k+ bought`;
+}

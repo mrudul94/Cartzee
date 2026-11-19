@@ -23,7 +23,7 @@ export const sectionVariants = cva("w-full", {
       soft: "bg-primary-soft",
       ink: "bg-ink text-text-inverse",
     },
-    spacing: { none: "py-0", sm: "py-6 md:py-8", md: "py-10 md:py-16", lg: "py-16 md:py-24" },
+    spacing: { none: "py-0", sm: "py-4 md:py-6", md: "py-6 md:py-10", lg: "py-10 md:py-16" },
   },
   defaultVariants: { background: "background", spacing: "md" },
 });

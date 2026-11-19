@@ -56,7 +56,7 @@ export default async function AdminOrderPage({ params }: Props) {
             <p className="mb-4 text-sm text-text-muted">On Meesho choose “Reselling the order? → Yes” and enter the customer details below.</p>
             <ul className="flex flex-col divide-y divide-border">
               {order.items.map((i) => (
-                <li key={i.productId} className="flex flex-wrap items-center gap-3 py-3">
+                <li key={`${i.productId}-${i.size ?? ""}`} className="flex flex-wrap items-center gap-3 py-3">
                   <span className="relative h-14 w-14 shrink-0 overflow-hidden rounded-md bg-background">
                     <Image src={i.image || "/logo/mark.png"} alt="" fill sizes="56px" className="object-cover" />
                   </span>
@@ -64,6 +64,11 @@ export default async function AdminOrderPage({ params }: Props) {
                     <Link href={i.path} target="_blank" className="font-medium hover:underline">
                       {i.title}
                     </Link>
+                    {i.size && (
+                      <p className="mt-1">
+                        <span className="rounded-md bg-ink px-2 py-1 text-sm font-bold text-text-inverse">Size: {i.size}</span>
+                      </p>
+                    )}
                     <p className="text-sm text-text-muted">
                       Qty {i.quantity} · sold at {formatINR(i.unitPrice)} · Meesho {formatINR(i.meeshoPrice)} ·{" "}
                       <MarginText price={i.unitPrice} cost={i.meeshoPrice} quantity={i.quantity} className="text-sm" />

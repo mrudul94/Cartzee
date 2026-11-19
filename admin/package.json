@@ -5,14 +5,14 @@
   "type": "module",
   "description": "City Seller admin website (admin.cityseller.in)",
   "scripts": {
-    "dev": "next dev -p 3001",
+    "dev": "next dev --turbopack -p 3001",
     "build": "next build",
     "start": "next start -p 3001",
     "typecheck": "tsc --noEmit",
     "lint": "next lint",
-    "cf:build": "opennextjs-cloudflare build",
-    "cf:preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
-    "cf:deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy"
+    "cf:build": "node ../scripts/with-root-env.cjs opennextjs-cloudflare build && node ../scripts/strip-build-secrets.cjs",
+    "cf:preview": "node ../scripts/with-root-env.cjs opennextjs-cloudflare build && opennextjs-cloudflare preview",
+    "cf:deploy": "node ../scripts/with-root-env.cjs opennextjs-cloudflare build && node ../scripts/strip-build-secrets.cjs && opennextjs-cloudflare deploy"
   },
   "dependencies": {
     "@hookform/resolvers": "5.9.2",

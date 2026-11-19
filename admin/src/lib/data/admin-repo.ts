@@ -20,6 +20,7 @@ export type ProductInput = {
   howToUse: string[];
   specs: Spec[];
   material: string;
+  sizes: string[];
   colour: string;
   price: number;
   mrp: number;
@@ -82,8 +83,10 @@ function checkImage(file: File) {
   if (file.size > MAX_IMAGE_BYTES) throw new AdminError("Images must be 5 MB or smaller");
 }
 
-function checkCategories(input: ProductInput, cats: { slug: string; parentSlug: string | null }[]) {
+function checkCategories(input: ProductInput, cats: { slug: string; parentSlug: string | null; hasSizes?: boolean }[]) {
   if (!cats.some((c) => c.slug === input.categorySlug && !c.parentSlug)) throw new AdminError("Choose a valid category");
+  const clothing = cats.some((c) => (c.slug === input.categorySlug || (input.subcategorySlug && c.slug === input.subcategorySlug)) && c.hasSizes);
+  if (clothing && input.sizes.length === 0) throw new AdminError("This is a clothing category: add at least one size.");
   if (input.subcategorySlug) {
     const sub = cats.find((c) => c.slug === input.subcategorySlug);
     if (!sub || sub.parentSlug !== input.categorySlug) throw new AdminError("Subcategory must belong to the chosen category");
@@ -130,6 +133,7 @@ const seedAdmin: AdminRepo = {
       howToUse: input.howToUse,
       specs: input.specs,
       material: input.material,
+      sizes: input.sizes,
       colour: input.colour,
       price: input.price,
       mrp: input.mrp,
@@ -265,6 +269,7 @@ const supabaseAdmin: AdminRepo = {
       how_to_use: input.howToUse,
       specs: input.specs,
       material: input.material,
+      sizes: input.sizes,
       colour: input.colour,
       price: input.price,
       mrp: input.mrp,
@@ -344,6 +349,7 @@ const supabaseAdmin: AdminRepo = {
     return supabaseAdmin.saveProduct({
       ...p,
       id: undefined,
+      sizes: p.sizes ?? [],
       slug: uniqueSlug(p.slug, (s) => all.some((x) => x.slug === s)),
       title: `${p.title} (copy)`.slice(0, 120),
       isActive: false,

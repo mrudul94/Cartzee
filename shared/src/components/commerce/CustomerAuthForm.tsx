@@ -1,11 +1,12 @@
 "use client";
 
-import { useActionState, useState } from "react";
+import { useActionState, useEffect, useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { FormField } from "@/components/ui/FormField";
 import { Input } from "@/components/ui/Input";
 import { PasswordInput } from "@/components/ui/PasswordInput";
+import { toast } from "@/components/ui/Toast";
 import { cn } from "@/lib/utils/cn";
 
 type State = { ok?: boolean; message?: string; errors?: Record<string, string> };
@@ -35,6 +36,13 @@ export function CustomerAuthForm({ next, signIn, signUp, forgot, initialMode = "
   const [inState, inAction, inPending] = useActionState(signIn, {});
   const [upState, upAction, upPending] = useActionState(signUp, {});
   const [fState, fAction, fPending] = useActionState(forgot, {});
+
+  // Account created and a confirmation email sent: tell them in a pop-up and switch to Sign in.
+  useEffect(() => {
+    if (!upState.ok) return;
+    toast({ tone: "success", title: "Check your email", description: upState.message ?? "Click the link we sent to confirm your account, then sign in." });
+    setMode("signin");
+  }, [upState]);
   const tab = (m: typeof mode, label: string) => (
     <button
       type="button"

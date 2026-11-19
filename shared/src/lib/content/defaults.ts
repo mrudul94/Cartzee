@@ -28,6 +28,6 @@ export const DEFAULT_SETTINGS = {
     returnWindowDays: 7,
   },
   upiDiscountPercent: 5,
-  /** Floating WhatsApp chat button on the shop. The number comes from care.whatsapp (placeholder until changed). */
-  whatsappButton: { enabled: true, message: "Hi City Seller, I have a question about " },
+  /** Legacy: the floating WhatsApp button was removed from the shop; kept so older saved settings still load. */
+  whatsappButton: { enabled: false, message: "Hi City Seller, I have a question about " },
 };

@@ -6,13 +6,12 @@ import { JsonLd } from "@/lib/seo/JsonLdScript";
 import { Analytics } from "./Analytics";
 import { Footer } from "./Footer";
 import { Header } from "./Header";
+import { MobileTabBar } from "./MobileTabBar";
 import { buildCategoryTree } from "./MegaMenu";
 import { SettingsProvider } from "./SettingsProvider";
-import { TopBar } from "./TopBar";
-import { WhatsAppButton } from "./WhatsAppButton";
 
 /**
- * Storefront chrome: skip link, top bar, sticky header, footer, cart drawer and site-wide JSON-LD.
+ * Storefront chrome: skip link, sticky header, footer, phone bottom bar, cart drawer and site-wide JSON-LD.
  * Loads the editable store settings once and shares them with client components.
  */
 export async function StoreShell({ children }: { children: React.ReactNode }) {
@@ -26,12 +25,13 @@ export async function StoreShell({ children }: { children: React.ReactNode }) {
       >
         Skip to content
       </a>
-      <TopBar settings={settings} />
       <Header tree={tree} settings={settings} />
       <main id="main">{children}</main>
       <Footer tree={tree} settings={settings} />
+      {/* Room for the phone bottom bar so the footer's last links aren't hidden behind it. */}
+      <div aria-hidden className="h-20 md:hidden" />
+      <MobileTabBar />
       <CartDrawer />
-      {settings.whatsappButton.enabled && <WhatsAppButton number={settings.care.whatsapp} message={settings.whatsappButton.message} />}
       <JsonLd data={[buildOrganizationJsonLd(settings), buildWebSiteJsonLd()]} />
       <Analytics />
     </SettingsProvider>

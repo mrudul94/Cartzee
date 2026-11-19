@@ -5,6 +5,7 @@ import { RatingStars } from "@/components/commerce/RatingStars";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
+import { Textarea } from "@/components/ui/Input";
 import { ChipNav } from "@/components/ui/ChipNav";
 import { contentAdmin } from "@/lib/data/admin-content";
 import { formatDate } from "@/lib/utils/format";
@@ -16,7 +17,7 @@ export const metadata = { title: "Reviews" };
 
 type Props = { searchParams: Promise<{ show?: string }> };
 
-/** Approve, hide or delete customer reviews. Only approved reviews appear on product pages. */
+/** Approve, hide, reply to or delete customer reviews. Only approved reviews appear on product pages. */
 export default async function AdminReviewsPage({ searchParams }: Props) {
   await requirePermission("reviews");
   const show = (await searchParams).show === "approved" ? "approved" : "pending";
@@ -60,6 +61,7 @@ export default async function AdminReviewsPage({ searchParams }: Props) {
                   <RatingStars value={r.rating} />
                   <span className="font-semibold">{r.title}</span>
                   {r.isApproved ? <Badge variant="success">Approved</Badge> : <Badge variant="warning">Pending</Badge>}
+                  {r.verified && <Badge variant="outline">Verified purchase</Badge>}
                 </div>
                 <p>{r.body}</p>
                 {r.photos.length > 0 && (
@@ -81,6 +83,17 @@ export default async function AdminReviewsPage({ searchParams }: Props) {
                     r.productTitle
                   )}
                 </p>
+                <form action={reviewAction} className="flex flex-col gap-2 rounded-md bg-background p-3">
+                  <input type="hidden" name="id" value={r.id} />
+                  <input type="hidden" name="op" value="reply" />
+                  <label htmlFor={`reply-${r.id}`} className="text-sm font-medium">
+                    Public reply from City Seller {r.reply ? "(shown under the review)" : "(optional)"}
+                  </label>
+                  <Textarea id={`reply-${r.id}`} name="reply" rows={2} maxLength={1000} defaultValue={r.reply ?? ""} placeholder="e.g. Thank you! Glad it fits your kitchen." />
+                  <Button type="submit" size="sm" variant="outline" className="self-start">
+                    {r.reply ? "Update reply" : "Post reply"}
+                  </Button>
+                </form>
                 <div className="flex flex-wrap gap-2">
                   {!r.isApproved && act(r.id, "approve", "Approve", <Check aria-hidden className="h-4 w-4" />, "secondary")}
                   {r.isApproved && act(r.id, "hide", "Hide", <EyeOff aria-hidden className="h-4 w-4" />, "outline")}

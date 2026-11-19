@@ -19,6 +19,8 @@ const signUpSchema = z.object({
 
 const errs = (e: z.ZodError) => Object.fromEntries(e.issues.map((i) => [String(i.path[0]), i.message]));
 const off: AuthState = { message: "Accounts are not available in this preview." };
+/** Shown when the email provider's hourly sending limit is reached (sign-up confirmation / password reset). */
+const TOO_MANY_EMAILS = "We're sending a lot of emails right now. Please try again in about an hour, or contact us if it's urgent.";
 
 export async function signInCustomerAction(_prev: AuthState, fd: FormData): Promise<AuthState> {
   if (!customerAuthEnabled) return off;
@@ -53,7 +55,12 @@ export async function signUpCustomerAction(_prev: AuthState, fd: FormData): Prom
     password: parsed.data.password,
     options: { data: { name: parsed.data.name }, emailRedirectTo: `${site.url}/auth/callback?next=${encodeURIComponent(next)}` },
   });
-  if (error) return { message: /registered|exists/i.test(error.message) ? "An account with this email already exists. Sign in instead." : error.message };
+  if (error) {
+    if (/registered|exists/i.test(error.message)) return { message: "An account with this email already exists. Sign in instead." };
+    if (/rate limit/i.test(error.message)) return { message: TOO_MANY_EMAILS };
+    console.error("[signup] failed", error.message);
+    return { message: "We couldn't create your account just now. Please try again in a few minutes." };
+  }
   if (!data.session) return { ok: true, message: "Account created. Check your email and click the link to confirm, then sign in." };
   redirect(next);
 }
@@ -62,7 +69,8 @@ export async function forgotPasswordAction(_prev: AuthState, fd: FormData): Prom
   if (!customerAuthEnabled) return off;
   const parsed = email.safeParse(fd.get("email"));
   if (!parsed.success) return { errors: { email: "Enter your email above first" } };
-  await (await customerClient()).auth.resetPasswordForEmail(parsed.data, { redirectTo: `${site.url}/auth/callback?next=/account/password` });
+  const { error } = await (await customerClient()).auth.resetPasswordForEmail(parsed.data, { redirectTo: `${site.url}/auth/callback?next=/account/password` });
+  if (error && /rate limit/i.test(error.message)) return { message: TOO_MANY_EMAILS };
   // Same answer whether or not the account exists (no account enumeration).
   return { ok: true, message: "If an account exists for this email, we've sent a link to reset the password." };
 }

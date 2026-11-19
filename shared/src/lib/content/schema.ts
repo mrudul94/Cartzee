@@ -55,7 +55,7 @@ export const settingsSchema = z.object({
     returnWindowDays: z.coerce.number().int().min(0).max(60),
   }),
   upiDiscountPercent: z.coerce.number().min(0).max(50),
-  whatsappButton: z.object({ enabled: z.boolean().default(true), message: text(200) }),
+  whatsappButton: z.object({ enabled: z.boolean().default(false), message: text(200) }),
 });
 export type Settings = z.infer<typeof settingsSchema>;
 

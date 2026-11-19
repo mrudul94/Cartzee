@@ -1,8 +1,12 @@
 // OpenNext adapter config for Cloudflare Workers.
-// ISR/`revalidate` pages are cached in R2 (bucket bound as NEXT_INC_CACHE_R2_BUCKET in wrangler.jsonc).
+// Pages with `revalidate` (ISR) are cached in Workers KV (binding NEXT_INC_CACHE_KV), and cache tags live in
+// KV too (NEXT_TAG_CACHE_KV), so revalidateTag()/revalidatePath() after an admin save refresh the shop at once.
+// KV is on Cloudflare's free plan. For heavy traffic later, R2 (r2-incremental-cache) is the scalable option.
 import { defineCloudflareConfig } from "@opennextjs/cloudflare";
-import r2IncrementalCache from "@opennextjs/cloudflare/overrides/incremental-cache/r2-incremental-cache";
+import kvIncrementalCache from "@opennextjs/cloudflare/overrides/incremental-cache/kv-incremental-cache";
+import kvNextTagCache from "@opennextjs/cloudflare/overrides/tag-cache/kv-next-tag-cache";
 
 export default defineCloudflareConfig({
-  incrementalCache: r2IncrementalCache,
+  incrementalCache: kvIncrementalCache,
+  tagCache: kvNextTagCache,
 });

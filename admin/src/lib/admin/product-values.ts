@@ -10,7 +10,8 @@ export async function categoryOptions(): Promise<CategoryOption[]> {
   return buildCategoryTree(await repo.listCategories()).map((c) => ({
     slug: c.slug,
     name: c.name,
-    children: c.children.map((s) => ({ slug: s.slug, name: s.name })),
+    hasSizes: c.hasSizes ?? false,
+    children: c.children.map((s) => ({ slug: s.slug, name: s.name, hasSizes: s.hasSizes ?? false })),
   }));
 }
 
@@ -27,6 +28,7 @@ export function toFormValues(p: AdminProduct): ProductFormValues {
     specs: p.specs,
     faqs: p.faqs,
     material: p.material,
+    sizes: (p.sizes ?? []).join(", "),
     colour: p.colour,
     price: p.price,
     mrp: p.mrp,
@@ -56,6 +58,7 @@ export const emptyFormValues: ProductFormValues = {
   specs: [],
   faqs: [],
   material: "",
+  sizes: "",
   colour: "",
   price: 0,
   mrp: 0,

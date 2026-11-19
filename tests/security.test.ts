@@ -3,7 +3,6 @@ import { hasPermission } from "@admin/lib/auth/permissions";
 import { isLocked, MAX_FAILURES, recordAttempt } from "@/lib/auth/rate-limit";
 import { defaultFor, orderHeroSlides, schemaFor, settingsSchema, type HomeContent } from "@/lib/content/schema";
 import { safeNext } from "@shop/lib/customer";
-import { whatsappHref } from "@/lib/utils/contact";
 import { newCode } from "@admin/lib/auth/email-code";
 import { testHero } from "./fixtures/hero";
 
@@ -65,12 +64,12 @@ describe("hero slide options", () => {
   });
 });
 
-describe("WhatsApp button", () => {
-  it("is on by default with the placeholder number, and builds a wa.me link", () => {
+describe("WhatsApp", () => {
+  it("is off on the shop, and older saved settings with the button still load", () => {
     const s = settingsSchema.parse(defaultFor("settings"));
-    expect(s.whatsappButton.enabled).toBe(true);
-    expect(s.care.whatsapp).toBe("919000000000");
-    expect(whatsappHref(s.care.whatsapp, "Hi")).toBe("https://wa.me/919000000000?text=Hi");
+    expect(s.whatsappButton.enabled).toBe(false);
+    const legacy = settingsSchema.parse({ ...(defaultFor("settings") as object), whatsappButton: { enabled: true, message: "Hi" } });
+    expect(legacy.whatsappButton.message).toBe("Hi");
   });
 });
 
@@ -107,5 +106,20 @@ describe("account forms", () => {
     expect(savedAddressSchema.safeParse({ ...ok, id: "not-a-uuid" }).success).toBe(false);
     expect(profileSchema.parse({ name: "Asha", phone: "" }).phone).toBe("");
     expect(profileSchema.safeParse({ name: "Asha", phone: "12345" }).success).toBe(false);
+  });
+});
+
+describe("admin email code pause switch (testing only)", () => {
+  it("is on unless ADMIN_EMAIL_CODE=off", async () => {
+    const { emailCodePaused } = await import("@admin/lib/auth/email-code");
+    const before = process.env.ADMIN_EMAIL_CODE;
+    delete process.env.ADMIN_EMAIL_CODE;
+    expect(emailCodePaused()).toBe(false);
+    process.env.ADMIN_EMAIL_CODE = "on";
+    expect(emailCodePaused()).toBe(false);
+    process.env.ADMIN_EMAIL_CODE = " OFF ";
+    expect(emailCodePaused()).toBe(true);
+    if (before === undefined) delete process.env.ADMIN_EMAIL_CODE;
+    else process.env.ADMIN_EMAIL_CODE = before;
   });
 });

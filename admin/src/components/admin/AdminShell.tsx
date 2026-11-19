@@ -30,6 +30,8 @@ export type AdminShellProps = {
   role?: AdminRole;
   permissions?: Permission[];
   devMode?: boolean;
+  /** Email sign-in code paused for testing (ADMIN_EMAIL_CODE=off). */
+  codePaused?: boolean;
   /** Count shown on the Orders link (paid orders waiting to be placed). */
   pendingCount?: number;
   signOut?: () => Promise<void>;
@@ -37,7 +39,7 @@ export type AdminShellProps = {
 };
 
 /** Admin layout: sidebar on desktop, scrolling top nav on mobile, sign-out, dev-mode banner. */
-export function AdminShell({ email, role = "super_admin", permissions = [], devMode = false, pendingCount = 0, signOut, children }: AdminShellProps) {
+export function AdminShell({ email, role = "super_admin", permissions = [], devMode = false, codePaused = false, pendingCount = 0, signOut, children }: AdminShellProps) {
   const pathname = usePathname();
   const isActive = (href: string, exact?: boolean) => (exact ? pathname === href : pathname.startsWith(href));
 
@@ -93,6 +95,11 @@ export function AdminShell({ email, role = "super_admin", permissions = [], devM
         {devMode && (
           <p role="note" className="bg-warning-soft px-4 py-2 text-sm text-warning">
             Development mode: Supabase is not configured, so the admin panel is open without sign-in and edits are kept in memory.
+          </p>
+        )}
+        {codePaused && (
+          <p role="alert" className="bg-error-soft px-4 py-2 text-sm text-error">
+            Two-step sign-in is paused for testing: admins sign in with a password only. Remove ADMIN_EMAIL_CODE=off before launch.
           </p>
         )}
         <main id="main" className="mx-auto max-w-container px-4 py-6 md:px-6 md:py-8">

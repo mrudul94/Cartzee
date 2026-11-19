@@ -15,4 +15,4 @@ if (!isSupabaseConfigured && process.env.NODE_ENV === "production" && process.en
 }
 
 export { OrderError } from "./repo";
-export type { NewOrderInput, PaymentConfirmation, ProductQuery, Repo } from "./repo";
+export type { NewOrderInput, NewReviewInput, PaymentConfirmation, ProductQuery, Repo } from "./repo";

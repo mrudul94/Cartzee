@@ -1,5 +1,6 @@
 import { AdminShell } from "@/components/admin/AdminShell";
 import { hasPermission, requireAdmin } from "@/lib/auth/admin";
+import { emailCodePaused } from "@/lib/auth/email-code";
 import { adminRepo } from "@/lib/data/admin-repo";
 import { signOutAction } from "../actions";
 
@@ -12,6 +13,7 @@ export default async function AdminPanelLayout({ children }: { children: React.R
   return (
     <AdminShell
       email={admin.email}
+      codePaused={admin.mode === "supabase" && emailCodePaused()}
       role={admin.role}
       permissions={admin.permissions}
       devMode={admin.mode === "dev"}

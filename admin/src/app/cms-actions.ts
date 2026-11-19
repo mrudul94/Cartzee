@@ -175,8 +175,9 @@ export async function reviewAction(fd: FormData) {
   if (op === "approve") await contentAdmin.setReviewApproved(id, true);
   else if (op === "hide") await contentAdmin.setReviewApproved(id, false);
   else if (op === "delete") await contentAdmin.deleteReview(id);
+  else if (op === "reply") await contentAdmin.setReviewReply(id, String(fd.get("reply") ?? "").trim().slice(0, 1000));
   else return;
-  await logActivity(admin.email, `Review ${op === "approve" ? "approved" : op === "hide" ? "hidden" : "deleted"}`, id);
+  await logActivity(admin.email, `Review ${op === "approve" ? "approved" : op === "hide" ? "hidden" : op === "reply" ? "replied to" : "deleted"}`, id);
   await refreshShop();
   revalidatePath("/reviews");
 }

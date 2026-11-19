@@ -18,7 +18,7 @@ export type ProductQuery = {
 
 export type NewOrderInput = {
   address: Address;
-  items: { productId: string; quantity: number }[];
+  items: { productId: string; quantity: number; size?: string }[];
   /** Current delivery rules from Admin → Settings; the fee is computed server-side from these. */
   delivery: { freeAbove: number; fee: number };
   /** Signed-in customer placing the order (required on the live shop). */
@@ -39,6 +39,17 @@ export class OrderError extends Error {}
  * Storage-agnostic data access. Pages and API routes depend only on this interface,
  * so the seed implementation and the Supabase implementation are interchangeable.
  */
+export type NewReviewInput = {
+  orderId: string;
+  productId: string;
+  userId: string;
+  author: string;
+  city: string;
+  rating: number;
+  title: string;
+  body: string;
+};
+
 export interface Repo {
   readonly kind: "seed" | "supabase";
   listCategories(): Promise<Category[]>;
@@ -46,6 +57,10 @@ export interface Repo {
   listProducts(query?: ProductQuery): Promise<Product[]>;
   getProductBySlug(slug: string): Promise<Product | null>;
   listReviews(productId: string): Promise<Review[]>;
+  /** A shopper's review of a product from one of their delivered orders (held for approval). */
+  submitReview(input: NewReviewInput): Promise<void>;
+  /** Product ids in an order that already have a review. */
+  reviewedProductIds(orderId: string): Promise<string[]>;
   listPosts(): Promise<Post[]>;
   getPost(slug: string): Promise<Post | null>;
   /** Re-prices items from the catalogue (never trusts client prices) and creates a pending order. */

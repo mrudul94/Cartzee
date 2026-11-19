@@ -8,6 +8,9 @@ import type { Order, OrderStatus } from "@/lib/types";
 
 type Care = Settings["care"];
 import { formatINR } from "@/lib/utils/format";
+import { revalidateTag } from "next/cache";
+import { background } from "@/lib/background";
+import { CACHE_TAGS } from "@/lib/cache";
 import { isRazorpayConfigured } from "@/lib/config";
 import { refundPayment, toPaise } from "@/lib/payments/razorpay";
 import { canTransition, STATUS_LABEL } from "./status";
@@ -16,7 +19,7 @@ import { canTransition, STATUS_LABEL } from "./status";
 const esc = (s: string) => s.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]!);
 
 function itemsText(o: Order) {
-  return o.items.map((i) => `${i.quantity} x ${i.title} @ ${formatINR(i.unitPrice)}`).join("\n");
+  return o.items.map((i) => `${i.quantity} x ${i.title}${i.size ? ` (size ${i.size})` : ""} @ ${formatINR(i.unitPrice)}`).join("\n");
 }
 
 const layout = (inner: string, care: Care) =>
@@ -26,7 +29,7 @@ const layout = (inner: string, care: Care) =>
 export function confirmationEmail(o: Order, care: Care) {
   const trackUrl = `${site.url}/track-order?order=${o.number}`;
   const rows = o.items
-    .map((i) => `<tr><td style="padding:6px 0">${i.quantity} × ${esc(i.title)}</td><td style="padding:6px 0;text-align:right">${formatINR(i.unitPrice * i.quantity)}</td></tr>`)
+    .map((i) => `<tr><td style="padding:6px 0">${i.quantity} × ${esc(i.title)}${i.size ? ` (size ${esc(i.size)})` : ""}</td><td style="padding:6px 0;text-align:right">${formatINR(i.unitPrice * i.quantity)}</td></tr>`)
     .join("");
   const html = layout(
     `<h1 style="font-size:22px">Thank you, ${esc(o.address.name)}!</h1><p>Your order <strong>${o.number}</strong> is confirmed and payment of <strong>${formatINR(o.total)}</strong> was received.</p><table style="width:100%;border-collapse:collapse">${rows}<tr><td style="padding:6px 0">Delivery</td><td style="padding:6px 0;text-align:right">${o.shipping ? formatINR(o.shipping) : "Free"}</td></tr><tr><td style="padding:6px 0"><strong>Total</strong></td><td style="padding:6px 0;text-align:right"><strong>${formatINR(o.total)}</strong></td></tr></table><p>Delivering to: ${esc(o.address.line1)}, ${esc(o.address.city)} ${esc(o.address.pincode)}</p><p>We will email you when it ships. <a href="${trackUrl}">Track your order</a>.</p>`,
@@ -40,10 +43,16 @@ export function statusEmail(o: Order, care: Care) {
   const label = STATUS_LABEL[o.status];
   const trackUrl = `${site.url}/track-order?order=${o.number}`;
   const courier = o.status === "shipped" && o.trackingUrl ? o.trackingUrl : null;
-  const text = `Hi ${o.address.name},\n\nYour order ${o.number} is now: ${label}.${courier ? `\nCourier tracking: ${courier}` : ""}\n\nTrack: ${trackUrl}\n\n${site.name}`;
+  // After delivery, ask for a review (the order page has a "Rate your purchase" form for the buyer).
+  const reviewUrl = o.status === "delivered" ? `${site.url}/order/${o.id}#review` : null;
+  const text = `Hi ${o.address.name},\n\nYour order ${o.number} is now: ${label}.${courier ? `\nCourier tracking: ${courier}` : ""}${
+    reviewUrl ? `\n\nHow did we do? Rate your purchase: ${reviewUrl}` : ""
+  }\n\nTrack: ${trackUrl}\n\n${site.name}`;
   const html = layout(
     `<p>Hi ${esc(o.address.name)},</p><p>Your order <strong>${o.number}</strong> is now: <strong>${label}</strong>.</p>${
       courier ? `<p><a href="${esc(courier)}">Track your parcel with the courier</a></p>` : ""
+    }${
+      reviewUrl ? `<p><strong>How did we do?</strong> <a href="${reviewUrl}">Rate your purchase</a>. It takes a minute and helps other shoppers.</p>` : ""
     }<p><a href="${trackUrl}">View order status</a></p>`,
     care,
   );
@@ -63,8 +72,17 @@ export async function markOrderPaid(orderId: string, payment: PaymentConfirmatio
   const { order, changed } = await repo.markOrderPaid(orderId, payment);
   if (changed) {
     const { care } = await getSettings();
-    const results = await Promise.allSettled([sendEmail(confirmationEmail(order, care)), notifyAdmins(adminAlert(order))]);
-    results.forEach((r) => r.status === "rejected" && console.error("[orders] notification failed", r.reason));
+    // Stock and "bought" counts changed: refresh the cached catalogue (no-op outside a Next.js request).
+    try {
+      revalidateTag(CACHE_TAGS.catalog);
+    } catch {
+      /* not in a request (tests/scripts) */
+    }
+    // Confirmation email + admin alert go out after the response (payment confirmation stays fast).
+    await background("order paid notifications", async () => {
+      const results = await Promise.allSettled([sendEmail(confirmationEmail(order, care)), notifyAdmins(adminAlert(order))]);
+      results.forEach((r) => r.status === "rejected" && console.error("[orders] notification failed", r.reason));
+    });
   }
   return { order, changed };
 }
@@ -75,7 +93,8 @@ export async function changeOrderStatus(orderId: string, to: OrderStatus, patch:
   if (!order) throw new Error("Order not found");
   if (!canTransition(order.status, to)) throw new Error(`Cannot move order from ${order.status} to ${to}`);
   const updated = await repo.updateOrderStatus(orderId, to, patch, note);
-  if (updated && to !== "placed_on_meesho") await sendEmail(statusEmail(updated, (await getSettings()).care));
+  // The customer email is sent after the response, so the admin's button returns immediately.
+  if (updated && to !== "placed_on_meesho") await background("status email", async () => sendEmail(statusEmail(updated, (await getSettings()).care)));
   return updated;
 }
 

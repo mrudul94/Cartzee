@@ -6,7 +6,7 @@ import { createServerClient } from "@supabase/ssr";
 import { config, isSupabaseConfigured } from "@/lib/config";
 import { svc } from "@/lib/data/supabase-clients";
 import { ADMIN_AUTH_COOKIE } from "./cookie-name";
-import { isSessionVerified } from "./email-code";
+import { emailCodePaused, isSessionVerified } from "./email-code";
 import { ALL_PERMISSIONS, hasPermission, type AdminRole, type Permission } from "./permissions";
 
 export { ALL_PERMISSIONS, hasPermission, PERMISSION_LABELS, type AdminRole, type Permission } from "./permissions";
@@ -71,14 +71,14 @@ export const getSessionState = cache(async (): Promise<SessionState> => {
   if (devAdminBypass) return { state: "ok", admin: { id: "dev", email: "dev-admin@localhost", role: "super_admin", permissions: [...ALL_PERMISSIONS], mode: "dev" } };
   if (!isSupabaseConfigured) return { state: "signed-out" };
   const supabase = await supabaseAuthClient();
-  const { data } = await supabase.auth.getUser();
+  // Independent checks run together (each is a round trip to Supabase): 2 waits instead of 4.
+  const [{ data }, claims] = await Promise.all([supabase.auth.getUser(), supabase.auth.getClaims()]);
   if (!data.user) return { state: "signed-out" };
-  const row = await adminRow(data.user.id);
-  if (!row) return { state: "not-admin", userId: data.user.id };
-  const claims = await supabase.auth.getClaims();
   const sessionId = claims.data?.claims.session_id;
   if (typeof sessionId !== "string" || claims.data?.claims.sub !== data.user.id) return { state: "signed-out" };
-  if (!(await isSessionVerified(sessionId))) return { state: "needs-mfa", userId: data.user.id, email: data.user.email ?? "", sessionId };
+  const [row, verified] = await Promise.all([adminRow(data.user.id), emailCodePaused() ? Promise.resolve(true) : isSessionVerified(sessionId)]);
+  if (!row) return { state: "not-admin", userId: data.user.id };
+  if (!verified) return { state: "needs-mfa", userId: data.user.id, email: data.user.email ?? "", sessionId };
   return { state: "ok", admin: { id: data.user.id, email: data.user.email ?? "", role: row.role, permissions: row.permissions ?? [], mode: "supabase" } };
 });
 

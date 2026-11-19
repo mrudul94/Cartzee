@@ -8,6 +8,14 @@ import { site } from "@/lib/site";
  * (the session_id claim), so a code or a verified state can't be reused from another browser,
  * and signing out (which ends the session) always requires a new code.
  */
+/**
+ * TESTING ONLY: set ADMIN_EMAIL_CODE=off to pause the emailed code (password-only admin sign-in).
+ * Every admin page shows a warning while paused. Remove the setting before launch.
+ */
+export function emailCodePaused(): boolean {
+  return process.env.ADMIN_EMAIL_CODE?.trim().toLowerCase() === "off";
+}
+
 export const CODE_TTL_MIN = 10;
 export const MAX_CODE_ATTEMPTS = 5;
 export const RESEND_COOLDOWN_SEC = 60;

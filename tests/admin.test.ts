@@ -68,6 +68,34 @@ describe("product form parsing", () => {
   });
 });
 
+describe("product sizes field", () => {
+  it("splits, trims and de-duplicates sizes; empty means no sizes", () => {
+    expect(productFormSchema.parse({ ...validProduct, sizes: "S, M ,L, M, " }).sizes).toEqual(["S", "M", "L"]);
+    expect(productFormSchema.parse(validProduct).sizes).toEqual([]);
+    expect(productFormSchema.safeParse({ ...validProduct, sizes: "x".repeat(25) }).success).toBe(false);
+  });
+});
+
+describe("clothing categories need sizes", () => {
+  it("refuses a clothing product without sizes, accepts it with sizes; other products are unaffected", async () => {
+    const { adminRepo, AdminError } = await import("@/lib/data/admin-repo");
+    const { store } = await import("@/lib/data/seed-store");
+    const kitchen = store.categories.find((c) => c.slug === "kitchen")!;
+    kitchen.hasSizes = true;
+    try {
+      const base = productFormSchema.parse({ ...validProduct, title: "Kids cotton apron", slug: "kids-cotton-apron" });
+      await expect(adminRepo.saveProduct({ ...base, sizes: [] })).rejects.toBeInstanceOf(AdminError);
+      await expect(adminRepo.saveProduct({ ...base, sizes: [] })).rejects.toThrow(/add at least one size/);
+      const saved = await adminRepo.saveProduct({ ...base, sizes: ["2-3Y", "4-5Y"] });
+      expect((await adminRepo.getProduct(saved.id))?.sizes).toEqual(["2-3Y", "4-5Y"]);
+    } finally {
+      kitchen.hasSizes = false;
+    }
+    const plain = await adminRepo.saveProduct(productFormSchema.parse({ ...validProduct, title: "Plain steel ladle", slug: "plain-steel-ladle" }));
+    expect((await adminRepo.getProduct(plain.id))?.sizes ?? []).toEqual([]);
+  });
+});
+
 describe("order update rules", () => {
   it("requires Meesho details to mark placed and a tracking link to mark shipped", () => {
     expect(orderUpdateSchema.safeParse({ orderId: "o", to: "placed_on_meesho" }).success).toBe(false);

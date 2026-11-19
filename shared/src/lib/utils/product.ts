@@ -13,6 +13,9 @@ export type CardProduct = {
   hoverImage?: { src: string; alt: string };
   rating: number;
   reviewCount: number;
+  boughtCount: number;
+  /** Clothing sizes; empty when the product has none. */
+  sizes: string[];
   inStock: boolean;
   maxQty: number;
   material: string;
@@ -45,6 +48,8 @@ export function toCardProduct(p: Product): CardProduct {
     hoverImage: p.images[1],
     rating: p.rating,
     reviewCount: p.reviewCount,
+    boughtCount: p.boughtCount ?? 0,
+    sizes: p.sizes ?? [],
     inStock: p.stock > 0,
     maxQty: Math.min(10, p.stock),
     material: p.material,

@@ -18,7 +18,7 @@ export type SectionHeaderProps = {
 /** Section title row with optional eyebrow, subtitle and "View all" link. */
 export function SectionHeader({ title, id, subtitle, eyebrow, viewAllHref, viewAllLabel = "View all", align = "left", as = "h2", className }: SectionHeaderProps) {
   return (
-    <div className={cn("mb-6 flex flex-wrap items-end justify-between gap-4 md:mb-8", align === "center" && "flex-col items-center text-center", className)}>
+    <div className={cn("mb-4 flex flex-wrap items-end justify-between gap-4 md:mb-6", align === "center" && "flex-col items-center text-center", className)}>
       <div className={cn("max-w-prose", align === "center" && "mx-auto")}>
         {eyebrow && <p className="mb-1 text-sm font-semibold uppercase tracking-wider text-primary">{eyebrow}</p>}
         <Heading as={as} id={id} size="lg">

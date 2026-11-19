@@ -20,6 +20,7 @@ export type CategoryInput = {
   image: string;
   sortOrder: number;
   isActive: boolean;
+  hasSizes?: boolean;
   seoTitle?: string;
   seoDescription?: string;
   faqs: Faq[];
@@ -42,6 +43,8 @@ export interface ContentAdmin {
   listReviews(): Promise<AdminReview[]>;
   setReviewApproved(id: string, approved: boolean): Promise<void>;
   deleteReview(id: string): Promise<void>;
+  /** Public reply from the shop shown under the review ("" removes it). */
+  setReviewReply(id: string, reply: string): Promise<void>;
 }
 
 function checkParent(input: CategoryInput, cats: { id: string; slug: string; parentSlug: string | null }[]) {
@@ -132,13 +135,18 @@ const seedContent: ContentAdmin = {
   async deleteReview(id) {
     store.reviews = store.reviews.filter((r) => r.id !== id);
   },
+  async setReviewReply(id, reply) {
+    const r = store.reviews.find((x) => x.id === id);
+    if (!r) throw new AdminError("Review not found");
+    r.reply = reply || undefined;
+  },
 };
 
 /* ==================================================================== supabase */
 
 type CategoryRow = {
   id: string; slug: string; name: string; parent_id: string | null; intro: string; blurb: string; image: string; sort_order: number;
-  seo_title: string | null; seo_description: string | null; faqs: Faq[]; is_active: boolean;
+  seo_title: string | null; seo_description: string | null; faqs: Faq[]; is_active: boolean; has_sizes?: boolean;
 };
 type PostRow = {
   id: string; slug: string; title: string; excerpt: string; body: PostBlock[]; faqs: Faq[]; cover: string; author: string;
@@ -174,6 +182,7 @@ const supabaseContent: ContentAdmin = {
       slug: r.slug,
       name: r.name,
       parentSlug: r.parent_id ? (slugById.get(r.parent_id) ?? null) : null,
+      hasSizes: r.has_sizes ?? false,
       intro: r.intro,
       blurb: r.blurb,
       image: r.image,
@@ -199,6 +208,7 @@ const supabaseContent: ContentAdmin = {
       image: input.image,
       sort_order: input.sortOrder,
       is_active: input.isActive,
+      has_sizes: input.hasSizes ?? false,
       seo_title: input.seoTitle ?? null,
       seo_description: input.seoDescription ?? null,
       faqs: input.faqs,
@@ -265,7 +275,7 @@ const supabaseContent: ContentAdmin = {
     if (error) fail("admin reviews", error);
     const cats = await supabaseContent.listCategories();
     const slugOf = (id: string) => cats.find((c) => c.id === id)?.slug ?? "";
-    type Row = { id: string; product_id: string; author: string; city: string; rating: number; title: string; body: string; photos: string[]; verified: boolean; is_approved: boolean; created_at: string; products: { title: string; slug: string; category_id: string; subcategory_id: string } | null };
+    type Row = { id: string; product_id: string; author: string; city: string; rating: number; title: string; body: string; photos: string[]; verified: boolean; reply: string | null; is_approved: boolean; created_at: string; products: { title: string; slug: string; category_id: string; subcategory_id: string } | null };
     return (data as Row[]).map((r) => ({
       id: r.id,
       productId: r.product_id,
@@ -276,6 +286,7 @@ const supabaseContent: ContentAdmin = {
       body: r.body,
       photos: r.photos ?? [],
       verified: r.verified,
+      reply: r.reply || undefined,
       createdAt: r.created_at,
       isApproved: r.is_approved,
       productTitle: r.products?.title ?? "Deleted product",
@@ -291,6 +302,11 @@ const supabaseContent: ContentAdmin = {
     if (!UUID.test(id)) throw new AdminError("Review not found");
     const { error } = await svc().from("reviews").delete().eq("id", id);
     if (error) fail("delete review", error);
+  },
+  async setReviewReply(id, reply) {
+    if (!UUID.test(id)) throw new AdminError("Review not found");
+    const { error } = await svc().from("reviews").update({ reply, replied_at: reply ? new Date().toISOString() : null }).eq("id", id);
+    if (error) fail("reply to review", error);
   },
 };
 

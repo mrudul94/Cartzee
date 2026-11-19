@@ -4,15 +4,19 @@ import { CartButton } from "@/components/commerce/CartButton";
 import { SearchBox } from "@/components/commerce/SearchBox";
 import type { Settings } from "@/lib/content/schema";
 import { paths } from "@/lib/utils/paths";
+import { CategoryStrip } from "./CategoryStrip";
 import { Container } from "./Container";
 import { Logo } from "./Logo";
-import { BudgetMenu, MegaMenu, type NavCategory } from "./MegaMenu";
+import { BudgetMenu, CategoryNav, MoreMenu, type NavCategory } from "./MegaMenu";
 import { MobileNav } from "./MobileNav";
 
 const navLink =
-  "inline-flex min-h-11 items-center rounded-md px-3 text-base font-medium text-text hover:bg-secondary/60 focus-visible:outline-none focus-visible:shadow-focus";
+  "inline-flex min-h-11 items-center whitespace-nowrap rounded-md px-3 text-base font-medium text-text hover:bg-secondary/60 focus-visible:outline-none focus-visible:shadow-focus";
 
-/** Sticky site header: logo, search, account, cart (+count), and desktop navigation row. */
+/**
+ * Sticky site header: logo, search, account, cart (+count); desktop category bar with hover menus, and on
+ * phones/tablets a sideways category strip.
+ */
 export function Header({ tree, settings }: { tree: NavCategory[]; settings: Settings }) {
   return (
     <header className="sticky top-0 z-sticky border-b border-border bg-surface">
@@ -28,27 +32,20 @@ export function Header({ tree, settings }: { tree: NavCategory[]; settings: Sett
       <Container className="pb-2 md:hidden">
         <SearchBox id="site-search-mobile" size="sm" />
       </Container>
+      <CategoryStrip tree={tree} />
       <nav aria-label="Main" className="hidden border-t border-border lg:block">
         <Container className="flex items-center gap-1 py-1">
-          <Link href={paths.flashSale()} className={`${navLink} text-primary`}>
-            Flash Sale
+          <Link href="/categories" className={navLink}>
+            All categories
           </Link>
-          <MegaMenu tree={tree} />
           <BudgetMenu />
-          <Link href={paths.newArrivals()} className={navLink}>
-            New arrivals
-          </Link>
-          <Link href={paths.bestsellers()} className={navLink}>
-            Bestsellers
-          </Link>
-          {tree.slice(0, 2).map((c) => (
-            <Link key={c.slug} href={`/${c.slug}`} className={navLink}>
-              {c.name}
+          <CategoryNav tree={tree} />
+          <div className="ml-auto flex items-center gap-1">
+            <Link href={paths.flashSale()} className={navLink}>
+              Flash Sale
             </Link>
-          ))}
-          <Link href={paths.guides()} className={`${navLink} ml-auto`}>
-            Guides
-          </Link>
+            <MoreMenu />
+          </div>
         </Container>
       </nav>
     </header>

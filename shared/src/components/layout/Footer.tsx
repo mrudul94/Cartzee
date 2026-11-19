@@ -3,7 +3,7 @@ import { Clock, Mail, Phone } from "lucide-react";
 import { SocialIcon } from "@/components/ui/Icon";
 import type { Settings } from "@/lib/content/schema";
 import { site } from "@/lib/site";
-import { telHref, whatsappHref } from "@/lib/utils/contact";
+import { telHref } from "@/lib/utils/contact";
 import { paths } from "@/lib/utils/paths";
 import { Container } from "./Container";
 import { Logo } from "./Logo";
@@ -15,8 +15,8 @@ const heading = "mb-3 font-heading text-lg font-semibold text-text-inverse";
 /** Site footer: care details, shop, help and policy links, socials and business name. */
 export function Footer({ tree, settings }: { tree: NavCategory[]; settings: Settings }) {
   const { care, social } = settings;
-  const links = { instagram: social.instagram, facebook: social.facebook, youtube: social.youtube, whatsapp: whatsappHref(care.whatsapp) };
-  const brands = (["instagram", "facebook", "youtube", "whatsapp"] as const).filter((b) => links[b]);
+  const links = { instagram: social.instagram, facebook: social.facebook, youtube: social.youtube };
+  const brands = (["instagram", "facebook", "youtube"] as const).filter((b) => links[b]);
   return (
     <footer className="bg-ink text-text-inverse">
       <Container className="grid gap-10 py-12 md:grid-cols-2 lg:grid-cols-4">

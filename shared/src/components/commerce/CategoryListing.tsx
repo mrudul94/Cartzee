@@ -25,7 +25,7 @@ export const SORT_OPTIONS = [
 
 const PAGE_SIZE = 12;
 
-type Filters = { budget?: string; material: string[]; colour: string[]; rating?: string; min?: number; max?: number; sort: string; page: number };
+type Filters = { budget?: string; material: string[]; colour: string[]; size: string[]; rating?: string; min?: number; max?: number; sort: string; page: number };
 
 function readFilters(sp: URLSearchParams): Filters {
   const num = (k: string) => (sp.get(k) && !Number.isNaN(Number(sp.get(k))) ? Number(sp.get(k)) : undefined);
@@ -33,6 +33,7 @@ function readFilters(sp: URLSearchParams): Filters {
     budget: sp.get("budget") ?? undefined,
     material: sp.getAll("material"),
     colour: sp.getAll("colour"),
+    size: sp.getAll("size"),
     rating: sp.get("rating") ?? undefined,
     min: num("min"),
     max: num("max"),
@@ -50,6 +51,7 @@ function apply(products: CardProduct[], f: Filters) {
       (f.max === undefined || p.price <= f.max) &&
       (f.material.length === 0 || f.material.includes(p.material)) &&
       (f.colour.length === 0 || f.colour.includes(p.colour)) &&
+      (f.size.length === 0 || p.sizes.some((s) => f.size.includes(s))) &&
       (!f.rating || p.rating >= Number(f.rating)),
   );
   const off = (p: CardProduct) => (p.mrp - p.price) / p.mrp;
@@ -74,7 +76,7 @@ export type CategoryListingProps = {
 };
 
 /**
- * Filter (price, budget tier, material, colour, rating), sort and paginate a product set.
+ * Filter (price, budget tier, size for clothing, material, colour, rating), sort and paginate a product set.
  * State lives in the URL so filtered views are shareable; the base page stays statically rendered.
  */
 export function CategoryListing({ products, hideBudget = false, emptyMessage = "No products match these filters." }: CategoryListingProps) {
@@ -88,6 +90,8 @@ export function CategoryListing({ products, hideBudget = false, emptyMessage = "
     () => ({
       material: [...new Set(products.map((p) => p.material))].sort(),
       colour: [...new Set(products.map((p) => p.colour))].sort(),
+      // Clothing only: sizes in the order they were entered (S, M, L, XL), not alphabetical.
+      size: [...new Set(products.flatMap((p) => p.sizes))],
     }),
     [products],
   );
@@ -108,14 +112,14 @@ export function CategoryListing({ products, hideBudget = false, emptyMessage = "
       p.delete("page");
     }), { scroll: false });
   };
-  const toggle = (key: "material" | "colour", value: string, on: boolean) =>
+  const toggle = (key: "material" | "colour" | "size", value: string, on: boolean) =>
     update((p) => {
       const vals = p.getAll(key).filter((v) => v !== value);
       p.delete(key);
       [...vals, ...(on ? [value] : [])].forEach((v) => p.append(key, v));
     });
 
-  const activeCount = (f.budget ? 1 : 0) + f.material.length + f.colour.length + (f.rating ? 1 : 0);
+  const activeCount = (f.budget ? 1 : 0) + f.material.length + f.colour.length + f.size.length + (f.rating ? 1 : 0);
 
   const panel = (
     <div className="flex flex-col gap-6">
@@ -129,6 +133,30 @@ export function CategoryListing({ products, hideBudget = false, emptyMessage = "
             onValueChange={(v) => update((p) => (v === "any" ? p.delete("budget") : p.set("budget", v)))}
             options={[{ value: "any", label: "Any price" }, ...BUDGET_TIERS.map((t) => ({ value: t.slug, label: t.label }))]}
           />
+        </fieldset>
+      )}
+      {facets.size.length > 0 && (
+        <fieldset>
+          <legend className="mb-2 font-semibold">Size</legend>
+          <div className="flex flex-wrap gap-2">
+            {facets.size.map((z) => {
+              const on = f.size.includes(z);
+              return (
+                <button
+                  key={z}
+                  type="button"
+                  aria-pressed={on}
+                  onClick={() => toggle("size", z, !on)}
+                  className={cn(
+                    "inline-flex min-h-11 min-w-11 items-center justify-center rounded-md border px-3 text-sm font-semibold transition-colors duration-fast focus-visible:outline-none focus-visible:shadow-focus",
+                    on ? "border-ink bg-ink text-text-inverse" : "border-border-strong bg-surface text-text hover:border-ink",
+                  )}
+                >
+                  {z}
+                </button>
+              );
+            })}
+          </div>
         </fieldset>
       )}
       {facets.material.length > 1 && (
@@ -204,7 +232,7 @@ export function CategoryListing({ products, hideBudget = false, emptyMessage = "
         {visible.length === 0 ? (
           <p className="rounded-lg border border-border bg-surface p-8 text-center text-text-muted">{emptyMessage}</p>
         ) : (
-          <ul className={cn("grid grid-cols-2 gap-3 md:grid-cols-3 md:gap-6")}>
+          <ul className="grid grid-cols-2 gap-3 md:grid-cols-3 md:gap-4 xl:grid-cols-4">
             {visible.map((p, i) => (
               <li key={p.id}>
                 <ProductCard product={p} priority={i < 2} headingLevel="h2" />
