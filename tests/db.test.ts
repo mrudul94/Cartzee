@@ -231,6 +231,8 @@ describe("CMS tables (migration 0004)", () => {
       await expect(db.query(`update site_content set value = '{}'`)).rejects.toThrow(/permission denied/);
       await expect(db.query("select * from admin_activity")).rejects.toThrow(/permission denied/);
       expect((await db.query("select id, is_new from products limit 1")).rows).toHaveLength(1);
+      // Migration 0014: shoppers can read the trust labels shown on cards.
+      expect((await db.query("select country_of_origin, quality_certified from products limit 1")).rows).toHaveLength(1);
     });
     await asRole(db, "service_role", () => db.query(`insert into site_content (key, value) values ('page:about', '{}')`));
     await expect(db.query(`insert into site_content (key, value) values ('Bad Key!', '{}')`)).rejects.toThrow(/check/);
@@ -315,5 +317,24 @@ describe("row-level security", () => {
     const count = () => db.query<{ n: number }>("select count(*)::int n from orders").then((r) => r.rows[0]!.n);
     expect(await asRole(db, "authenticated", count, user)).toBe(0);
     expect(await asRole(db, "authenticated", count, admin)).toBeGreaterThan(0);
+  });
+});
+
+
+describe("site logs and presence (migration 0015)", () => {
+  it("keeps logs and visitor pings private to the server", async () => {
+    await asRole(db, "service_role", async () => {
+      await db.query(`insert into site_logs (level, source, path, message) values ('error', 'browser', '/cart', 'TypeError: x')`);
+      await db.query(`insert into site_presence (session_id, path) values ('abcdef123456', '/')`);
+    });
+    for (const role of ["anon", "authenticated"] as const) {
+      await asRole(db, role, async () => {
+        await expect(db.query("select * from site_logs")).rejects.toThrow(/permission denied/);
+        await expect(db.query("select * from site_presence")).rejects.toThrow(/permission denied/);
+        await expect(db.query(`insert into site_logs (level, source, message) values ('error', 'server', 'fake')`)).rejects.toThrow(/permission denied/);
+      });
+    }
+    await expect(db.query(`insert into site_logs (level, source, message) values ('fatal', 'server', 'x')`)).rejects.toThrow(/check/);
+    await expect(db.query(`insert into site_presence (session_id) values ('short')`)).rejects.toThrow(/check/);
   });
 });

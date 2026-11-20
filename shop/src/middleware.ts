@@ -38,7 +38,19 @@ export async function middleware(req: NextRequest) {
       },
     },
   });
-  await supabase.auth.getUser();
+  const { data } = await supabase.auth.getUser();
+  // Checkout needs an account: send signed-out shoppers straight to sign-in before any page renders, so they
+  // never see the checkout shell and then bounce (the page keeps its own check, e.g. for admin accounts).
+  // Only when accounts are on (service key set), matching customerAuthEnabled; the API returns its own 401.
+  const accountsOn = Boolean(process.env.SUPABASE_SERVICE_ROLE_KEY);
+  if (accountsOn && !data.user && (req.nextUrl.pathname === "/checkout" || req.nextUrl.pathname.startsWith("/checkout/"))) {
+    const login = req.nextUrl.clone();
+    login.pathname = "/login";
+    login.search = "?next=/checkout";
+    const redirect = NextResponse.redirect(login);
+    res.cookies.getAll().forEach((c) => redirect.cookies.set(c));
+    return redirect;
+  }
   return res;
 }
 

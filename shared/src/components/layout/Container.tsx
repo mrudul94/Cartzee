@@ -23,19 +23,25 @@ export const sectionVariants = cva("w-full", {
       soft: "bg-primary-soft",
       ink: "bg-ink text-text-inverse",
     },
-    spacing: { none: "py-0", sm: "py-4 md:py-6", md: "py-6 md:py-10", lg: "py-10 md:py-16" },
+    spacing: { none: "py-0", panel: "py-1.5 md:py-2", sm: "py-4 md:py-6", md: "py-6 md:py-10", lg: "py-10 md:py-16" },
   },
   defaultVariants: { background: "background", spacing: "md" },
 });
 
 export type SectionProps = HTMLAttributes<HTMLElement> &
-  VariantProps<typeof sectionVariants> & { containerWidth?: VariantProps<typeof containerVariants>["width"] };
+  VariantProps<typeof sectionVariants> & {
+    containerWidth?: VariantProps<typeof containerVariants>["width"];
+    /** Marketplace "panel": content sits in a white card on the page (edge to edge on phones). Implies tight spacing. */
+    panel?: boolean;
+  };
 
 /** Full-bleed page band (background token + vertical rhythm) with a Container inside. */
-export function Section({ background, spacing, containerWidth, className, children, ...rest }: SectionProps) {
+export function Section({ background, spacing, containerWidth, panel = false, className, children, ...rest }: SectionProps) {
   return (
-    <section className={cn(sectionVariants({ background, spacing }), className)} {...rest}>
-      <Container width={containerWidth}>{children}</Container>
+    <section className={cn(sectionVariants({ background, spacing: panel ? "panel" : spacing }), className)} {...rest}>
+      <Container width={containerWidth}>
+        {panel ? <div className="-mx-4 border-y border-border bg-surface px-4 py-4 md:mx-0 md:rounded-xl md:border md:px-4 md:py-4">{children}</div> : children}
+      </Container>
     </section>
   );
 }

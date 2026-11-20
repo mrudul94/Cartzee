@@ -9,6 +9,7 @@ import { Header } from "./Header";
 import { MobileTabBar } from "./MobileTabBar";
 import { buildCategoryTree } from "./MegaMenu";
 import { SettingsProvider } from "./SettingsProvider";
+import { SiteMonitor } from "./SiteMonitor";
 
 /**
  * Storefront chrome: skip link, sticky header, footer, phone bottom bar, cart drawer and site-wide JSON-LD.
@@ -34,6 +35,7 @@ export async function StoreShell({ children }: { children: React.ReactNode }) {
       <CartDrawer />
       <JsonLd data={[buildOrganizationJsonLd(settings), buildWebSiteJsonLd()]} />
       <Analytics />
+      <SiteMonitor />
     </SettingsProvider>
   );
 }

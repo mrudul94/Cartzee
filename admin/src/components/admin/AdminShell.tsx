@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { ReactNode } from "react";
-import { BookOpen, ExternalLink, FileText, FolderTree, Home, LayoutDashboard, LogOut, MessageSquare, Package, Settings, ShoppingCart, Users } from "lucide-react";
+import { Activity, BookOpen, ExternalLink, FileText, FolderTree, Home, LayoutDashboard, LogOut, MessageSquare, Package, Settings, ShoppingCart, Users } from "lucide-react";
 import { hasPermission, type AdminRole, type Permission } from "@/lib/auth/permissions";
 import { Logo } from "@/components/layout/Logo";
 import { cn } from "@/lib/utils/cn";
@@ -21,6 +21,7 @@ const NAV: NavItem[] = [
   { href: paths.admin("/reviews"), label: "Reviews", icon: MessageSquare, need: "reviews" },
   { href: paths.admin("/settings"), label: "Settings", icon: Settings, need: "settings" },
   { href: paths.admin("/team"), label: "Team", icon: Users, need: "super" },
+  { href: paths.admin("/logs"), label: "Site logs", icon: Activity, need: "super" },
 ];
 // The style guide stays available at /design-system (for developers) but is not in the menu.
 

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { AccountMenu } from "@/components/account/AccountMenu";
 import { CartButton } from "@/components/commerce/CartButton";
+import { WishlistLink } from "@/components/commerce/WishlistLink";
 import { SearchBox } from "@/components/commerce/SearchBox";
 import type { Settings } from "@/lib/content/schema";
 import { paths } from "@/lib/utils/paths";
@@ -26,6 +27,9 @@ export function Header({ tree, settings }: { tree: NavCategory[]; settings: Sett
         <SearchBox className="mx-auto hidden max-w-narrow md:block" />
         <div className="ml-auto flex items-center gap-1 md:ml-0">
           <AccountMenu />
+          <span className="hidden md:block">
+            <WishlistLink />
+          </span>
           <CartButton />
         </div>
       </Container>

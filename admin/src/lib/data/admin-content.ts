@@ -90,7 +90,7 @@ const seedContent: ContentAdmin = {
         store.categories.forEach((c) => c.parentSlug === oldSlug && (c.parentSlug = input.slug));
       }
     } else {
-      store.categories.push({ ...fields, id: `cat_${Date.now().toString(36)}`, blurb: input.blurb || input.intro });
+      store.categories.push({ ...fields, id: `cat_${Date.now().toString(36)}${Math.random().toString(36).slice(2, 7)}`, blurb: input.blurb || input.intro });
     }
     return (await seedContent.listCategories()).find((c) => c.slug === input.slug)!;
   },

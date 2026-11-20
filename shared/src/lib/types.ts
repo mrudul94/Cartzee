@@ -33,6 +33,10 @@ export type Product = {
   specs: Spec[];
   material: string;
   colour: string;
+  /** e.g. "India"; empty = not shown. "India" adds a "Made in India" label on cards. */
+  countryOfOrigin?: string;
+  /** "Quality Certified" label: only for products with a real certification. */
+  qualityCertified?: boolean;
   price: number;
   mrp: number;
   /** Supplier data: present only for server-side/admin reads, never sent to the browser. */
@@ -52,6 +56,8 @@ export type Product = {
   isNew?: boolean | null;
   /** Display order set in the admin (lower first); undefined/null = after positioned products, newest first. */
   position?: number | null;
+  /** Sample product from `pnpm demo:add`: looks normal in the shop but can't be ordered. */
+  isDemo?: boolean;
   images: { src: string; alt: string }[];
   faqs: Faq[];
   createdAt: string;

@@ -98,9 +98,10 @@ export function CategoryNav({ tree }: { tree: NavCategory[] }) {
                   ))}
                 </ul>
               </div>
-              <Link href={paths.category(c)} className="group relative block aspect-tile overflow-hidden rounded-lg bg-secondary focus-visible:outline-none focus-visible:shadow-focus">
+              {/* Short landscape banner: the panel's height follows the subcategory list, not a tall portrait photo. */}
+              <Link href={paths.category(c)} className="group relative block h-40 self-start overflow-hidden rounded-lg bg-secondary focus-visible:outline-none focus-visible:shadow-focus">
                 {c.image && <Image src={c.image} alt="" fill sizes="25vw" className="object-cover transition-transform duration-slow group-hover:scale-105" />}
-                <span className="absolute inset-x-0 bottom-0 bg-ink/80 px-4 py-3 text-lg font-semibold text-text-inverse">Shop {c.name}</span>
+                <span className="absolute inset-x-0 bottom-0 bg-ink/80 px-4 py-2 text-base font-semibold text-text-inverse">Shop {c.name}</span>
               </Link>
             </Container>
           </NavDropdown>

@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils/cn";
@@ -12,18 +13,23 @@ export type SectionHeaderProps = {
   viewAllLabel?: string;
   align?: "left" | "center";
   as?: "h1" | "h2" | "h3";
+  /** Shown next to the title (e.g. a deals countdown). */
+  aside?: ReactNode;
   className?: string;
 };
 
 /** Section title row with optional eyebrow, subtitle and "View all" link. */
-export function SectionHeader({ title, id, subtitle, eyebrow, viewAllHref, viewAllLabel = "View all", align = "left", as = "h2", className }: SectionHeaderProps) {
+export function SectionHeader({ title, id, subtitle, eyebrow, viewAllHref, viewAllLabel = "View all", align = "left", as = "h2", aside, className }: SectionHeaderProps) {
   return (
     <div className={cn("mb-4 flex flex-wrap items-end justify-between gap-4 md:mb-6", align === "center" && "flex-col items-center text-center", className)}>
       <div className={cn("max-w-prose", align === "center" && "mx-auto")}>
         {eyebrow && <p className="mb-1 text-sm font-semibold uppercase tracking-wider text-primary">{eyebrow}</p>}
-        <Heading as={as} id={id} size="lg">
-          {title}
-        </Heading>
+        <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
+          <Heading as={as} id={id} size="lg">
+            {title}
+          </Heading>
+          {aside}
+        </div>
         {subtitle && <p className="mt-2 text-base text-text-muted">{subtitle}</p>}
       </div>
       {viewAllHref && (

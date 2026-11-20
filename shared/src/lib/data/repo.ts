@@ -13,6 +13,8 @@ export type ProductQuery = {
   ids?: string[];
   /** Full-text query (Postgres FTS in Supabase; token match in seed). */
   q?: string;
+  /** "trending": most bought first (then rating, then newest). Default: admin position, then newest. */
+  sort?: "trending";
   limit?: number;
 };
 

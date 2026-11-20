@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useTransition } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Plus, ShoppingCart, Zap } from "lucide-react";
@@ -30,6 +31,14 @@ export function AddToCartButton({ product, quantity = 1, mode = "add", label, sh
   const add = useCart((s) => s.add);
   const open = useCart((s) => s.open);
   const router = useRouter();
+  const [navigating, startNavigation] = useTransition();
+  const isBuy = mode === "buy";
+
+  // Fetch the checkout (or, for signed-out shoppers, the login page it redirects to) in the background,
+  // so "Buy Now" opens it at once instead of waiting for the server after the click.
+  useEffect(() => {
+    if (isBuy && product.inStock) router.prefetch(paths.checkout());
+  }, [isBuy, product.inStock, router]);
 
   if (!product.inStock) {
     if (iconOnly) return null;
@@ -79,15 +88,15 @@ export function AddToCartButton({ product, quantity = 1, mode = "add", label, sh
       quantity,
     );
     track("add_to_cart", { value: product.price * quantity, items: [{ item_id: product.id, item_name: product.title, price: product.price, quantity }] });
-    if (mode === "buy") {
-      router.push(paths.checkout());
+    if (isBuy) {
+      // Keeps the button in its loading state until the next page is ready.
+      startNavigation(() => router.push(paths.checkout()));
     } else {
       toast({ title: "Added to cart", description: product.title });
       open();
     }
   };
 
-  const isBuy = mode === "buy";
   if (iconOnly) {
     return (
       <button
@@ -111,6 +120,7 @@ export function AddToCartButton({ product, quantity = 1, mode = "add", label, sh
       className={className}
       variant={variant ?? (isBuy ? "secondary" : "primary")}
       onClick={onClick}
+      loading={isBuy && navigating}
       icon={showIcon ? isBuy ? <Zap aria-hidden className="h-4 w-4" /> : <ShoppingCart aria-hidden className="h-4 w-4" /> : undefined}
       aria-label={`${isBuy ? "Buy now" : "Add to cart"}: ${product.title}`}
     >

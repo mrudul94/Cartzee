@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useId, useRef, useState, useTransition } from "react";
 import { ArrowDown, ArrowUp, ImagePlus, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
+import { ImageCropper } from "./ImageCropper";
 import { Input } from "@/components/ui/Input";
 
 export type ManagedImage = { src: string; alt: string };
@@ -37,12 +38,36 @@ export function ImageManager({ images, onChange, upload, slug, defaultAlt, error
     onChange(next);
   };
 
-  const onFiles = (files: FileList | null) => {
+  // Picked photos are cropped one by one (or kept whole), then uploaded together.
+  const [queue, setQueue] = useState<File[]>([]);
+  const [ready, setReady] = useState<File[]>([]);
+  const [total, setTotal] = useState(0);
+  const pick = (files: FileList | null) => {
     if (!files?.length) return;
+    setUploadError(null);
+    setTotal(files.length);
+    setReady([]);
+    setQueue(Array.from(files));
+  };
+  const next = (file: File | null) => {
+    const done = file ? [...ready, file] : ready;
+    if (queue.length > 1) {
+      setReady(done);
+      setQueue(queue.slice(1));
+      return;
+    }
+    setQueue([]);
+    setReady([]);
+    if (done.length) onFiles(done);
+    else if (fileRef.current) fileRef.current.value = "";
+  };
+
+  const onFiles = (files: File[]) => {
+    if (!files.length) return;
     setUploadError(null);
     start(async () => {
       const added: ManagedImage[] = [];
-      for (const file of Array.from(files)) {
+      for (const file of files) {
         const fd = new FormData();
         fd.set("file", file);
         fd.set("slug", slug);
@@ -90,7 +115,8 @@ export function ImageManager({ images, onChange, upload, slug, defaultAlt, error
       )}
 
       <div className="flex flex-wrap items-center gap-3">
-        <input ref={fileRef} type="file" accept="image/jpeg,image/png,image/webp,image/avif" multiple className="sr-only" id="image-upload" aria-label="Upload product photos" tabIndex={-1} onChange={(e) => onFiles(e.target.files)} />
+        <input ref={fileRef} type="file" accept="image/jpeg,image/png,image/webp,image/avif" multiple className="sr-only" id="image-upload" aria-label="Upload product photos" tabIndex={-1} onChange={(e) => pick(e.target.files)} />
+        <ImageCropper file={queue[0] ?? null} aspect={1} progress={total > 1 ? `${total - queue.length + 1} of ${total}` : undefined} onDone={next} onCancel={() => next(null)} />
         <Button variant="outline" loading={pending} icon={<ImagePlus aria-hidden className="h-4 w-4" />} onClick={() => fileRef.current?.click()}>
           Upload photos
         </Button>

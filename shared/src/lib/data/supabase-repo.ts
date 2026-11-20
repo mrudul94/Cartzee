@@ -1,7 +1,7 @@
 import "server-only";
 import { cache } from "react";
 import type { Category, Faq, Order, OrderStatus, Post, PostBlock, Product, Review, Spec } from "@/lib/types";
-import { isProductNew } from "@/lib/utils/product";
+import { byTrending, isProductNew } from "@/lib/utils/product";
 import { OrderError, type ProductQuery, type Repo } from "./repo";
 import { pub, svc } from "./supabase-clients";
 import { CACHE_TAGS, cached } from "@/lib/cache";
@@ -14,7 +14,7 @@ type CategoryRow = {
 };
 export type ProductRow = {
   id: string; slug: string; category_id: string; subcategory_id: string; title: string; summary: string; description: string;
-  how_to_use: string[]; specs: Spec[]; material: string; colour: string; price: number; mrp: number; rating: number;
+  how_to_use: string[]; specs: Spec[]; material: string; colour: string; country_of_origin?: string; quality_certified?: boolean; price: number; mrp: number; rating: number;
   review_count: number; bought_count?: number; sizes?: string[] | null; stock: number; is_bestseller: boolean; is_flash_sale: boolean; is_new: boolean | null; position?: number | null; faqs: Faq[];
   seo_title: string | null; seo_description: string | null; created_at: string;
   product_images: { src: string; alt: string; sort_order: number }[];
@@ -28,7 +28,7 @@ export type OrderRow = {
 };
 
 export const PRODUCT_COLUMNS =
-  "id, slug, category_id, subcategory_id, title, summary, description, how_to_use, specs, material, colour, price, mrp, rating, review_count, bought_count, sizes, stock, is_bestseller, is_flash_sale, is_new, position, faqs, seo_title, seo_description, created_at, product_images(src, alt, sort_order)";
+  "id, slug, category_id, subcategory_id, title, summary, description, how_to_use, specs, material, colour, country_of_origin, quality_certified, price, mrp, rating, review_count, bought_count, sizes, stock, is_bestseller, is_flash_sale, is_new, position, faqs, seo_title, seo_description, created_at, product_images(src, alt, sort_order)";
 export const ORDER_COLUMNS = "*, order_items(*), order_events(status, note, created_at)";
 export const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
@@ -77,6 +77,8 @@ export async function toProducts(rows: ProductRow[]): Promise<Product[]> {
     specs: r.specs ?? [],
     material: r.material,
     colour: r.colour,
+    countryOfOrigin: r.country_of_origin ?? "",
+    qualityCertified: r.quality_certified ?? false,
     price: Number(r.price),
     mrp: Number(r.mrp),
     rating: Number(r.rating),
@@ -197,6 +199,7 @@ export const supabaseRepo: Repo = {
       list = query.slugs.map((s) => bySlug.get(s)).filter((p) => p !== undefined);
     }
     if (query.newArrivals) list = list.filter((p) => isProductNew(p)).sort((a, b) => b.createdAt.localeCompare(a.createdAt));
+    if (query.sort === "trending") list = [...list].sort(byTrending);
     return query.limit ? list.slice(0, query.limit) : list;
   },
 

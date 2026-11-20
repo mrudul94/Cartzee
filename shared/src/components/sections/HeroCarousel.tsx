@@ -40,7 +40,24 @@ function TimerDot({ running, ms }: { running: boolean; ms: number }) {
  * all sizes. Autoplays every 4 s and loops; pauses on hover, focus and drag, and
  * for visitors who prefer reduced motion. All slides are in the HTML for search engines.
  */
-export function HeroCarousel({ slides, intervalMs = 4000 }: { slides: HeroSlide[]; intervalMs?: number }) {
+export function HeroCarousel({
+  slides,
+  intervalMs = 4000,
+  label = "Featured offers",
+  headingLevel,
+  priorityFirst = true,
+  className,
+}: {
+  slides: HeroSlide[];
+  intervalMs?: number;
+  /** Name of the carousel for screen readers. */
+  label?: string;
+  /** Slide heading level. Default: the first slide is the page h1 (homepage hero), the rest h2. */
+  headingLevel?: "h2" | "h3";
+  /** Load the first image eagerly (only for the carousel at the top of the page). */
+  priorityFirst?: boolean;
+  className?: string;
+}) {
   const total = slides.length;
   const loop = total > 1;
   // Looping track: a copy of the last slide before the first and of the first after the last.
@@ -142,8 +159,8 @@ export function HeroCarousel({ slides, intervalMs = 4000 }: { slides: HeroSlide[
     <section
       ref={root}
       aria-roledescription="carousel"
-      aria-label="Featured offers"
-      className="relative py-4 md:py-6"
+      aria-label={label}
+      className={cn("relative pb-0 pt-3 md:pt-5", className)}
       onPointerEnter={(e) => e.pointerType === "mouse" && setHovered(true)}
       onPointerLeave={(e) => e.pointerType === "mouse" && setHovered(false)}
       onFocus={() => setHovered(true)}
@@ -183,7 +200,7 @@ export function HeroCarousel({ slides, intervalMs = 4000 }: { slides: HeroSlide[
                 className={cn("shrink-0 transition duration-slide ease-standard motion-reduce:transition-none", active ? "scale-100 opacity-100" : "scale-95 opacity-60")}
                 style={{ width: `${width}%` }}
               >
-                <HeroBanner {...slide} as={realIndex === 0 ? "h1" : "h2"} priority={!copy && realIndex === 0} decorative={copy} />
+                <HeroBanner {...slide} as={headingLevel ?? (realIndex === 0 ? "h1" : "h2")} priority={priorityFirst && !copy && realIndex === 0} decorative={copy} />
               </div>
             );
           })}
@@ -200,7 +217,7 @@ export function HeroCarousel({ slides, intervalMs = 4000 }: { slides: HeroSlide[
         )}
       </div>
       {loop && (
-        <Container className="mt-2 flex items-center justify-center gap-1">
+        <Container className="flex items-center justify-center gap-1">
           <ul className="flex items-center gap-1" aria-label="Choose slide">
             {slides.map((s, i) => (
               <li key={s.id}>
@@ -209,7 +226,7 @@ export function HeroCarousel({ slides, intervalMs = 4000 }: { slides: HeroSlide[
                   onClick={() => goTo(i + 1)}
                   aria-label={`Show slide ${i + 1}`}
                   aria-current={i === index || undefined}
-                  className="inline-flex h-11 w-8 items-center justify-center focus-visible:outline-none focus-visible:shadow-focus"
+                  className="inline-flex h-8 w-8 items-center justify-center focus-visible:outline-none focus-visible:shadow-focus"
                 >
                   {i === index ? <TimerDot key={`${pos}-${running}`} running={running} ms={intervalMs} /> : <span className="block h-2 w-2 rounded-full bg-ink/30" />}
                 </button>

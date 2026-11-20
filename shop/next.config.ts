@@ -27,6 +27,10 @@ const nextConfig: NextConfig = {
   experimental: { externalDir: true },
   images: {
     formats: ["image/avif", "image/webp"],
+    // Fewer widths than Next's defaults (no 2048/3840): every width is a long URL in each <img srcset>,
+    // and the homepage has ~100 images. 1920 still covers full-width banners.
+    deviceSizes: [640, 828, 1080, 1440, 1920],
+    imageSizes: [64, 96, 128, 256, 384],
     dangerouslyAllowSVG: true,
     contentDispositionType: "attachment",
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",

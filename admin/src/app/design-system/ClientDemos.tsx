@@ -10,6 +10,7 @@ import { BlockEditor, type Block } from "@/components/admin/BlockEditor";
 import { ImageField, ListEditor, ScheduleFields, TextField } from "@/components/admin/EditorKit";
 import { ProductPicker } from "@/components/admin/ProductPicker";
 import { SectionEditor } from "@/components/admin/SectionEditor";
+import { ImageCropper } from "@/components/admin/ImageCropper";
 import type { HomeSection } from "@/lib/content/schema";
 
 /** Stateful demos that need client-side handlers (style guide only). */
@@ -95,4 +96,25 @@ export function SectionEditorDemo({ section }: { section: HomeSection }) {
 export function BlockEditorDemo() {
   const [b, setB] = useState<Block[]>([{ type: "h2", text: "What to check before you buy" }, { type: "p", text: "Look for a silicone gasket." }]);
   return <BlockEditor idPrefix="demo-block" blocks={b} onChange={setB} allow={["p", "h2", "ul", "products"]} products={demoProducts} />;
+}
+
+/** Pick a picture to try the cropper (nothing is uploaded). */
+export function ImageCropperDemo() {
+  const [file, setFile] = useState<File | null>(null);
+  const [result, setResult] = useState<string | null>(null);
+  return (
+    <div className="flex flex-col gap-2">
+      <input type="file" accept="image/*" aria-label="Pick a picture to crop" onChange={(e) => setFile(e.target.files?.[0] ?? null)} />
+      {result && <p className="text-sm text-text-muted">{result}</p>}
+      <ImageCropper
+        file={file}
+        aspect={16 / 9}
+        onDone={(f) => {
+          setResult(`Cropped: ${f.name} (${Math.round(f.size / 1024)} KB)`);
+          setFile(null);
+        }}
+        onCancel={() => setFile(null)}
+      />
+    </div>
+  );
 }

@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useId, useRef, useState } from "react";
-import { ChevronDown, LogOut, MapPin, Package, Truck, UserRound } from "lucide-react";
+import { Heart, ChevronDown, LogOut, MapPin, Package, Truck, UserRound } from "lucide-react";
 import { cn } from "@/lib/utils/cn";
 import { paths } from "@/lib/utils/paths";
 
@@ -17,6 +17,7 @@ export const ACCOUNT_LINKS = [
   { href: "/account", label: "My orders", icon: Package },
   { href: "/account/profile", label: "Profile", icon: UserRound },
   { href: "/account/addresses", label: "Saved addresses", icon: MapPin },
+  { href: "/wishlist", label: "Wishlist", icon: Heart },
   { href: paths.track(), label: "Track an order", icon: Truck },
 ] as const;
 

@@ -1,3 +1,13 @@
+import { AutoRefresh } from "@/components/admin/AutoRefresh";
+import { CardOfferTags } from "@/components/commerce/CardOfferTags";
+import { DealCountdown } from "@/components/commerce/DealCountdown";
+import { DeliveryReturns, ProductOffers, YouSave } from "@/components/commerce/ProductOffers";
+import { ShareButton } from "@/components/commerce/ShareButton";
+import { WishlistButton } from "@/components/commerce/WishlistButton";
+import { WishlistLink } from "@/components/commerce/WishlistLink";
+import { WishlistView } from "@/components/commerce/WishlistView";
+import { RecentlyViewedRow, RecommendedRow, RecordView } from "@/components/sections/PersonalRows";
+import { ProductList } from "@/components/sections/ProductGrid";
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { Search, ShoppingBag, Truck } from "lucide-react";
@@ -72,7 +82,7 @@ import { demoQuickAction, demoVoidAction } from "./demo-actions";
 
 import { AdminShell } from "@/components/admin/AdminShell";
 import { CopyField, MarginText, OrderStatusBadge, OrderTimeline, StatCard } from "@/components/admin/AdminBits";
-import { ImageManagerDemo } from "./ClientDemos";
+import { ImageCropperDemo, ImageManagerDemo } from "./ClientDemos";
 import { LoginForm } from "@/components/admin/LoginForm";
 import { DeleteProductCard } from "@/components/admin/DeleteProductCard";
 import { DeliveryPromise } from "@/components/commerce/DeliveryPromise";
@@ -304,12 +314,30 @@ export const demos: Record<string, ReactNode> = {
 
   /* ---------------- sections */
   HeroBanner: (
-<HeroBanner as="h2" priority={false} image={{ src: "/logo/logo-full.png", alt: "Example hero artwork" }} href="#" />
+<>
+      <HeroBanner as="h2" priority={false} image={{ src: "/logo/logo-full.png", alt: "Example hero artwork" }} href="#" />
+      <HeroBanner as="h2" priority={false} image={{ src: "/logo/logo-full.png", alt: "Example photo" }} overlay={{ eyebrow: "Shop kitchen", title: "Buy Kitchen Essentials", text: "Explore our collection of kitchen essentials", cta: { label: "Shop now", href: "#" } }} />
+    </>
   ),
+  ProductList: <ProductList title="Row layout demo" products={products.slice(0, 7)} layout="row" />,
+  RecommendedRow: <><p className="text-sm text-text-muted">Loads from the shop&apos;s /api/products, so it stays empty on this style guide.</p><RecommendedRow title="Recommended for you" /></>,
+  RecentlyViewedRow: <><p className="text-sm text-text-muted">Shows products viewed on this device (shop only).</p><RecentlyViewedRow title="Recently viewed" /></>,
+  RecordView: <p className="text-sm text-text-muted">Renders nothing; records a product view for Recently viewed. <RecordView slug="demo" category="demo" /></p>,
+  CardOfferTags: <CardOfferTags price={999} madeInIndia qualityCertified />,
+  DealCountdown: <DealCountdown />,
+  YouSave: <YouSave price={417} mrp={1174} />,
+  ProductOffers: <ProductOffers price={599} delivery={DEFAULT_SETTINGS.delivery} upiDiscountPercent={5} />,
+  DeliveryReturns: <DeliveryReturns delivery={DEFAULT_SETTINGS.delivery} />,
+  ShareButton: <ShareButton title="Demo product" path="/demo" />,
+  WishlistButton: <WishlistButton slug="demo-product" title="Demo product" />,
+  WishlistLink: <WishlistLink />,
+  WishlistView: <><p className="text-sm text-text-muted">Loads saved products from the shop&apos;s /api/products.</p><WishlistView /></>,
   ProductGrid: <ProductGrid title="Product grid demo" products={products.slice(0, 4)} viewAllHref="/bestsellers" spacing="sm" />,
   CategoryTiles: (
     <>
       <CategoryTiles title="Circle tiles" items={tree.map((c) => ({ label: c.name, href: `/${c.slug}`, image: c.image }))} spacing="sm" />
+      <CategoryTiles title="Shop by collection" variant="collection" panel viewAllHref="#" viewAllLabel="All collections" items={tree.map((c) => ({ label: c.name, href: `/${c.slug}`, image: c.image }))} />
+      <CategoryTiles title="Big slider" variant="slider" panel viewAllHref="#" viewAllLabel="All collections" items={tree.map((c) => ({ label: c.name, href: `/${c.slug}`, image: c.image }))} />
       <CategoryTiles title="Price tiles" variant="price" spacing="sm" items={[{ label: "₹299", href: "#a" }, { label: "₹599", href: "#b" }, { label: "₹1,999+", caption: "Premium", href: "#c" }]} />
     </>
   ),
@@ -380,9 +408,10 @@ export const demos: Record<string, ReactNode> = {
     <OrderActions orderId="demo" next={["placed_on_meesho", "cancelled_refunded"]} defaults={{}} canRefund whatsappHref="https://wa.me/919876543210" action={demoFormAction} />
   ),
   ImageManager: <ImageManagerDemo images={demoProducts[0]!.images.slice(0, 2)} />,
+  ImageCropper: <ImageCropperDemo />,
   ProductForm: (
     <ProductForm
-      values={{ ...demoProducts[0]!, meeshoUrl: demoProducts[0]!.meeshoUrl ?? "", meeshoPrice: demoProducts[0]!.meeshoPrice ?? 0, isActive: true, isNew: null, position: null, id: undefined, sizes: "" }}
+      values={{ ...demoProducts[0]!, meeshoUrl: demoProducts[0]!.meeshoUrl ?? "", meeshoPrice: demoProducts[0]!.meeshoPrice ?? 0, isActive: true, isNew: null, position: null, id: undefined, sizes: "", countryOfOrigin: "India", qualityCertified: false }}
       categories={tree.map((c) => ({ slug: c.slug, name: c.name, children: c.children.map((x) => ({ slug: x.slug, name: x.name })) }))}
       action={demoFormAction}
       upload={demoUploadAction}
@@ -419,6 +448,8 @@ export const demos: Record<string, ReactNode> = {
     />
   ),
   Analytics: <p className="text-text-muted">Loads GA4 and Microsoft Clarity when their IDs are set. Mounted in StoreShell only; renders nothing.</p>,
+  SiteMonitor: <p className="text-text-muted">Reports browser errors and pings &ldquo;visitors now&rdquo; once a minute. Mounted in StoreShell only; renders nothing.</p>,
+  AutoRefresh: <AutoRefresh seconds={30} />,
   PurchaseTracker: <p className="text-text-muted">Fires the GA4 purchase event once on the order success page; renders nothing.</p>,
   /* ---------------- CMS (admin) */
   ListEditor: <ListEditorDemo />,

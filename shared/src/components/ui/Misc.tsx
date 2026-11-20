@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils/cn";
 
 /** Loading placeholder block. Size it with token classes (h-4 w-32 …). */
 export function Skeleton({ className, ...rest }: HTMLAttributes<HTMLDivElement>) {
-  return <div aria-hidden className={cn("animate-pulse rounded-md bg-secondary", className)} {...rest} />;
+  return <div aria-hidden className={cn("animate-pulse rounded-md bg-secondary-strong", className)} {...rest} />;
 }
 
 export function Separator({ orientation = "horizontal", className }: { orientation?: "horizontal" | "vertical"; className?: string }) {

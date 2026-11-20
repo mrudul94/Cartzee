@@ -2,10 +2,11 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { House, LayoutGrid, ShoppingCart, UserRound, type LucideIcon } from "lucide-react";
+import { Heart, House, LayoutGrid, ShoppingCart, UserRound, type LucideIcon } from "lucide-react";
 import { useSettings } from "@/components/layout/SettingsProvider";
 import { cartTotals, useCart } from "@/hooks/useCart";
 import { useHydrated } from "@/hooks/useHydrated";
+import { useWishlist } from "@/hooks/useWishlist";
 import { cn } from "@/lib/utils/cn";
 
 const tab = "flex flex-1 flex-col items-center justify-center gap-1 py-1 text-xs font-medium focus-visible:outline-none";
@@ -30,7 +31,7 @@ function TabIcon({ icon: Icon, active, badge }: { icon: LucideIcon; active: bool
 }
 
 /**
- * App-style floating bottom bar on phones: Home, Categories, Account, Cart (opens the cart drawer).
+ * App-style floating bottom bar on phones: Home, Categories, Wishlist, Account, Cart (opens the cart drawer).
  * Rounded and lifted off the screen edge; the current section sits in a highlighted pill.
  */
 export function MobileTabBar() {
@@ -41,10 +42,12 @@ export function MobileTabBar() {
   const openCart = useCart((s) => s.open);
   const isOpen = useCart((s) => s.isOpen);
   const count = hydrated ? cartTotals(items, delivery).count : 0;
+  const saved = useWishlist((s) => s.slugs.length);
 
   const links = [
     { href: "/", label: "Home", icon: House, active: pathname === "/" },
     { href: "/categories", label: "Categories", icon: LayoutGrid, active: pathname === "/categories" },
+    { href: "/wishlist", label: "Wishlist", icon: Heart, active: pathname === "/wishlist", badge: hydrated ? saved : 0 },
     { href: "/account", label: "Account", icon: UserRound, active: pathname.startsWith("/account") || pathname === "/login" },
   ];
   const cartActive = isOpen || pathname === "/cart";
@@ -54,14 +57,14 @@ export function MobileTabBar() {
       aria-label="Shortcuts"
       className="fixed inset-x-2 bottom-2 z-sticky flex rounded-xl border border-border bg-surface px-1 py-1 shadow-lg md:hidden"
     >
-      {links.map(({ href, label, icon, active }) => (
+      {links.map(({ href, label, icon, active, badge }) => (
         <Link
           key={href}
           href={href}
           aria-current={active ? "page" : undefined}
           className={cn(tab, "rounded-lg focus-visible:shadow-focus", active ? "font-semibold text-primary" : "text-text-muted")}
         >
-          <TabIcon icon={icon} active={active} />
+          <TabIcon icon={icon} active={active} badge={badge} />
           {label}
         </Link>
       ))}

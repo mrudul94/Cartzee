@@ -18,7 +18,9 @@
     "deploy:shop": "pnpm lint && pnpm test && pnpm --filter @cartzee/shop cf:deploy",
     "deploy:admin": "pnpm lint && pnpm test && pnpm --filter @cartzee/admin cf:deploy",
     "logo": "tsx scripts/gen-logo.ts",
-    "copy:db": "node scripts/with-root-env.cjs tsx scripts/copy-db.ts"
+    "copy:db": "node scripts/with-root-env.cjs tsx scripts/copy-db.ts",
+    "demo:add": "node scripts/with-root-env.cjs tsx scripts/demo-products.ts",
+    "demo:remove": "node scripts/with-root-env.cjs tsx scripts/demo-products.ts --remove"
   },
   "dependencies": {
     "@hookform/resolvers": "5.9.2",

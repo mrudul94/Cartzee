@@ -11,14 +11,15 @@ export type PriceBlockProps = {
 };
 
 const priceSize = { sm: "text-lg", md: "text-xl", lg: "text-3xl" };
-const mrpSize = { sm: "text-sm", md: "text-base", lg: "text-lg" };
+const mrpSize = { sm: "text-xs", md: "text-base", lg: "text-lg" };
+const gap = { sm: "gap-x-1.5", md: "gap-x-2", lg: "gap-x-2" };
 
 /** Sale price, struck-through MRP and % off. Used by cards, product page, cart and sticky bar. */
 export function PriceBlock({ price, mrp, size = "md", showTaxNote = false, className }: PriceBlockProps) {
   const off = calcDiscount(mrp, price);
   return (
     <div className={cn("flex flex-col gap-0.5", className)}>
-      <p className="flex flex-wrap items-baseline gap-x-2">
+      <p className={cn("flex flex-wrap items-baseline whitespace-nowrap", gap[size])}>
         <span className="sr-only">Sale price</span>
         <span className={cn("font-body font-bold text-text", priceSize[size])}>{formatINR(price)}</span>
         {off > 0 && (

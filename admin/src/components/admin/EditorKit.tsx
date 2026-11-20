@@ -2,12 +2,13 @@
 
 import { keepFormValues } from "@/hooks/useKeepFormValues";
 import Image from "next/image";
-import { useActionState, useId, useRef, useState, useTransition, type ReactNode } from "react";
+import { useActionState, useRef, useState, useTransition, type ReactNode } from "react";
 import { ArrowDown, ArrowUp, ImagePlus, Plus, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { FormField } from "@/components/ui/FormField";
 import { Input, Textarea } from "@/components/ui/Input";
 import type { ActionState } from "@/lib/admin/forms";
+import { ImageCropper } from "./ImageCropper";
 import { cn } from "@/lib/utils/cn";
 
 const iconBtn =
@@ -85,15 +86,25 @@ export type ImageFieldProps = {
   hint?: string;
   error?: string;
   optional?: boolean;
+  /** Starting crop shape; defaults by folder (categories/guides 16:9, banners 7:3 hero, products square). */
+  cropAspect?: number | null;
 };
 
-/** Single image: preview, upload (Supabase Storage) or paste a site path / https URL. */
-export function ImageField({ id, label, value, onChange, upload, folder, slug, hint, error, optional }: ImageFieldProps) {
+const FOLDER_ASPECT: Record<ImageFieldProps["folder"], number> = { products: 1, categories: 16 / 9, banners: 7 / 3, guides: 16 / 9 };
+
+/** Single image: preview, crop then upload (Supabase Storage), or paste a site path / https URL. */
+export function ImageField({ id, label, value, onChange, upload, folder, slug, hint, error, optional, cropAspect }: ImageFieldProps) {
   const fileRef = useRef<HTMLInputElement>(null);
   const [pending, start] = useTransition();
   const [uploadError, setUploadError] = useState<string | null>(null);
+  const [picked, setPicked] = useState<File | null>(null);
+  const reset = () => {
+    setPicked(null);
+    if (fileRef.current) fileRef.current.value = "";
+  };
   const onFile = (file?: File) => {
     if (!file) return;
+    setPicked(null);
     setUploadError(null);
     start(async () => {
       const fd = new FormData();
@@ -115,7 +126,8 @@ export function ImageField({ id, label, value, onChange, upload, folder, slug, h
         <div className="flex min-w-0 flex-1 flex-col gap-2">
           <Input id={id} size="sm" value={value} onChange={(e) => onChange(e.target.value)} placeholder="https://…" invalid={Boolean(error)} />
           <div className="flex gap-2">
-            <input ref={fileRef} type="file" accept="image/jpeg,image/png,image/webp,image/avif" className="sr-only" tabIndex={-1} aria-label={`Upload ${label}`} onChange={(e) => onFile(e.target.files?.[0])} />
+            <input ref={fileRef} type="file" accept="image/jpeg,image/png,image/webp,image/avif" className="sr-only" tabIndex={-1} aria-label={`Upload ${label}`} onChange={(e) => setPicked(e.target.files?.[0] ?? null)} />
+            <ImageCropper file={picked} aspect={cropAspect === undefined ? FOLDER_ASPECT[folder] : cropAspect} onDone={onFile} onCancel={reset} />
             <Button size="sm" variant="outline" loading={pending} icon={<ImagePlus aria-hidden className="h-4 w-4" />} onClick={() => fileRef.current?.click()}>
               Upload
             </Button>
@@ -169,7 +181,8 @@ export type ContentSaveFormProps = {
 /** Wraps a CMS editor: serialises the edited value as JSON, saves via a server action, shows the result. */
 export function ContentSaveForm({ contentKey, value, action, children, saveLabel = "Save changes", extra }: ContentSaveFormProps) {
   const [state, formAction, pending] = useActionState(action, {});
-  const id = useId();
+  // Fixed id (one save form per page): useId() can differ between server and browser in dev and cause a hydration warning.
+  const id = `content-${contentKey.replace(/[^a-z0-9]+/gi, "-")}`;
   return (
     <form action={formAction} onSubmit={keepFormValues(formAction)} className="flex flex-col gap-6" aria-describedby={`${id}-status`} noValidate>
       <input type="hidden" name="key" value={contentKey} />

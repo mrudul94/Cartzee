@@ -2,7 +2,10 @@
  * One-time copy of the store from the old Supabase project to a new one (e.g. Tokyo → Mumbai).
  *
  *   pnpm copy:db --dry     count what would be copied, change nothing
- *   pnpm copy:db           copy
+ *   pnpm copy:db           copy (overwrites the new project's copies of these rows)
+ *   pnpm copy:db --missing only ADD what the new project doesn't have yet (new products with their photos,
+ *                          categories, reviews, guides). Never changes or removes anything already there and
+ *                          leaves the homepage/settings content alone. Combine with --dry to preview.
  *
  * Needs four lines in the root .env.local (remove them afterwards):
  *   COPY_FROM_SUPABASE_URL / COPY_FROM_SERVICE_ROLE_KEY   old project
@@ -18,6 +21,7 @@
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 
 const DRY = process.argv.includes("--dry");
+const MISSING = process.argv.includes("--missing");
 const BUCKET = "product-images";
 
 function env(name: string) {
@@ -66,11 +70,42 @@ async function write(table: string, rows: Row[], key = "id") {
   }
 }
 
-async function copyTable(table: string, { key = "id", prepare = (r: Row) => r, sort }: { key?: string; prepare?: (r: Row) => Row; sort?: (a: Row, b: Row) => number } = {}) {
+/** Ids already in the new project for a table (used by --missing). */
+async function targetIds(table: string): Promise<Set<string>> {
+  return new Set((await readAll(to, table)).map((r) => String(r.id)));
+}
+
+type CopyOpts = { key?: string; prepare?: (r: Row) => Row; sort?: (a: Row, b: Row) => number; keep?: (r: Row) => boolean };
+
+/**
+ * Copies one table and returns the ids written. With --missing: only rows whose id (and URL slug) the new
+ * project doesn't have yet, inserted (never updated), so nothing edited in the new project is overwritten.
+ */
+async function copyTable(table: string, { key = "id", prepare = (r: Row) => r, sort, keep }: CopyOpts = {}): Promise<Set<string>> {
   let rows = (await readAll(from, table, key)).map((r) => rewrite(prepare(r)));
+  if (keep) rows = rows.filter(keep);
+  let note = "";
+  if (MISSING) {
+    const existing = await readAll(to, table, key);
+    const ids = new Set(existing.map((r) => String(r[key])));
+    const slugs = new Set(existing.map((r) => r.slug).filter(Boolean));
+    const fresh = rows.filter((r) => !ids.has(String(r[key])));
+    const clash = fresh.filter((r) => r.slug && slugs.has(r.slug));
+    rows = fresh.filter((r) => !(r.slug && slugs.has(r.slug)));
+    if (clash.length) note = `  (skipped ${clash.length} whose URL is already used: ${clash.map((r) => r.slug).join(", ")})`;
+  }
   if (sort) rows = rows.sort(sort);
-  if (!DRY) await write(table, rows, key);
-  console.log(`${DRY ? "would copy" : "copied"} ${String(rows.length).padStart(5)}  ${table}`);
+  if (!DRY) {
+    if (MISSING) {
+      for (let i = 0; i < rows.length; i += 500) {
+        const { error } = await to.from(table).insert(rows.slice(i, i + 500));
+        if (error) throw new Error(`Writing ${table}: ${error.message}`);
+      }
+    } else await write(table, rows, key);
+  }
+  console.log(`${DRY ? "would copy" : "copied"} ${String(rows.length).padStart(5)}  ${table}${MISSING ? " (new only)" : ""}${note}`);
+  if (MISSING && table === "products" && rows.length) console.log(`         ${rows.map((r) => String(r.title)).join(" · ")}`);
+  return new Set(rows.map((r) => String(r[key])));
 }
 
 /** Every file path in the old bucket (folders are walked recursively). */
@@ -103,24 +138,32 @@ async function copyImages() {
   for (const path of files) {
     const { data, error } = await from.storage.from(BUCKET).download(path);
     if (error) throw new Error(`Downloading ${path}: ${error.message}`);
-    const up = await to.storage.from(BUCKET).upload(path, data, { contentType: data.type || undefined, cacheControl: "31536000", upsert: true });
-    if (up.error) throw new Error(`Uploading ${path}: ${up.error.message}`);
+    const up = await to.storage.from(BUCKET).upload(path, data, { contentType: data.type || undefined, cacheControl: "31536000", upsert: !MISSING });
+    // --missing: files already in the new project are left as they are.
+    if (up.error && !(MISSING && /exists|duplicate/i.test(up.error.message))) throw new Error(`Uploading ${path}: ${up.error.message}`);
     if (++done % 25 === 0) console.log(`  … ${done}/${files.length} images`);
   }
   console.log(`copied ${String(files.length).padStart(5)}  uploaded images`);
 }
 
 async function main() {
-  console.log(DRY ? "Dry run: nothing will be changed.\n" : "Copying old project → new project.\n");
+  console.log(`${DRY ? "Dry run: nothing will be changed." : "Copying old project → new project."}${MISSING ? " Only adding what the new project is missing." : ""}\n`);
   await copyImages();
   // Parents before subcategories (categories point at their parent).
   await copyTable("categories", { sort: (a, b) => Number(a.parent_id != null) - Number(b.parent_id != null) });
+  // --missing: a product whose category isn't in the new project is skipped (it would fail to insert).
+  const categories = MISSING && !DRY ? await targetIds("categories") : null;
+  const inCategories = (r: Row) => !categories || (categories.has(String(r.category_id)) && (r.subcategory_id == null || categories.has(String(r.subcategory_id))));
   // search_vector is computed by the database; bought_count/rating are kept as they were.
-  await copyTable("products", { prepare: ({ search_vector: _, ...r }) => r });
-  await copyTable("product_images");
+  const added = await copyTable("products", { prepare: ({ search_vector: _, ...r }) => r, keep: inCategories });
+  // --missing: photos only for the products just added (products already there keep their photos as edited).
+  await copyTable("product_images", { keep: (r) => !MISSING || added.has(String(r.product_id)) });
   await copyTable("blog_posts");
-  await copyTable("site_content", { key: "key" });
-  await copyTable("reviews", { prepare: (r) => ({ ...r, user_id: null, order_id: null }) });
+  if (MISSING) console.log("skipped        site_content (homepage, settings and pages stay as you edited them)");
+  else await copyTable("site_content", { key: "key" });
+  // --missing: only reviews for products that exist in the new project.
+  const products = MISSING && !DRY ? await targetIds("products") : null;
+  await copyTable("reviews", { prepare: (r) => ({ ...r, user_id: null, order_id: null }), keep: (r) => !products || products.has(String(r.product_id)) });
   console.log(DRY ? "\nDry run finished." : "\nDone. Now point .env.local at the new project (see the chat for steps).");
 }
 

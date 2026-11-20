@@ -49,8 +49,8 @@ describe("hero slide options", () => {
     expect(schemaFor("home").safeParse(withSlide({ enabled: false })).success).toBe(true);
   });
 
-  it("needs only an image and description; button and text fields are optional", () => {
-    const bare = { title: "", text: "", primaryCta: { label: "", href: "" }, secondaryCta: null };
+  it("artwork slides need only an image and description; button and text fields are optional", () => {
+    const bare = { style: "artwork", title: "", text: "", primaryCta: { label: "", href: "" }, secondaryCta: null };
     expect(schemaFor("home").safeParse(withSlide({ ...bare, clickable: true, link: "/kitchen" })).success).toBe(true);
     expect(schemaFor("home").safeParse(withSlide({ ...bare, image: { src: hero.slides[0]!.image.src, alt: "" } })).success).toBe(false);
   });

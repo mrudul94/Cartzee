@@ -30,11 +30,17 @@ export const color = {
   /** Star fill (decorative; ratings always have a text label). */
   rating: "#D99A00",
   success: "#2E7D32",
-  successSoft: "#E3F1E4",
+  /** success text on it: 4.62:1 (AA). */
+  successSoft: "#EBF6EC",
   warning: "#8F5600",
   warningSoft: "#FBEFD9",
   error: "#B3261E",
   errorSoft: "#F9E1DF",
+  /** Trust labels ("Quality Certified"): info on infoSoft 5.85:1, white on info passes AA. */
+  info: "#1D4ED8",
+  infoSoft: "#E8F0FE",
+  /** Neutral grey chip ("Made in India"); text on it 12.4:1. */
+  neutralSoft: "#EEEEEE",
   border: "#DDD3C5",
   borderStrong: "#BFB2A1",
   ink: "#2B2A28",
@@ -96,7 +102,7 @@ export const space = {
 } as const;
 
 export const maxWidth = {
-  container: "80rem",
+  container: "100rem",
   prose: "65ch",
   narrow: "40rem",
   drawer: "26rem",
@@ -138,6 +144,7 @@ export const breakpoint = {
   md: "768px",
   lg: "1024px",
   xl: "1280px",
+  "2xl": "1536px",
 } as const;
 
 export const duration = { fast: "150ms", base: "200ms", slow: "300ms", slide: "500ms" } as const;

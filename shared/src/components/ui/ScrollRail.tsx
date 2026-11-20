@@ -34,7 +34,7 @@ export function ScrollRail({ children, label, className }: { children: ReactNode
 
   return (
     <div className={cn("relative", className)}>
-      <ul ref={list} aria-label={label} onScroll={update} className="-mx-4 flex snap-x snap-mandatory gap-3 overflow-x-auto scroll-smooth px-4 py-3 md:mx-0 md:px-2">
+      <ul ref={list} aria-label={label} onScroll={update} className="-mx-4 flex snap-x snap-mandatory scroll-px-4 gap-3 overflow-x-auto scroll-smooth px-4 py-3 md:mx-0 md:scroll-px-2 md:px-2">
         {children}
       </ul>
       <button type="button" aria-label="Scroll left" onClick={() => scrollBy(-1)} className={cn(arrow, "-left-4", edges.start && "pointer-events-none opacity-0")}>

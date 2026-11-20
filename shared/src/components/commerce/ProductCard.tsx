@@ -8,7 +8,8 @@ import { calcDiscount, formatBought } from "@/lib/utils/format";
 import type { CardProduct } from "@/lib/utils/product";
 import { AddToCartButton } from "./AddToCartButton";
 import { PriceBlock } from "./PriceBlock";
-import { FreeDeliveryTag } from "./FreeDeliveryTag";
+import { CardOfferTags } from "./CardOfferTags";
+import { WishlistButton } from "./WishlistButton";
 
 const cardVariants = cva("group relative flex h-full flex-col overflow-hidden rounded-lg bg-surface", {
   variants: {
@@ -27,8 +28,8 @@ export type ProductCardProps = VariantProps<typeof cardVariants> & {
 
 /**
  * Compact product tile (marketplace style): photo with discount and status badges and a round
- * "add to cart" button, then a 2-line title, a rating pill (only once there are reviews), price with
- * MRP and % off, and a "Free delivery" note. The whole card links to the product.
+ * "add to cart" button and a wishlist heart, then a 2-line title, a rating pill (only once there are real
+ * reviews), price with MRP and % off, and offer chips (free delivery, UPI discount). The whole card links to the product.
  */
 export function ProductCard({ product, variant, priority = false, headingLevel = "h3", className }: ProductCardProps) {
   const off = calcDiscount(product.mrp, product.price);
@@ -59,19 +60,23 @@ export function ProductCard({ product, variant, priority = false, headingLevel =
             className="object-cover opacity-0 transition duration-slow group-hover:scale-110 group-hover:opacity-100 motion-reduce:transition-none motion-reduce:group-hover:scale-100"
           />
         )}
-        <div className="absolute left-2 top-2 flex flex-col items-start gap-1">
+        {/* One badge on the photo keeps cards clean: sold out, else discount, else New, else Bestseller. */}
+        <div className="absolute left-2 top-2">
           {!product.inStock ? (
-            <Badge variant="dark">Sold out</Badge>
+            <Badge variant="dark" className="normal-case tracking-normal">Sold out</Badge>
+          ) : off > 0 ? (
+            <Badge variant="sale" className="normal-case tracking-normal">{off}% off</Badge>
+          ) : product.isNew ? (
+            <Badge variant="success" className="normal-case tracking-normal">New</Badge>
           ) : (
-            off > 0 && <Badge variant="sale">{off}% OFF</Badge>
+            product.isBestseller && <Badge variant="outline" className="normal-case tracking-normal">Bestseller</Badge>
           )}
-          {product.isNew && product.inStock && <Badge variant="success">New</Badge>}
-          {product.isBestseller && product.inStock && !product.isNew && <Badge variant="outline">Bestseller</Badge>}
         </div>
+        <WishlistButton slug={product.slug} title={product.title} className="absolute right-2 top-2 z-raised" />
         <AddToCartButton product={product} iconOnly className="absolute bottom-2 right-2 z-raised" />
       </div>
-      <div className="flex flex-1 flex-col gap-1 p-2 md:p-3">
-        <H className="line-clamp-2 text-sm font-medium leading-snug text-text md:text-base">
+      <div className="flex flex-1 flex-col gap-1.5 p-2">
+        <H className="line-clamp-2 min-h-10 text-sm font-normal leading-snug text-text">
           <Link
             href={product.path}
             className="after:absolute after:inset-0 after:z-base focus-visible:outline-none focus-visible:after:shadow-focus"
@@ -81,7 +86,7 @@ export function ProductCard({ product, variant, priority = false, headingLevel =
         </H>
         {product.reviewCount > 0 && (
           <span className="flex items-center gap-1 text-xs">
-            <span className="inline-flex items-center gap-1 rounded-sm bg-success-soft px-1 font-semibold text-success">
+            <span className="inline-flex items-center gap-1 rounded-sm bg-success px-1.5 py-0.5 font-semibold text-text-inverse">
               <Star aria-hidden className="h-3 w-3" fill="currentColor" strokeWidth={0} />
               {product.rating.toFixed(1)}
             </span>
@@ -93,7 +98,7 @@ export function ProductCard({ product, variant, priority = false, headingLevel =
         )}
         {bought && <span className="text-xs font-medium text-text-muted">{bought}</span>}
         <PriceBlock price={product.price} mrp={product.mrp} size="sm" className="mt-auto" />
-        <FreeDeliveryTag price={product.price} />
+        <CardOfferTags price={product.price} madeInIndia={product.madeInIndia} qualityCertified={product.qualityCertified} />
       </div>
     </article>
   );

@@ -77,7 +77,7 @@ export default async function AdminProductsPage({ searchParams }: Props) {
                 </span>
                 <span>
                   <span className="font-medium">{p.title}</span>
-                  <QuickBadges id={p.id} isBestseller={p.isBestseller} isFlashSale={p.isFlashSale} />
+                  <QuickBadges id={p.id} isBestseller={p.isBestseller} isFlashSale={p.isFlashSale} isDemo={p.isDemo} />
                 </span>
               </Link>
             ),

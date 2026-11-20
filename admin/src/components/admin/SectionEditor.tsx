@@ -86,9 +86,19 @@ export function SectionEditor({ section: s, onChange, categories, products, uplo
             max={5}
             addLabel="Add slide"
             newItem={newHeroSlide}
-            itemLabel={(sl, i) => `Slide ${i + 1}${sl.slideType === "offer" ? " (offer)" : ""}: ${sl.image.alt || sl.title}${sl.enabled ? "" : " (off)"}`}
+            itemLabel={(sl, i) => `Slide ${i + 1}${sl.slideType === "offer" ? " (offer)" : ""}: ${(sl.style === "text" ? sl.title : sl.image.alt) || sl.title}${sl.enabled ? "" : " (off)"}`}
             renderItem={(sl, update, i) => (
               <>
+                <SelectField
+                  id={id(`s${i}-style`)}
+                  label="Slide design"
+                  value={sl.style}
+                  onChange={(v) => update({ style: v as typeof sl.style })}
+                  options={[
+                    { value: "text", label: "Photo with text and a Shop now button" },
+                    { value: "artwork", label: "Finished artwork (text already in the picture)" },
+                  ]}
+                />
                 <div className="grid gap-3 rounded-md bg-surface p-3 md:grid-cols-2">
                   <SelectField
                     id={id(`s${i}-type`)}
@@ -103,8 +113,8 @@ export function SectionEditor({ section: s, onChange, categories, products, uplo
                   <div className="flex items-end">
                     <Checkbox id={id(`s${i}-on`)} label={sl.slideType === "offer" ? "Offer on" : "Show this slide"} checked={sl.enabled} onCheckedChange={(enabled) => update({ enabled })} />
                   </div>
-                  <Checkbox id={id(`s${i}-click`)} label="Whole slide is clickable" checked={sl.clickable} onCheckedChange={(clickable) => update({ clickable })} />
-                  {sl.clickable && (
+                  {sl.style === "artwork" && <Checkbox id={id(`s${i}-click`)} label="Whole slide is clickable" checked={sl.clickable} onCheckedChange={(clickable) => update({ clickable })} />}
+                  {sl.style === "artwork" && sl.clickable && (
                     <div className="grid gap-3 md:col-span-2 md:grid-cols-2">
                       <SelectField
                         id={id(`s${i}-cat`)}
@@ -117,17 +127,48 @@ export function SectionEditor({ section: s, onChange, categories, products, uplo
                     </div>
                   )}
                 </div>
+                {sl.style === "text" && (
+                  <div className="flex flex-col gap-3">
+                    <TextField id={id(`s${i}-eyebrow`)} label="Small label (top line)" hint="e.g. SHOP WOMEN ETHNIC WEAR" value={sl.eyebrow} onChange={(eyebrow) => update({ eyebrow })} maxLength={60} />
+                    <TextField
+                      id={id(`s${i}-title`)}
+                      label="Title"
+                      hint="The big line, e.g. Buy Women Ethnic Wear"
+                      value={sl.title}
+                      // The title also describes the photo for screen readers unless a description was written.
+                      onChange={(title) => update({ title, image: { ...sl.image, alt: !sl.image.alt || sl.image.alt === sl.title ? title : sl.image.alt } })}
+                      maxLength={90}
+                      required
+                    />
+                    <TextField id={id(`s${i}-text`)} label="Text (optional)" hint="One short line under the title (hidden on small phones)" value={sl.text} onChange={(text) => update({ text })} maxLength={240} />
+                    <Row>
+                      <TextField id={id(`s${i}-cta`)} label="Button text" hint="Leave empty for no button" value={sl.primaryCta.label} onChange={(label) => update({ primaryCta: { ...sl.primaryCta, label } })} maxLength={40} />
+                      <SelectField
+                        id={id(`s${i}-cta-cat`)}
+                        label="Button opens"
+                        value={categories.some((c) => paths.category(c) === sl.primaryCta.href) ? sl.primaryCta.href : ""}
+                        onChange={(href) => href && update({ primaryCta: { ...sl.primaryCta, href } })}
+                        options={[{ value: "", label: "Choose a category…" }, ...categories.map((c) => ({ value: paths.category(c), label: c.parentSlug ? `— ${c.name}` : c.name }))]}
+                      />
+                    </Row>
+                    <TextField id={id(`s${i}-cta-link`)} label="…or any link" hint="e.g. /flash-sale, /bestsellers or /kitchen/cookware" value={sl.primaryCta.href} onChange={(href) => update({ primaryCta: { ...sl.primaryCta, href } })} />
+                  </div>
+                )}
                 <ImageField
                   id={id(`s${i}-img`)}
-                  label="Image"
+                  label={sl.style === "text" ? "Background photo" : "Image"}
                   value={sl.image.src}
                   onChange={(src) => update({ image: { ...sl.image, src } })}
                   upload={upload}
                   folder="banners"
                   slug={s.id}
-                  hint="Finished artwork with its text and button in the picture: 1792 × 768 px (7:3). Shown whole, never cropped."
+                  hint={
+                    sl.style === "text"
+                      ? "A wide photo without text; keep the left side calm, the words go there. Crop to Hero 7:3."
+                      : "Finished artwork with its text and button in the picture: 1792 × 768 px (7:3). Shown whole, never cropped."
+                  }
                 />
-                <TextField id={id(`s${i}-alt`)} label="Image description (alt text)" hint="Describe the offer: read by screen readers and Google" value={sl.image.alt} onChange={(alt) => update({ image: { ...sl.image, alt } })} maxLength={160} required />
+                <TextField id={id(`s${i}-alt`)} label="Image description (alt text)" hint={sl.style === "text" ? "Filled from the title; change it to describe the photo" : "Describe the offer: read by screen readers and Google"} value={sl.image.alt} onChange={(alt) => update({ image: { ...sl.image, alt } })} maxLength={160} required />
                 <ScheduleFields idPrefix={id(`s${i}`)} value={sl} onChange={(v) => update(v)} />
               </>
             )}
@@ -151,6 +192,7 @@ export function SectionEditor({ section: s, onChange, categories, products, uplo
                   { value: "bestsellers", label: "Bestsellers" },
                   { value: "flashSale", label: "Flash sale" },
                   { value: "newArrivals", label: "New arrivals" },
+                  { value: "trending", label: "Trending (most bought)" },
                   { value: "category", label: "From a category" },
                   { value: "manual", label: "Hand-picked" },
                 ]}
@@ -196,6 +238,12 @@ export function SectionEditor({ section: s, onChange, categories, products, uplo
               <TextField id={id("viewall")} label="“View all” link (optional)" value={s.viewAllHref} onChange={(viewAllHref) => set({ viewAllHref })} placeholder="/bestsellers" />
               <SelectField id={id("bg")} label="Background" value={s.background} onChange={(v) => set({ background: v as typeof s.background })} options={BACKGROUNDS} />
             </Row>
+            <Checkbox
+              id={id("countdown")}
+              label="Show a “deals end in” countdown (resets at midnight)"
+              checked={s.countdown}
+              onCheckedChange={(countdown) => set({ countdown })}
+            />
           </>
         );
       case "offerBanner":
@@ -234,7 +282,7 @@ export function SectionEditor({ section: s, onChange, categories, products, uplo
             <TextField id={id("title")} label="Title" value={s.title} onChange={(title) => set({ title })} maxLength={60} required />
             <TextField id={id("subtitle")} label="Subtitle" value={s.subtitle} onChange={(subtitle) => set({ subtitle })} maxLength={160} />
             <Row>
-              <SelectField id={id("variant")} label="Style" value={s.variant} onChange={(v) => set({ variant: v as typeof s.variant })} options={[{ value: "circle", label: "Round images" }, { value: "card", label: "Cards with caption" }]} />
+              <SelectField id={id("variant")} label="Style" value={s.variant} onChange={(v) => set({ variant: v as typeof s.variant })} options={[{ value: "circle", label: "Round images" }, { value: "collection", label: "Wide photo cards (Shop by collection)" }, { value: "slider", label: "Big slider (like the hero)" }, { value: "card", label: "Cards with caption" }]} />
               <SelectField id={id("source")} label="Which categories" value={s.source} onChange={(v) => set({ source: v as typeof s.source })} options={[{ value: "top", label: "All main categories" }, { value: "manual", label: "Choose…" }]} />
               <SelectField id={id("bg")} label="Background" value={s.background} onChange={(v) => set({ background: v as typeof s.background })} options={BACKGROUNDS} />
             </Row>
@@ -316,6 +364,23 @@ export function SectionEditor({ section: s, onChange, categories, products, uplo
           <>
             <TextField id={id("title")} label="Title" value={s.title} onChange={(title) => set({ title })} maxLength={80} required />
             <p className="text-sm text-text-muted">The questions themselves are edited in Pages → Store FAQs.</p>
+          </>
+        );
+      case "recommended":
+        return (
+          <>
+            <Row>
+              <TextField id={id("title")} label="Title" value={s.title} onChange={(title) => set({ title })} maxLength={60} required />
+              <TextField id={id("subtitle")} label="Subtitle" value={s.subtitle} onChange={(subtitle) => set({ subtitle })} maxLength={160} />
+            </Row>
+            <p className="text-sm text-text-muted">Each shopper sees products from the categories they looked at on their device. First-time visitors see trending products.</p>
+          </>
+        );
+      case "recentlyViewed":
+        return (
+          <>
+            <TextField id={id("title")} label="Title" value={s.title} onChange={(title) => set({ title })} maxLength={60} required />
+            <p className="text-sm text-text-muted">Shows the products this shopper opened on their device. Hidden for first-time visitors.</p>
           </>
         );
     }

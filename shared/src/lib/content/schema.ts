@@ -69,7 +69,12 @@ export const heroSlideSchema = z.object({
   title: text(90),
   text: text(240),
   image: imageSchema,
-  /** Legacy text fields: the hero now shows the artwork only (text is part of the image). */
+  /**
+   * "text": background photo with the small label, title, text and a working button drawn on top (left side).
+   * "artwork": finished artwork with its text baked into the picture (older slides).
+   */
+  style: z.enum(["artwork", "text"]).default("artwork"),
+  /** Button on "text" slides (label + where it opens). */
   primaryCta: z.object({ label: text(40), href: z.union([z.literal(""), linkSchema]).default("") }),
   secondaryCta: ctaSchema.nullable().default(null),
   highlights: z.array(z.string().trim().min(1).max(50)).max(4).default([]),
@@ -83,6 +88,8 @@ export const heroSlideSchema = z.object({
   ...scheduled,
 }).superRefine((sl, ctx) => {
   if (sl.clickable && !sl.link) ctx.addIssue({ code: "custom", message: "Choose where the slide opens", path: ["link"] });
+  if (sl.style === "text" && !sl.title) ctx.addIssue({ code: "custom", message: "Write the slide title", path: ["title"] });
+  if (sl.style === "text" && sl.primaryCta.label && !sl.primaryCta.href) ctx.addIssue({ code: "custom", message: "Choose where the button opens", path: ["primaryCta"] });
 });
 
 /** Display order: an offer slide that is on comes first; category slides keep their list order. */
@@ -111,13 +118,15 @@ export const sectionSchema = z.discriminatedUnion("type", [
     title: reqText(60, "Title"),
     subtitle: text(160),
     eyebrow: text(40),
-    source: z.enum(["bestsellers", "flashSale", "newArrivals", "category", "manual"]).default("bestsellers"),
+    source: z.enum(["bestsellers", "flashSale", "newArrivals", "trending", "category", "manual"]).default("bestsellers"),
     categorySlug: text(80),
     productSlugs: z.array(z.string().max(100)).max(24).default([]),
     limit: z.coerce.number().int().min(2).max(12).default(8),
     layout: z.enum(["grid", "carousel", "row"]).default("grid"),
     viewAllHref: optionalLink,
     background: backgroundSchema,
+    /** "Deals of the day" style: a live countdown to midnight IST next to the title. */
+    countdown: z.boolean().default(false),
   }),
   z.object({
     ...base,
@@ -134,7 +143,7 @@ export const sectionSchema = z.discriminatedUnion("type", [
     type: z.literal("categoryTiles"),
     title: reqText(60, "Title"),
     subtitle: text(160),
-    variant: z.enum(["circle", "card"]).default("circle"),
+    variant: z.enum(["circle", "collection", "slider", "card"]).default("circle"),
     source: z.enum(["top", "manual"]).default("top"),
     categorySlugs: z.array(z.string().max(80)).max(12).default([]),
     background: backgroundSchema,
@@ -155,6 +164,9 @@ export const sectionSchema = z.discriminatedUnion("type", [
   }),
   z.object({ ...base, type: z.literal("guides"), title: reqText(60, "Title"), limit: z.coerce.number().int().min(1).max(6).default(3), background: backgroundSchema }),
   z.object({ ...base, type: z.literal("faq"), title: reqText(80, "Title") }),
+  /** Personal rows (this shopper's device): recommendations from viewed categories, and recently viewed. */
+  z.object({ ...base, type: z.literal("recommended"), title: reqText(60, "Title"), subtitle: text(160) }),
+  z.object({ ...base, type: z.literal("recentlyViewed"), title: reqText(60, "Title") }),
 ]);
 export type HomeSection = z.infer<typeof sectionSchema>;
 export type SectionType = HomeSection["type"];
@@ -188,6 +200,8 @@ export const SECTION_LABELS: Record<SectionType, string> = {
   brandStory: "Brand story",
   guides: "Buying guides",
   faq: "FAQ",
+  recommended: "Recommended for you",
+  recentlyViewed: "Recently viewed",
 };
 
 /* ==================================================================== pages & FAQs */
@@ -218,25 +232,27 @@ export type PageSlug = (typeof PAGE_SLUGS)[number];
 
 export const DEFAULT_HOME: HomeContent = {
   categoryRowsManaged: false,
+  // Marketplace order: categories, today's deals, personal picks, trending, then category rows (added automatically) and trust info.
   sections: [
+    { id: "categories", type: "categoryTiles", enabled: true, startsAt: "", endsAt: "", title: "Shop by category", subtitle: "", variant: "circle", source: "top", categorySlugs: [], background: "surface" },
+    {
+      id: "deals", type: "productRow", enabled: true, startsAt: "", endsAt: "",
+      title: "Deals of the day", subtitle: "", eyebrow: "", source: "flashSale", categorySlug: "", productSlugs: [], limit: 12, layout: "carousel", viewAllHref: "/flash-sale", background: "background", countdown: true,
+    },
+    { id: "recommended", type: "recommended", enabled: true, startsAt: "", endsAt: "", title: "Recommended for you", subtitle: "" },
+    {
+      id: "trending", type: "productRow", enabled: true, startsAt: "", endsAt: "",
+      title: "Trending now", subtitle: "Most ordered by shoppers right now", eyebrow: "", source: "trending", categorySlug: "", productSlugs: [], limit: 7, layout: "row", viewAllHref: "/bestsellers", background: "background", countdown: false,
+    },
+    { id: "collections", type: "categoryTiles", enabled: true, startsAt: "", endsAt: "", title: "Shop by collection", subtitle: "", variant: "collection", source: "top", categorySlugs: [], background: "background" },
     {
       id: "bestsellers", type: "productRow", enabled: true, startsAt: "", endsAt: "",
-      title: "Bestsellers", subtitle: "What homes across India are buying this month.", eyebrow: "",
-      source: "bestsellers", categorySlug: "", productSlugs: [], limit: 8, layout: "grid", viewAllHref: "/bestsellers", background: "background",
+      title: "Bestsellers", subtitle: "", eyebrow: "", source: "bestsellers", categorySlug: "", productSlugs: [], limit: 7, layout: "row", viewAllHref: "/bestsellers", background: "background", countdown: false,
     },
     {
-      id: "flash-banner", type: "offerBanner", enabled: true, startsAt: "", endsAt: "",
-      heading: "Flash sale", headingEyebrow: "Limited stock", headingSubtitle: "Deep discounts on a few favourites while stock lasts.", viewAllHref: "/flash-sale",
-      banner: {
-        id: "flash-banner-1", eyebrow: "This week only", title: "Racks, mats and tawas at their lowest prices", text: "",
-        image: "", cta: { label: "Shop the flash sale", href: "/flash-sale" }, tone: "soft", startsAt: "", endsAt: "",
-      },
+      id: "new-arrivals", type: "productRow", enabled: true, startsAt: "", endsAt: "",
+      title: "New arrivals", subtitle: "", eyebrow: "", source: "newArrivals", categorySlug: "", productSlugs: [], limit: 7, layout: "row", viewAllHref: "/new-arrivals", background: "background", countdown: false,
     },
-    {
-      id: "flash-picks", type: "productRow", enabled: true, startsAt: "", endsAt: "",
-      title: "Flash sale picks", subtitle: "", eyebrow: "", source: "flashSale", categorySlug: "", productSlugs: [], limit: 4, layout: "carousel", viewAllHref: "", background: "background",
-    },
-    { id: "categories", type: "categoryTiles", enabled: true, startsAt: "", endsAt: "", title: "Shop by category", subtitle: "", variant: "circle", source: "top", categorySlugs: [], background: "surface" },
     { id: "budget", type: "budgetTiles", enabled: true, startsAt: "", endsAt: "", title: "Shop by budget", subtitle: "" },
     {
       id: "value-props", type: "valueProps", enabled: true, startsAt: "", endsAt: "",
@@ -248,6 +264,7 @@ export const DEFAULT_HOME: HomeContent = {
         { icon: "shield", title: "Secure prepaid payments", text: "UPI, cards and netbanking via Razorpay." },
       ],
     },
+    { id: "recently-viewed", type: "recentlyViewed", enabled: true, startsAt: "", endsAt: "", title: "Recently viewed" },
     { id: "care", type: "customerCare", enabled: true, startsAt: "", endsAt: "", title: "We're here to help", subtitle: "Questions about a product, delivery or return? Real people answer, usually within a few hours." },
     {
       id: "story", type: "brandStory", enabled: true, startsAt: "", endsAt: "", title: "Why choose Cartzee?", showCategoryBlurbs: true,

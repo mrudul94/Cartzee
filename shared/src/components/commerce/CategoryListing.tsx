@@ -233,7 +233,7 @@ export function CategoryListing({ products, hideBudget = false, emptyMessage = "
         {visible.length === 0 ? (
           <p className="rounded-lg border border-border bg-surface p-8 text-center text-text-muted">{emptyMessage}</p>
         ) : (
-          <ul className="grid grid-cols-2 gap-3 md:grid-cols-3 md:gap-4 xl:grid-cols-5">
+          <ul className="grid grid-cols-2 gap-3 md:grid-cols-3 md:gap-4 xl:grid-cols-5 2xl:grid-cols-6">
             {visible.map((p, i) => (
               <li key={p.id}>
                 <ProductCard product={p} priority={i < 2} headingLevel="h2" />

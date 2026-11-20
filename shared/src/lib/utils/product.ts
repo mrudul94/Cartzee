@@ -24,6 +24,9 @@ export type CardProduct = {
   isBestseller: boolean;
   /** Shows the "New" badge (see isProductNew). */
   isNew: boolean;
+  /** Country of origin is India: "Made in India" label. */
+  madeInIndia: boolean;
+  qualityCertified: boolean;
 };
 
 /** Products added within this many days get the automatic "New" badge. */
@@ -57,6 +60,8 @@ export function toCardProduct(p: Product): CardProduct {
     createdAt: p.createdAt,
     isBestseller: p.isBestseller,
     isNew: isProductNew(p),
+    madeInIndia: (p.countryOfOrigin ?? "").trim().toLowerCase() === "india",
+    qualityCertified: p.qualityCertified ?? false,
   };
 }
 
@@ -65,5 +70,17 @@ export function byPosition(a: { position?: number | null; createdAt: string }, b
   const pa = a.position ?? Infinity;
   const pb = b.position ?? Infinity;
   if (pa !== pb) return pa - pb;
+  return b.createdAt.localeCompare(a.createdAt);
+}
+
+/** "Trending now": most bought first, then best rated (with reviews), then newest. */
+export function byTrending(
+  a: { boughtCount?: number; rating: number; reviewCount: number; createdAt: string },
+  b: { boughtCount?: number; rating: number; reviewCount: number; createdAt: string },
+) {
+  const bought = (b.boughtCount ?? 0) - (a.boughtCount ?? 0);
+  if (bought !== 0) return bought;
+  const score = (p: typeof a) => (p.reviewCount > 0 ? p.rating : 0);
+  if (score(b) !== score(a)) return score(b) - score(a);
   return b.createdAt.localeCompare(a.createdAt);
 }

@@ -51,7 +51,21 @@ export const productFormSchema = z
     description: z.string().trim().min(40, "Description is too short").max(5000),
     howToUse: z.string().optional().default("").transform(linesToList),
     specs: z.string().optional().default("").transform(textToSpecs),
-    faqs: z.string().optional().default("").transform(textToFaqs),
+    /** Question/answer list from the form (JSON). Older "Q: … / A: …" text is still understood. */
+    faqs: z
+      .string()
+      .optional()
+      .default("")
+      .transform((s, ctx) => {
+        if (!s.trim().startsWith("[")) return textToFaqs(s);
+        try {
+          return (JSON.parse(s) as { q?: string; a?: string }[]).filter((x) => (x.q ?? "").trim() || (x.a ?? "").trim());
+        } catch {
+          ctx.addIssue({ code: "custom", message: "Invalid FAQ list" });
+          return z.NEVER;
+        }
+      })
+      .pipe(z.array(faqItemSchema).max(10, "Up to 10 questions")),
     material: z.string().trim().max(60).default(""),
     /** Clothing sizes, comma separated in the form ("S, M, L" or "2-3Y, 4-5Y"); empty for non-clothing. */
     sizes: z
@@ -60,6 +74,8 @@ export const productFormSchema = z
       .transform((v) => [...new Set(v.split(",").map((s) => s.trim()).filter(Boolean))])
       .refine((a) => a.length <= 20 && a.every((s) => s.length <= 20), "Up to 20 sizes, each at most 20 characters"),
     colour: z.string().trim().max(60).default(""),
+    countryOfOrigin: z.string().trim().max(60).default(""),
+    qualityCertified: checkbox,
     price: money.refine((v) => v > 0, "Price must be more than 0"),
     mrp: money,
     meeshoUrl: z.union([z.literal(""), z.string().trim().url("Enter the full Meesho product link")]).default(""),

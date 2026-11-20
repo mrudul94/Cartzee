@@ -1,14 +1,14 @@
 "use client";
 
 import { useState } from "react";
-import { ArrowDown, ArrowUp, ExternalLink, Pencil, Plus, Trash2 } from "lucide-react";
+import { ArrowDown, ArrowUp, Copy, ExternalLink, Pencil, Plus, Trash2 } from "lucide-react";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { Checkbox } from "@/components/ui/Checkbox";
 import { Select } from "@/components/ui/Input";
 import type { ActionState } from "@/lib/admin/forms";
-import { categoryRowSection, insertBeforeInfo, newSection } from "@/lib/content/new-section";
+import { addMarketplaceSections, categoryRowSection, duplicateSection, insertBeforeInfo, missingMarketplaceSections, newSection } from "@/lib/content/new-section";
 import { scheduleState, SECTION_LABELS, type HomeContent, type HomeSection, type SectionType } from "@/lib/content/schema";
 import { cn } from "@/lib/utils/cn";
 import { ContentSaveForm } from "./EditorKit";
@@ -27,12 +27,15 @@ export type HomeEditorProps = {
 const iconBtn =
   "inline-flex h-9 w-9 items-center justify-center rounded-md text-text hover:bg-secondary/60 disabled:opacity-40 focus-visible:outline-none focus-visible:shadow-focus";
 
-const SOURCE_LABELS = { bestsellers: "Bestsellers", flashSale: "Flash sale", newArrivals: "New arrivals" } as const;
+const SOURCE_LABELS = { bestsellers: "Bestsellers", flashSale: "Flash sale", newArrivals: "New arrivals", trending: "Trending" } as const;
 
-/** Bold name in the section list: product rows show their own title (e.g. the category name). */
+/** Bold name in the section list: the section's own title when it has one (e.g. "Shop by collection", "Kitchen"). */
 function heading(s: HomeSection): string {
-  return s.type === "productRow" && s.title ? s.title : SECTION_LABELS[s.type];
+  const title = "title" in s ? s.title.trim() : "";
+  return title || SECTION_LABELS[s.type];
 }
+
+const TILE_STYLES = { circle: "round images", collection: "wide photo cards", slider: "big slider", card: "cards" } as const;
 
 /** One-line description shown in the section list. */
 function summary(s: HomeSection, categories: CategoryOptionLite[]): string {
@@ -49,13 +52,16 @@ function summary(s: HomeSection, categories: CategoryOptionLite[]): string {
       return `${s.banners.length} banners`;
     case "valueProps":
       return `${s.items.length} items`;
-    case "brandStory":
     case "categoryTiles":
+      return `Category tiles · ${TILE_STYLES[s.variant]} · ${s.source === "top" ? "all main categories" : `${s.categorySlugs.length} chosen`}`;
+    case "brandStory":
     case "budgetTiles":
     case "customerCare":
     case "guides":
     case "faq":
-      return s.title;
+    case "recommended":
+    case "recentlyViewed":
+      return SECTION_LABELS[s.type];
   }
 }
 
@@ -77,6 +83,7 @@ export function HomeEditor({ initial, categories, products, shopUrl, action, upl
   const hasRowFor = (slug: string) => sections.some((s) => s.type === "productRow" && s.source === "category" && s.categorySlug === slug);
   const missing = tops.filter((c) => !hasRowFor(c.slug));
   const addMissing = () => setSections((all) => insertBeforeInfo(all, missing.map(categoryRowSection)));
+  const marketplace = missingMarketplaceSections(sections);
   const [selected, setSelected] = useState<string | null>(initial.sections[0]?.id ?? null);
   const [addType, setAddType] = useState<SectionType>("offerBanner");
   const current = sections.find((s) => s.id === selected);
@@ -89,6 +96,12 @@ export function HomeEditor({ initial, categories, products, shopUrl, action, upl
       next.splice(i + d, 0, it!);
       return next;
     });
+  /** Copy a section right below the original (new ids) and open it for editing. */
+  const copy = (i: number) => {
+    const dup = duplicateSection(sections[i]!);
+    setSections((all) => [...all.slice(0, i + 1), dup, ...all.slice(i + 1)]);
+    setSelected(dup.id);
+  };
   const remove = (s: HomeSection) => {
     if (!window.confirm(`Delete the “${SECTION_LABELS[s.type]}” section? You can undo by not saving.`)) return;
     setSections((all) => all.filter((x) => x.id !== s.id));
@@ -144,6 +157,9 @@ export function HomeEditor({ initial, categories, products, shopUrl, action, upl
                       <button type="button" className={iconBtn} onClick={() => move(i, 1)} disabled={i === sections.length - 1} aria-label={`Move ${SECTION_LABELS[s.type]} down`}>
                         <ArrowDown aria-hidden className="h-4 w-4" />
                       </button>
+                      <button type="button" className={iconBtn} onClick={() => copy(i)} aria-label={`Copy ${heading(s)}`} title="Make a copy below">
+                        <Copy aria-hidden className="h-4 w-4" />
+                      </button>
                       <button type="button" className={cn(iconBtn, "text-error")} onClick={() => remove(s)} aria-label={`Delete ${SECTION_LABELS[s.type]}`}>
                         <Trash2 aria-hidden className="h-4 w-4" />
                       </button>
@@ -153,6 +169,14 @@ export function HomeEditor({ initial, categories, products, shopUrl, action, upl
               );
             })}
           </ol>
+          {marketplace.length > 0 && (
+            <div className="mt-3 flex flex-wrap items-center justify-between gap-2 rounded-md bg-background p-2 text-sm">
+              <span className="text-text-muted">Not on your homepage yet: {marketplace.join(", ")}</span>
+              <Button size="sm" variant="outline" icon={<Plus aria-hidden className="h-4 w-4" />} onClick={() => setSections(addMarketplaceSections)}>
+                Add marketplace sections
+              </Button>
+            </div>
+          )}
           {missing.length > 0 && (
             <div className="mt-3 flex flex-wrap items-center justify-between gap-2 rounded-md bg-background p-2 text-sm">
               <span className="text-text-muted">No row yet for: {missing.map((c) => c.name).join(", ")}</span>

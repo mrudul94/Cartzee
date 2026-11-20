@@ -20,6 +20,7 @@ export const newHeroSlide = () => ({
   title: "New slide title",
   text: "",
   image: { src: "", alt: "" },
+  style: "text" as const,
   primaryCta: { label: "Shop now", href: "/bestsellers" },
   secondaryCta: null,
   highlights: [],
@@ -37,7 +38,7 @@ export function newSection(type: SectionType): HomeSection {
     case "hero":
       return { ...base, type, slides: [newHeroSlide()] };
     case "productRow":
-      return { ...base, type, title: "New arrivals", subtitle: "", eyebrow: "", source: "newArrivals", categorySlug: "", productSlugs: [], limit: 8, layout: "grid", viewAllHref: "/new-arrivals", background: "background" };
+      return { ...base, type, title: "New arrivals", subtitle: "", eyebrow: "", source: "newArrivals", categorySlug: "", productSlugs: [], limit: 8, layout: "row", viewAllHref: "/new-arrivals", background: "background", countdown: false };
     case "offerBanner":
       return { ...base, type, heading: "", headingEyebrow: "", headingSubtitle: "", viewAllHref: "", banner: newBanner() };
     case "bannerGrid":
@@ -56,6 +57,10 @@ export function newSection(type: SectionType): HomeSection {
       return { ...base, type, title: "Buying guides", limit: 3, background: "background" };
     case "faq":
       return { ...base, type, title: "Frequently asked questions" };
+    case "recommended":
+      return { ...base, type, title: "Recommended for you", subtitle: "" };
+    case "recentlyViewed":
+      return { ...base, type, title: "Recently viewed" };
   }
 }
 
@@ -79,6 +84,7 @@ export function categoryRowSection(c: { slug: string; name: string; parentSlug: 
     layout: "row",
     viewAllHref: c.parentSlug ? `/${c.parentSlug}/${c.slug}` : `/${c.slug}`,
     background: "background",
+    countdown: false,
   };
 }
 
@@ -87,4 +93,60 @@ export function insertBeforeInfo(sections: HomeSection[], add: HomeSection[]): H
   const at = sections.findIndex((s) => INFO_SECTION_TYPES.has(s.type));
   const i = at < 0 ? sections.length : at;
   return [...sections.slice(0, i), ...add, ...sections.slice(i)];
+}
+
+const deals = (): HomeSection => ({
+  id: "deals", type: "productRow", enabled: true, ...sched, title: "Deals of the day", subtitle: "", eyebrow: "", source: "flashSale",
+  categorySlug: "", productSlugs: [], limit: 12, layout: "carousel", viewAllHref: "/flash-sale", background: "background", countdown: true,
+});
+const trending = (): HomeSection => ({
+  id: "trending", type: "productRow", enabled: true, ...sched, title: "Trending now", subtitle: "Most ordered by shoppers right now", eyebrow: "",
+  source: "trending", categorySlug: "", productSlugs: [], limit: 7, layout: "row", viewAllHref: "/bestsellers", background: "background", countdown: false,
+});
+
+const collections = (): HomeSection => ({
+  id: "collections", type: "categoryTiles", enabled: true, ...sched, title: "Shop by collection", subtitle: "", variant: "collection", source: "top", categorySlugs: [], background: "background",
+});
+
+/** Marketplace sections a saved homepage doesn't have yet: deals with countdown, recommended, trending, collections, recently viewed. */
+export function missingMarketplaceSections(sections: HomeSection[]): string[] {
+  const has = (f: (s: HomeSection) => boolean) => sections.some(f);
+  return [
+    !has((s) => s.type === "productRow" && s.countdown) && "Deals of the day",
+    !has((s) => s.type === "recommended") && "Recommended for you",
+    !has((s) => s.type === "productRow" && s.source === "trending") && "Trending now",
+    !has((s) => s.type === "categoryTiles" && s.variant === "collection") && "Shop by collection",
+    !has((s) => s.type === "recentlyViewed") && "Recently viewed",
+  ].filter((x): x is string => Boolean(x));
+}
+
+/**
+ * Adds the missing marketplace sections in the standard places: deals, recommended and trending right after the
+ * category circles (or the hero), recently viewed before the trust/info sections. Ids are made unique.
+ */
+export function addMarketplaceSections(sections: HomeSection[]): HomeSection[] {
+  const missing = new Set(missingMarketplaceSections(sections));
+  const ids = new Set(sections.map((s) => s.id));
+  const unique = (s: HomeSection): HomeSection => (ids.has(s.id) ? { ...s, id: uid(s.type) } : s);
+  const top = [
+    missing.has("Deals of the day") && deals(),
+    missing.has("Recommended for you") && newSection("recommended"),
+    missing.has("Trending now") && trending(),
+    missing.has("Shop by collection") && collections(),
+  ].filter((s): s is HomeSection => Boolean(s)).map(unique);
+  const anchor = Math.max(sections.findIndex((s) => s.type === "categoryTiles"), sections.findIndex((s) => s.type === "hero"));
+  const at = anchor < 0 ? 0 : anchor + 1;
+  let out = [...sections.slice(0, at), ...top, ...sections.slice(at)];
+  if (missing.has("Recently viewed")) out = insertBeforeInfo(out, [unique(newSection("recentlyViewed"))]);
+  return out;
+}
+
+/** A copy of a section with fresh ids (including its slides and banners), for "Copy" in Admin → Homepage. */
+export function duplicateSection(s: HomeSection): HomeSection {
+  const copy = structuredClone(s);
+  copy.id = uid(s.type);
+  if (copy.type === "hero") copy.slides = copy.slides.map((sl) => ({ ...sl, id: uid("slide") }));
+  if (copy.type === "offerBanner") copy.banner = { ...copy.banner, id: uid("banner") };
+  if (copy.type === "bannerGrid") copy.banners = copy.banners.map((b) => ({ ...b, id: uid("banner") }));
+  return copy;
 }

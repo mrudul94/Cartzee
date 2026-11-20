@@ -4,7 +4,9 @@
   "name": "cartzee-shop",
   "main": ".open-next/worker.js",
   "compatibility_date": "2026-11-01",
-  "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
+  // no_handle_cross_request_promise_resolution: Next/OpenNext and supabase-js reuse module-level promises across
+  // requests. With the default (on since 2024-10-14) those promises never settle in later requests → random 500s.
+  "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public", "no_handle_cross_request_promise_resolution"],
   "assets": {
     "directory": ".open-next/assets",
     "binding": "ASSETS"

@@ -8,11 +8,12 @@ import { Card } from "@/components/ui/Card";
 import { Checkbox } from "@/components/ui/Checkbox";
 import { FormField } from "@/components/ui/FormField";
 import { Input, Select, Textarea } from "@/components/ui/Input";
-import { faqsToText, specsToText, type ActionState } from "@/lib/admin/forms";
+import { specsToText, type ActionState } from "@/lib/admin/forms";
 import type { Faq, Spec } from "@/lib/types";
 import { calcDiscount, calcMargin, daysSince, formatINR, slugify } from "@/lib/utils/format";
 import { NEW_BADGE_DAYS } from "@/lib/utils/product";
 import { ImageManager, type ManagedImage } from "./ImageManager";
+import { ListEditor, TextField } from "./EditorKit";
 import { cn } from "@/lib/utils/cn";
 
 export type ProductFormValues = {
@@ -29,6 +30,8 @@ export type ProductFormValues = {
   material: string;
   sizes: string;
   colour: string;
+  countryOfOrigin: string;
+  qualityCertified: boolean;
   price: number;
   mrp: number;
   meeshoUrl: string;
@@ -88,6 +91,7 @@ export function ProductForm({ values: v, categories, action, upload, notice }: P
   const [category, setCategory] = useState(v.categorySlug);
   const [sub, setSub] = useState(v.subcategorySlug);
   const [sizes, setSizes] = useState(v.sizes);
+  const [faqs, setFaqs] = useState<Faq[]>(v.faqs);
   const [price, setPrice] = useState(String(v.price || ""));
   const [mrp, setMrp] = useState(String(v.mrp || ""));
   const [cost, setCost] = useState(String(v.meeshoPrice || ""));
@@ -195,6 +199,12 @@ export function ProductForm({ values: v, categories, action, upload, notice }: P
           <FormField id="p-colour" label="Colour" error={e.colour}>
             <Input {...field("colour")} defaultValue={v.colour} placeholder="e.g. Grey" />
           </FormField>
+          <FormField id="p-countryOfOrigin" label="Country of origin" error={e.countryOfOrigin} hint="Shown on the product page. “India” also adds a “Made in India” label on cards. Check it on the supplier listing.">
+            <Input {...field("countryOfOrigin")} defaultValue={v.countryOfOrigin} placeholder="e.g. India" />
+          </FormField>
+          <div className="flex items-end">
+            <Checkbox id="p-qualityCertified" name="qualityCertified" defaultChecked={v.qualityCertified} label="Quality certified (e.g. ISI/BIS mark; tick only if true)" />
+          </div>
         </div>
         {needsSizes || chosenSizes.length > 0 ? (
           <FormField
@@ -246,9 +256,26 @@ export function ProductForm({ values: v, categories, action, upload, notice }: P
         <FormField id="p-specs" label="Specifications" error={e.specs} hint="One per line as “Label: Value”, e.g. “Capacity: 1.2 L”.">
           <Textarea {...field("specs")} rows={6} defaultValue={specsToText(v.specs)} />
         </FormField>
-        <FormField id="p-faqs" label="FAQs" error={e.faqs} hint="3 to 5 questions. Write “Q: …” then “A: …”, with a blank line between questions.">
-          <Textarea {...field("faqs")} rows={8} defaultValue={faqsToText(v.faqs)} />
-        </FormField>
+        <div className="flex flex-col gap-2">
+          <p className="font-medium">FAQs</p>
+          <p className="text-sm text-text-muted">3 to 5 questions shoppers ask (shown on the product page). Both a question and an answer are needed.</p>
+          <input type="hidden" name="faqs" value={JSON.stringify(faqs.filter((x) => x.q.trim() || x.a.trim()))} />
+          <ListEditor
+            items={faqs}
+            onChange={setFaqs}
+            max={10}
+            addLabel="Add question"
+            newItem={() => ({ q: "", a: "" })}
+            itemLabel={(x, i) => `Q${i + 1}: ${x.q || "New question"}`}
+            renderItem={(x, update, i) => (
+              <>
+                <TextField id={`p-faq-q-${i}`} label="Question" value={x.q} onChange={(q) => update({ q })} maxLength={200} />
+                <TextField id={`p-faq-a-${i}`} label="Answer" value={x.a} onChange={(a) => update({ a })} multiline maxLength={1000} />
+              </>
+            )}
+          />
+          {e.faqs && <p className="text-sm text-error">FAQs: {e.faqs}</p>}
+        </div>
       </Section>
 
       <Section title="Visibility">

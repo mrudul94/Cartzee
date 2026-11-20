@@ -23,6 +23,8 @@ export type ProductInput = {
   material: string;
   sizes: string[];
   colour: string;
+  countryOfOrigin: string;
+  qualityCertified: boolean;
   price: number;
   mrp: number;
   meeshoUrl: string;
@@ -129,7 +131,7 @@ const seedAdmin: AdminRepo = {
     if (input.id && !existing) throw new AdminError("Product not found");
     const now = new Date().toISOString();
     const next = {
-      ...(existing ?? { id: `prd_${Date.now().toString(36)}`, rating: 0, reviewCount: 0, createdAt: now }),
+      ...(existing ?? { id: `prd_${Date.now().toString(36)}${Math.random().toString(36).slice(2, 7)}`, rating: 0, reviewCount: 0, createdAt: now }),
       slug: input.slug,
       categorySlug: input.categorySlug,
       subcategorySlug: input.subcategorySlug,
@@ -141,6 +143,8 @@ const seedAdmin: AdminRepo = {
       material: input.material,
       sizes: input.sizes,
       colour: input.colour,
+      countryOfOrigin: input.countryOfOrigin,
+      qualityCertified: input.qualityCertified,
       price: input.price,
       mrp: input.mrp,
       meeshoUrl: input.meeshoUrl,
@@ -195,7 +199,7 @@ const seedAdmin: AdminRepo = {
     const now = new Date().toISOString();
     const copy = {
       ...p,
-      id: `prd_${Date.now().toString(36)}`,
+      id: `prd_${Date.now().toString(36)}${Math.random().toString(36).slice(2, 7)}`,
       slug: uniqueSlug(p.slug, (s) => store.products.some((x) => x.slug === s)),
       title: `${p.title} (copy)`.slice(0, 120),
       isActive: false,
@@ -223,19 +227,21 @@ function toAdmin(p: Product & { isActive?: boolean }): AdminProduct {
     meeshoPrice: p.meeshoPrice ?? 0,
     priceCheckedAt: p.priceCheckedAt ?? p.createdAt,
     isActive: p.isActive ?? true,
+    countryOfOrigin: p.countryOfOrigin ?? "",
+    qualityCertified: p.qualityCertified ?? false,
   };
 }
 
 /* ================================================================== supabase */
 
-type AdminProductRow = ProductRow & { meesho_url: string; meesho_price: number; price_checked_at: string; is_active: boolean };
+type AdminProductRow = ProductRow & { meesho_url: string; meesho_price: number; price_checked_at: string; is_active: boolean; is_demo?: boolean };
 const BUCKET = "product-images";
 
 async function toAdminProducts(rows: AdminProductRow[]): Promise<AdminProduct[]> {
   const base = await toProducts(rows);
   return base.map((p, i) => {
     const r = rows[i]!;
-    return { ...p, meeshoUrl: r.meesho_url, meeshoPrice: Number(r.meesho_price), priceCheckedAt: r.price_checked_at, isActive: r.is_active };
+    return { ...p, meeshoUrl: r.meesho_url, meeshoPrice: Number(r.meesho_price), priceCheckedAt: r.price_checked_at, isActive: r.is_active, isDemo: r.is_demo ?? false };
   });
 }
 
@@ -281,6 +287,8 @@ const supabaseAdmin: AdminRepo = {
       material: input.material,
       sizes: input.sizes,
       colour: input.colour,
+      country_of_origin: input.countryOfOrigin,
+      quality_certified: input.qualityCertified,
       price: input.price,
       mrp: input.mrp,
       meesho_url: input.meeshoUrl,
@@ -366,6 +374,8 @@ const supabaseAdmin: AdminRepo = {
       ...p,
       id: undefined,
       sizes: p.sizes ?? [],
+      countryOfOrigin: p.countryOfOrigin ?? "",
+      qualityCertified: p.qualityCertified ?? false,
       slug: uniqueSlug(p.slug, (s) => all.some((x) => x.slug === s)),
       title: `${p.title} (copy)`.slice(0, 120),
       isActive: false,

@@ -64,7 +64,7 @@ export function CategoryStrip({ tree, className }: { tree: NavCategory[]; classN
   ];
   return (
     <nav aria-label="Categories" className={cn("border-b border-border lg:hidden", className)}>
-      <ul className="flex snap-x gap-1 overflow-x-auto px-2">
+      <ul className="flex snap-x scroll-px-2 gap-1 overflow-x-auto px-2">
         {entries.map(({ href, label, icon: Icon }) => {
           const active = pathname === href || pathname.startsWith(`${href}/`);
           return (

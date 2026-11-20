@@ -65,6 +65,7 @@ export function MobileNav({ tree, social }: { tree: NavCategory[]; social: Setti
         </ul>
         <ul className="mt-6 flex flex-col border-t border-border pt-4">
           <li><Link className={link} href={paths.guides()}>Buying guides</Link></li>
+          <li><Link className={link} href="/wishlist">Wishlist</Link></li>
           <li><Link className={link} href={paths.track()}>Track order</Link></li>
           <li><Link className={link} href={paths.contact()}>Contact us</Link></li>
           <li><Link className={link} href={paths.login()}>My account</Link></li>

@@ -113,11 +113,12 @@ export function QuickFilterChips({ hrefs, active, staleCount }: { hrefs: Record<
 }
 
 /** Status badges under the product name. */
-export function QuickBadges({ id, isBestseller, isFlashSale }: { id: string; isBestseller: boolean; isFlashSale: boolean }) {
+export function QuickBadges({ id, isBestseller, isFlashSale, isDemo = false }: { id: string; isBestseller: boolean; isFlashSale: boolean; isDemo?: boolean }) {
   const r = useQuickCtx().rows[id];
   if (!r) return null;
   return (
     <span className="mt-1 flex flex-wrap gap-1">
+      {isDemo && <Badge variant="warning">Demo</Badge>}
       {!r.isActive && <Badge variant="neutral">Hidden</Badge>}
       {isBestseller && <Badge variant="outline">Bestseller</Badge>}
       {isFlashSale && <Badge variant="sale">Flash sale</Badge>}

@@ -53,6 +53,8 @@ describe("product form parsing", () => {
     expect(r.data.price).toBe(349);
     expect(r.data.priceChecked).toBe(true);
     expect(r.data.isBestseller).toBe(false);
+    expect(r.data.countryOfOrigin).toBe("");
+    expect(r.data.qualityCertified).toBe(false);
     expect(r.data.specs).toHaveLength(2);
     expect(r.data.faqs).toHaveLength(2);
   });
@@ -65,6 +67,17 @@ describe("product form parsing", () => {
     expect(paths).toContain("images");
     const noAlt = productFormSchema.safeParse({ ...validProduct, images: JSON.stringify([{ src: "/x.svg", alt: "" }]) });
     expect(noAlt.success).toBe(false);
+  });
+});
+
+describe("product FAQs field", () => {
+  it("saves the question/answer list, drops empty rows, and refuses half-filled ones", () => {
+    const faqs = JSON.stringify([{ q: "Is it dishwasher safe?", a: "Yes, top rack." }, { q: "", a: "" }]);
+    expect(productFormSchema.parse({ ...validProduct, faqs }).faqs).toEqual([{ q: "Is it dishwasher safe?", a: "Yes, top rack." }]);
+    const half = productFormSchema.safeParse({ ...validProduct, faqs: JSON.stringify([{ q: "Size?", a: "" }]) });
+    expect(half.success).toBe(false);
+    // Older text format still works.
+    expect(productFormSchema.parse({ ...validProduct, faqs: "Q: Colour?\nA: Blue." }).faqs).toEqual([{ q: "Colour?", a: "Blue." }]);
   });
 });
 

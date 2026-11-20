@@ -13,6 +13,8 @@ import { GuideCards } from "./GuideCards";
 import { HeroCarousel } from "./HeroCarousel";
 import { BrandStory, CustomerCare, FAQSection, ValueProps } from "./InfoSections";
 import { ProductGrid } from "./ProductGrid";
+import { RecentlyViewedRow, RecommendedRow } from "./PersonalRows";
+import { DealCountdown } from "@/components/commerce/DealCountdown";
 import { SaleBanner } from "./SaleBanner";
 
 export type HomeContext = {
@@ -25,7 +27,9 @@ export type HomeContext = {
 
 const firstSentence = (s: string) => s.split(".")[0] ?? s;
 
-async function productsFor(s: Extract<HomeSection, { type: "productRow" }>, categories: Category[]) {
+async function productsFor(row: Extract<HomeSection, { type: "productRow" }>, categories: Category[]) {
+  // A full row shows up to 8 cards on very wide screens, so fetch at least 8 for that layout.
+  const s = row.layout === "row" ? { ...row, limit: Math.max(row.limit, 8) } : row;
   switch (s.source) {
     case "bestsellers":
       return repo.listProducts({ bestseller: true, limit: s.limit });
@@ -33,6 +37,8 @@ async function productsFor(s: Extract<HomeSection, { type: "productRow" }>, cate
       return repo.listProducts({ flashSale: true, limit: s.limit });
     case "newArrivals":
       return repo.listProducts({ newArrivals: true, limit: s.limit });
+    case "trending":
+      return repo.listProducts({ sort: "trending", limit: s.limit });
     case "category": {
       const c = categories.find((x) => x.slug === s.categorySlug);
       if (!c) return [];
@@ -62,13 +68,20 @@ export async function HomeSections({ sections: saved, ctx, autoCategoryRows = fa
 
   const rendered = await Promise.all(
     live.map(async (s, i) => {
-      const prev = live[i - 1];
       switch (s.type) {
         case "hero": {
           const live = s.slides.filter((sl) => sl.enabled && isScheduledLive(sl, now));
           const slides = orderHeroSlides(live);
           if (slides.length === 0) return null;
-          const props = slides.map((sl) => ({ id: sl.id, image: sl.image, href: sl.clickable && sl.link ? sl.link : undefined }));
+          const props = slides.map((sl) => ({
+            id: sl.id,
+            image: sl.image,
+            href: sl.clickable && sl.link ? sl.link : undefined,
+            overlay:
+              sl.style === "text"
+                ? { eyebrow: sl.eyebrow || undefined, title: sl.title, text: sl.text || undefined, cta: sl.primaryCta.label && sl.primaryCta.href ? sl.primaryCta : undefined }
+                : undefined,
+          }));
           h1Used = true;
           return <HeroCarousel key={s.id} slides={props} />;
         }
@@ -81,12 +94,14 @@ export async function HomeSections({ sections: saved, ctx, autoCategoryRows = fa
               title={s.title}
               subtitle={s.subtitle || undefined}
               eyebrow={s.eyebrow || undefined}
-              products={products.map(toCardProduct)}
+              // No hover photo on homepage rows: it doubles the images in an already long page (Worker CPU limit).
+              products={products.map((p) => ({ ...toCardProduct(p), hoverImage: undefined }))}
               viewAllHref={s.viewAllHref || undefined}
               layout={s.layout}
               background={s.background}
-              spacing={prev?.type === "offerBanner" || s.layout === "row" ? "sm" : "md"}
-              priorityCount={i === 0 ? 2 : 0}
+              panel
+              aside={s.countdown ? <DealCountdown /> : undefined}
+              priorityCount={i <= 1 ? 2 : 0}
             />
           );
         }
@@ -134,6 +149,9 @@ export async function HomeSections({ sections: saved, ctx, autoCategoryRows = fa
               subtitle={s.subtitle || undefined}
               variant={s.variant}
               background={s.background}
+              panel
+              viewAllHref={s.variant === "collection" || s.variant === "slider" ? "/categories" : undefined}
+              viewAllLabel={s.variant === "collection" || s.variant === "slider" ? "All collections" : undefined}
               items={cats.map((c) => ({ label: c.name, href: paths.category(c), image: c.image, caption: s.variant === "card" ? firstSentence(c.intro) : undefined }))}
             />
           );
@@ -145,7 +163,7 @@ export async function HomeSections({ sections: saved, ctx, autoCategoryRows = fa
               title={s.title}
               subtitle={s.subtitle || undefined}
               variant="price"
-              spacing="sm"
+              panel
               items={BUDGET_TIERS.map((t) => ({ label: t.short, caption: t.slug.startsWith("above") ? "Premium" : "Under", href: paths.budget(t.slug) }))}
             />
           );
@@ -166,6 +184,10 @@ export async function HomeSections({ sections: saved, ctx, autoCategoryRows = fa
           return <GuideCards key={s.id} title={s.title} posts={ctx.posts.slice(0, s.limit)} viewAllHref={paths.guides()} background={s.background} />;
         case "faq":
           return <FAQSection key={s.id} title={s.title} faqs={ctx.faqs} />;
+        case "recommended":
+          return <RecommendedRow key={s.id} title={s.title} subtitle={s.subtitle || undefined} />;
+        case "recentlyViewed":
+          return <RecentlyViewedRow key={s.id} title={s.title} />;
       }
     }),
   );

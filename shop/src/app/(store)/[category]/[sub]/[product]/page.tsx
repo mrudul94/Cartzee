@@ -1,12 +1,16 @@
+import { BadgeCheck } from "lucide-react";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { RotateCcw, ShieldCheck, Truck } from "lucide-react";
 import { DeliveryPromise } from "@/components/commerce/DeliveryPromise";
 import { PincodeChecker } from "@/components/commerce/PincodeChecker";
 import { PrepaidNotice } from "@/components/commerce/PrepaidNotice";
 import { PriceBlock } from "@/components/commerce/PriceBlock";
 import { ProductBuyBox } from "@/components/commerce/ProductBuyBox";
 import { ProductGallery } from "@/components/commerce/ProductGallery";
+import { DeliveryReturns, ProductOffers, YouSave } from "@/components/commerce/ProductOffers";
+import { ShareButton } from "@/components/commerce/ShareButton";
+import { WishlistButton } from "@/components/commerce/WishlistButton";
+import { RecentlyViewedRow, RecommendedRow, RecordView } from "@/components/sections/PersonalRows";
 import { RatingStars } from "@/components/commerce/RatingStars";
 import { ReviewList } from "@/components/commerce/ReviewList";
 import { Breadcrumbs } from "@/components/layout/Breadcrumbs";
@@ -71,8 +75,18 @@ export default async function ProductPage({ params }: Props) {
   const returnDays = settings.delivery.returnWindowDays;
   const related = [...sameSub, ...sameCat, ...(await repo.listProducts({ bestseller: true }))]
     .filter((x, i, arr) => x.id !== p.id && arr.findIndex((y) => y.id === x.id) === i)
-    .slice(0, 4);
+    .slice(0, 14);
   const card = toCardProduct(p);
+  // Specifications: the admin's list, or at least material and colour when none were entered.
+  const specRows = p.specs.length
+    ? p.specs.map((s) => ({ label: s.label, value: s.value }))
+    : [
+        { label: "Material", value: p.material },
+        { label: "Colour", value: p.colour },
+      ].filter((r) => r.value);
+  // Country of origin (required on Indian e-commerce listings), unless the admin's own specs already list it.
+  const origin = p.countryOfOrigin?.trim();
+  if (origin && !specRows.some((r) => /origin/i.test(r.label))) specRows.push({ label: "Country of origin", value: origin });
   const inStock = p.stock > 0;
 
   return (
@@ -87,13 +101,27 @@ export default async function ProductPage({ params }: Props) {
         />
         <div className="grid gap-8 pb-10 md:grid-cols-2 lg:gap-12">
           {/* Photos stay in view on larger screens while the buy options and details scroll. */}
-          <div className="md:sticky md:top-32 md:self-start">
+          <div className="relative md:sticky md:top-32 md:self-start">
             <ProductGallery images={p.images} title={p.title} />
+            <div className="absolute right-3 top-3 z-raised flex flex-col gap-2">
+              <WishlistButton slug={p.slug} title={p.title} />
+              <ShareButton title={p.title} path={paths.product(p)} />
+            </div>
           </div>
 
           <div className="flex flex-col gap-5">
             <div className="flex flex-col gap-2">
-              {p.isBestseller && <Badge variant="outline" className="self-start">Bestseller</Badge>}
+              {(p.isBestseller || p.qualityCertified) && (
+                <div className="flex flex-wrap gap-2">
+                  {p.isBestseller && <Badge variant="outline">Bestseller</Badge>}
+                  {p.qualityCertified && (
+                    <Badge variant="outline" className="border-info-soft bg-info-soft text-info">
+                      <BadgeCheck aria-hidden className="h-4 w-4 fill-info text-info-soft" />
+                      Quality Certified
+                    </Badge>
+                  )}
+                </div>
+              )}
               <h1 className="font-heading text-2xl font-semibold tracking-tight md:text-3xl">{p.title}</h1>
               <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
                 {p.reviewCount > 0 ? (
@@ -107,7 +135,10 @@ export default async function ProductPage({ params }: Props) {
               </div>
             </div>
             <p className="text-lg text-text">{p.summary}</p>
-            <PriceBlock price={p.price} mrp={p.mrp} size="lg" showTaxNote />
+            <div className="flex flex-col gap-2">
+              <PriceBlock price={p.price} mrp={p.mrp} size="lg" showTaxNote />
+              <YouSave price={p.price} mrp={p.mrp} />
+            </div>
             {inStock ? (
               <>
                 <p className="text-sm font-medium text-success">In stock, ready to ship</p>
@@ -117,22 +148,12 @@ export default async function ProductPage({ params }: Props) {
               <p className="text-sm font-medium text-error">Sold out. Contact us to be notified when it is back.</p>
             )}
             <ProductBuyBox product={card} />
+            <ProductOffers price={p.price} delivery={settings.delivery} upiDiscountPercent={settings.upiDiscountPercent} />
             <PrepaidNotice variant="inline" />
             <div className="rounded-lg border border-border bg-surface p-4">
               <p className="mb-2 font-semibold">Check delivery date</p>
               <PincodeChecker />
             </div>
-            <ul className="grid grid-cols-3 gap-2 text-center text-sm text-text-muted">
-              <li className="flex flex-col items-center gap-1">
-                <Truck aria-hidden className="h-5 w-5 text-text" /> Ships across India
-              </li>
-              <li className="flex flex-col items-center gap-1">
-                <RotateCcw aria-hidden className="h-5 w-5 text-text" /> {returnDays}-day returns on damage
-              </li>
-              <li className="flex flex-col items-center gap-1">
-                <ShieldCheck aria-hidden className="h-5 w-5 text-text" /> Secure Razorpay payments
-              </li>
-            </ul>
           </div>
         </div>
       </Container>
@@ -146,20 +167,30 @@ export default async function ProductPage({ params }: Props) {
                 <p key={para.slice(0, 32)}>{para}</p>
               ))}
             </div>
-            <h3 className="mb-3 mt-8 font-heading text-xl font-semibold">How to use and care</h3>
-            <ol className="prose-body list-decimal pl-6">
-              {p.howToUse.map((step) => (
-                <li key={step} className="mb-2">
-                  {step}
-                </li>
-              ))}
-            </ol>
+            {p.howToUse.length > 0 && (
+              <>
+                <h3 className="mb-3 mt-8 font-heading text-xl font-semibold">How to use and care</h3>
+                <ol className="prose-body list-decimal pl-6">
+                  {p.howToUse.map((step) => (
+                    <li key={step} className="mb-2">
+                      {step}
+                    </li>
+                  ))}
+                </ol>
+                  </>
+            )}
           </div>
-          <div>
-            <h2 className="mb-6 font-heading text-2xl font-semibold md:text-3xl">Specifications</h2>
-            <Table caption={`${p.title} specifications`} rows={p.specs.map((s) => ({ label: s.label, value: s.value }))} />
-          </div>
+          {specRows.length > 0 && (
+            <div>
+              <h2 className="mb-6 font-heading text-2xl font-semibold md:text-3xl">Specifications</h2>
+              <Table caption={`${p.title} specifications`} rows={specRows} />
+            </div>
+          )}
         </div>
+      </Section>
+
+      <Section aria-label="Delivery and returns" spacing="sm">
+        <DeliveryReturns delivery={settings.delivery} />
       </Section>
 
       <FAQSection title="Questions about this product" faqs={p.faqs} background="background" />
@@ -169,7 +200,10 @@ export default async function ProductPage({ params }: Props) {
         <ReviewList reviews={reviews} rating={p.rating} reviewCount={p.reviewCount} productTitle={p.title} />
       </Section>
 
-      <ProductGrid title="You may also like" products={related.map(toCardProduct)} viewAllHref={paths.category(subcategory ?? parent)} />
+      <ProductGrid title="Similar products" products={related.map(toCardProduct)} viewAllHref={paths.category(subcategory ?? parent)} layout="row" panel />
+      <RecommendedRow title="Recommended for you" exclude={p.slug} />
+      <RecentlyViewedRow title="Recently viewed" exclude={p.slug} />
+      <RecordView slug={p.slug} category={p.categorySlug} />
 
       <JsonLd data={buildProductJsonLd(p, subcategory ? `${parent.name} > ${subcategory.name}` : parent.name, returnDays)} />
     </div>

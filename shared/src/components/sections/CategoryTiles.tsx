@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Section, type SectionProps } from "@/components/layout/Container";
 import { ScrollRail } from "@/components/ui/ScrollRail";
 import { SectionHeader } from "@/components/ui/SectionHeader";
+import { HeroCarousel } from "./HeroCarousel";
 import { cn } from "@/lib/utils/cn";
 import { slugify } from "@/lib/utils/format";
 
@@ -12,19 +13,66 @@ export type CategoryTilesProps = {
   title: string;
   subtitle?: string;
   items: Tile[];
-  /** circle: one sideways row of round thumbs (categories) · card: image cards (collections) · price: text tiles (budget). */
-  variant?: "circle" | "card" | "price";
+  /**
+   * circle: sideways row of round thumbs (categories) · collection: sideways row of wide photo cards with the name
+   * over the image (Shop by collection) · slider: one big sliding card at a time, shown exactly like the homepage hero
+   * (no panel or visible title) ·
+   * card: image grid · price: text tiles (budget).
+   */
+  variant?: "circle" | "collection" | "slider" | "card" | "price";
+  /** Optional link in the header, e.g. "All collections". */
+  viewAllHref?: string;
+  viewAllLabel?: string;
   background?: SectionProps["background"];
   spacing?: SectionProps["spacing"];
+  /** White panel on the page (marketplace style). */
+  panel?: boolean;
 };
 
-/** Navigational tile grid reused for Shop by Category, Featured Collections and Shop by Budget. */
-export function CategoryTiles({ title, subtitle, items, variant = "circle", background, spacing }: CategoryTilesProps) {
+/** Navigational tiles reused for Shop by Category, Shop by collection and Shop by Budget. */
+export function CategoryTiles({ title, subtitle, items, variant = "circle", background, spacing, panel, viewAllHref, viewAllLabel }: CategoryTilesProps) {
   const id = `${slugify(title)}-heading`;
+  const header = <SectionHeader id={id} title={title} subtitle={subtitle} viewAllHref={viewAllHref} viewAllLabel={viewAllLabel} className={panel ? "mb-2 md:mb-3" : undefined} />;
+  if (variant === "slider") {
+    // Only categories with a picture make good slides.
+    const slides = items
+      .filter((t) => t.image)
+      .map((t) => ({ id: t.href, image: { src: t.image!, alt: t.label }, href: t.href, caption: { title: t.label, subtitle: t.caption ?? "Browse" } }));
+    if (slides.length === 0) return null;
+    // Shown exactly like the homepage hero: full width, no panel or visible heading (the title names it for screen readers).
+    return <HeroCarousel slides={slides} label={title} headingLevel="h2" priorityFirst={false} />;
+  }
+  if (variant === "collection") {
+    return (
+      <Section background={background} spacing={spacing} panel={panel} aria-labelledby={id}>
+        {header}
+        <ScrollRail label={title}>
+          {items.map((t) => (
+            <li key={t.href} className="w-64 shrink-0 snap-start sm:w-80 lg:w-96">
+              <Link
+                href={t.href}
+                className="group relative block aspect-banner overflow-hidden rounded-xl bg-secondary ring-primary transition-shadow duration-base hover:shadow-md focus-visible:outline-none focus-visible:ring-2"
+              >
+                {t.image && (
+                  <Image src={t.image} alt="" fill sizes="(min-width: 1024px) 384px, (min-width: 640px) 320px, 256px" className="object-cover transition-transform duration-slow group-hover:scale-105 motion-reduce:transition-none" />
+                )}
+                {/* Dark fade at the bottom keeps the white text readable on any photo. */}
+                <span aria-hidden className="absolute inset-0 bg-gradient-to-t from-overlay/80 via-overlay/20 to-overlay/0" />
+                <span className="absolute inset-x-0 bottom-0 flex flex-col p-4 text-text-inverse">
+                  <span className="text-lg font-semibold leading-tight md:text-xl">{t.label}</span>
+                  <span className="text-sm text-text-inverse/80">{t.caption ?? "Browse"}</span>
+                </span>
+              </Link>
+            </li>
+          ))}
+        </ScrollRail>
+      </Section>
+    );
+  }
   if (variant === "circle") {
     return (
-      <Section background={background} spacing={spacing} aria-labelledby={id}>
-        <SectionHeader id={id} title={title} subtitle={subtitle} />
+      <Section background={background} spacing={spacing} panel={panel} aria-labelledby={id}>
+        {header}
         <ScrollRail label={title}>
           {items.map((t) => (
             <li key={t.href} className="w-20 shrink-0 snap-start md:w-28">
@@ -41,8 +89,8 @@ export function CategoryTiles({ title, subtitle, items, variant = "circle", back
     );
   }
   return (
-    <Section background={background} spacing={spacing} aria-labelledby={id}>
-      <SectionHeader id={id} title={title} subtitle={subtitle} />
+    <Section background={background} spacing={spacing} panel={panel} aria-labelledby={id}>
+      {header}
       <ul
         className={cn(
           "grid gap-4",
