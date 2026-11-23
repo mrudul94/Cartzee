@@ -1,4 +1,4 @@
-# City Seller
+# Cartzee
 
 An Indian home-needs store with prepaid-only checkout (Razorpay). Orders are fulfilled through Meesho.
 Built with Next.js 15 (App Router), TypeScript, Tailwind CSS 3 driven by design tokens, and Radix UI.
